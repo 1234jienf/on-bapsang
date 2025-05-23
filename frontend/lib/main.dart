@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/common/view/root_tab.dart';
 
 void main() {
   runApp(ProviderScope(child: _App()));
 }
 
-class _App extends StatelessWidget {
+class _App extends ConsumerWidget {
   const _App();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final router = ref.watch(routerProvider);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(body: DefaultLayout(child: _thisPage())),
@@ -19,11 +22,5 @@ class _App extends StatelessWidget {
 }
 
 Widget _thisPage() {
-  return Scaffold(
-    body: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [Center(child: Text('Test'))],
-    ),
-  );
+  return Scaffold(body: RootTab());
 }
