@@ -23,12 +23,19 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
   final List<String> tabs = ['레시피', '상품', '커뮤니티'];
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = ref.watch(searchTabIndexProvider);
     return DefaultLayout(
       appBar: SearchAppBar(),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 26.0),
+        // 전체 패딩 갭
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           children: [
             _menuBar(state),
@@ -67,7 +74,7 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
                 ref.read(searchTabIndexProvider.notifier).setIndex(index);
                 _pageController.animateToPage(
                   index,
-                  duration: Duration(milliseconds: 300),
+                  duration: Duration(milliseconds: 200),
                   curve: Curves.easeInOut,
                 );
               },
@@ -77,7 +84,6 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
                   fontSize: 15.0,
                   fontWeight: FontWeight.w600,
                   color: isSelected ? Colors.black : Colors.grey,
-                  decoration: isSelected ? TextDecoration.underline : null,
                 ),
               ),
             ),
