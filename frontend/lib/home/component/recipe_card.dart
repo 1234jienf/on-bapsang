@@ -7,10 +7,10 @@ class RecipeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _renderProduct(count: count);
+    return _renderComponent();
   }
 
-  Column _renderProduct({required int count}) {
+  Column _renderComponent() {
     return Column(
       children: List.generate(3, (index) {
         return InkWell(
@@ -28,23 +28,27 @@ class RecipeCard extends StatelessWidget {
                           width: 175.0,
                           height: 100.0,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '메뉴명',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w700,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 7.0,),
+                              Text(
+                                '메뉴명',
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
-                            ),
-                            Row(
-                              children: [
-                                Text('9900원, 30분, 초보', style: TextStyle(fontSize: 10.0)),
-                              ],
-                            ),
-                            Text('스크랩 수 $count', style: TextStyle(fontSize: 10.0)),
-                          ],
+                              Row(
+                                children: [
+                                  Text('9900원, 30분, 초보', style: TextStyle(fontSize: 10.0)),
+                                ],
+                              ),
+                              Text('스크랩 수 $count', style: TextStyle(fontSize: 10.0)),
+                            ],
+                          ),
                         ),
                       ],
                     ),
