@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 
+import '../../home/view/home_page_screen.dart';
+
 class RootTab extends StatefulWidget {
   const RootTab({super.key});
 
@@ -63,12 +65,12 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           ),
         ],
       ),
-      title: 'On-Bapsang',
+
       child: TabBarView(
         controller: _tabController,
         physics: NeverScrollableScrollPhysics(),
         children: [
-          Center(child: Text('home')),
+          HomePageScreen(),
           Center(child: Text('receipt')),
           Center(child: Text('shopping')),
           Center(child: Text('commu')),
