@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/search/view/search_main_screen.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../common/appbar/home_appbar.dart';
 import '../component/community_card.dart';
@@ -30,9 +32,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
     final double titleTextGap = 10.0;
     // 컴포넌트 사이 갭
     final double componentGap = 20.0;
+    // 화면 전체 양 사이드 갭
+    final double sideGap = 5.0;
 
     return DefaultLayout(
-      renderAppBar: HomeAppbar(),
+      appBar: HomeAppbar(),
       backgroundColor: Colors.white,
       child: CustomScrollView(
         controller: controller,
@@ -41,19 +45,50 @@ class _HomePageScreenState extends State<HomePageScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                // TODO : 검색
-                Container(
-                  width: 360,
-                  height: 50,
-                  decoration: BoxDecoration(color: Colors.grey),
+                const SizedBox(height: 10.0),
+                GestureDetector(
+                  onTap: () {
+                    context.pushNamed(SearchMainScreen.routeName);
+                  },
+                  child: InkWell(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: sideGap),
+                      child: Container(
+                        width: 360,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFEEEEEE),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              Icon(Icons.search, size: 20.0),
+                              const SizedBox(width: 5.0),
+                              Text(
+                                '검색',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 SizedBox(height: componentGap),
 
                 // TODO : AI 배너
-                Container(
-                  width: 360,
-                  height: 90,
-                  decoration: BoxDecoration(color: Colors.grey),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: sideGap),
+                  child: Container(
+                    width: 360,
+                    height: 90,
+                    decoration: BoxDecoration(color: Colors.grey),
+                  ),
                 ),
                 SizedBox(height: componentGap),
 
@@ -62,13 +97,21 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 SizedBox(height: componentGap),
 
                 // 인기 레시피
-                titleWidget(title: '인기 레시피', fontSize: 16, sidePadding: 5),
+                titleWidget(
+                  title: '인기 레시피',
+                  fontSize: 16,
+                  sidePadding: sideGap,
+                ),
                 SizedBox(height: titleTextGap),
                 RecipeCard(count: 10),
                 SizedBox(height: componentGap),
 
                 // 제철재료 레시피
-                titleWidget(title: '제철재료 레시피', fontSize: 16, sidePadding: 5),
+                titleWidget(
+                  title: '제철재료 레시피',
+                  fontSize: 16,
+                  sidePadding: sideGap,
+                ),
                 SizedBox(height: titleTextGap),
               ]),
             ),
@@ -83,17 +126,39 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 SizedBox(height: componentGap),
 
                 // 추천 레시피
-                titleWidget(title: '추천 레시피', fontSize: 16, sidePadding: 5),
+                titleWidget(
+                  title: '추천 레시피',
+                  fontSize: 16,
+                  sidePadding: sideGap,
+                ),
                 SizedBox(height: titleTextGap),
                 RecipeCard(count: 10),
                 SizedBox(height: componentGap),
 
                 // 커뮤니티
-                titleWidget(title: '커뮤니티', fontSize: 16, sidePadding: 5),
+                titleWidget(title: '커뮤니티', fontSize: 16, sidePadding: sideGap),
                 SizedBox(height: titleTextGap),
-                CommunityCard(userName: 'user_0287'),
-                SizedBox(height: componentGap),
               ]),
+            ),
+          ),
+
+          // SliverPadding 안에 CustomScrollView 중첩해서 쓰면 안된다.
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            sliver: SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                    (_, index) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6.0),
+                  child: CommunityCard(userName: 'user_0028'),
+                ),
+                childCount: 6,
+              ),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 175 / 255,
+              ),
             ),
           ),
         ],
@@ -102,7 +167,11 @@ class _HomePageScreenState extends State<HomePageScreen> {
   }
 }
 
-Widget titleWidget({required String title, required double fontSize, required double sidePadding}) {
+Widget titleWidget({
+  required String title,
+  required double fontSize,
+  required double sidePadding,
+}) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: sidePadding),
     child: Row(
@@ -110,10 +179,7 @@ Widget titleWidget({required String title, required double fontSize, required do
       children: [
         Text(
           title,
-          style: TextStyle(
-            fontSize: fontSize,
-            fontWeight: FontWeight.w700,
-          ),
+          style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w700),
         ),
         Text('더보기 >'),
       ],

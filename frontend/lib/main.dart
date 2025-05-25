@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/common/layout/default_layout.dart';
-import 'package:frontend/common/view/root_tab.dart';
+
+import 'common/go_router/provider/go_router.dart';
 
 void main() {
   runApp(ProviderScope(child: _App()));
@@ -12,15 +12,13 @@ class _App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final router = ref.watch(routerProvider);
+    final router = ref.watch(routerProvider);
 
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(body: DefaultLayout(child: _thisPage())),
+      routerDelegate: router.routerDelegate,
+      routeInformationParser: router.routeInformationParser,
+      routeInformationProvider: router.routeInformationProvider,
     );
   }
-}
-
-Widget _thisPage() {
-  return Scaffold(body: RootTab());
 }
