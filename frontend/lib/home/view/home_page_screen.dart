@@ -138,11 +138,30 @@ class _HomePageScreenState extends State<HomePageScreen> {
                 // 커뮤니티
                 titleWidget(title: '커뮤니티', fontSize: 16, sidePadding: sideGap),
                 SizedBox(height: titleTextGap),
-                CommunityCard(userName: 'user_0287'),
-                SizedBox(height: componentGap),
               ]),
             ),
           ),
+
+          // SliverPadding 안에 CustomScrollView 중첩해서 쓰면 안된다.
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
+            sliver: SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                    (_, index) => Padding(
+                  padding: const EdgeInsets.only(bottom: 6.0),
+                  child: CommunityCard(userName: 'user_0028'),
+                ),
+                childCount: 6,
+              ),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 175 / 255,
+              ),
+            ),
+          ),
+
         ],
       ),
     );
