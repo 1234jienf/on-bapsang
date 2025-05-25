@@ -1,8 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/community/view/community_root_screen.dart';
+import 'package:frontend/maps/view/maps_root_screen.dart';
+import 'package:frontend/recipe/view/recipe_root_screen.dart';
 import 'package:frontend/search/view/search_root_screen.dart';
+import 'package:frontend/shopping/view/shopping_root_screen.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../home/view/home_page_screen.dart';
 import '../../../search/view/search_main_screen.dart';
 import '../../view/root_tab.dart';
 
@@ -17,21 +22,48 @@ class MainProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<GoRoute> get routes => [
-    GoRoute(
-      path: '/',
-      name: RootTab.routeName,
-      builder: (_, state) => RootTab(),
+  List<RouteBase> get routes => [
+    ShellRoute(
+      builder: (context, state, child) {
+        return RootTab(child: child);
+      },
       routes: [
         GoRoute(
-          path: 'search',
-          name: SearchMainScreen.routeName,
-          builder: (_, state) => SearchMainScreen(),
+          path: '/',
+          name: 'home',
+          builder: (_, state) => const HomePageScreen(),
           routes: [
             GoRoute(
-              path: 'recipe',
-              name: SearchRootScreen.routeName,
-              builder: (_, state) => SearchRootScreen(),
+              path: '/recipe',
+              name: 'recipe',
+              builder: (_, state) => const RecipeRootScreen(),
+            ),
+            GoRoute(
+              path: '/shopping',
+              name: 'shopping',
+              builder: (_, state) => const ShoppingRootScreen(),
+            ),
+            GoRoute(
+              path: '/community',
+              name: 'community',
+              builder: (_, state) => const CommunityRootScreen(),
+            ),
+            GoRoute(
+              path: '/maps',
+              name: 'maps',
+              builder: (_, state) => const MapsRootScreen(),
+            ),
+            GoRoute(
+              path: '/search',
+              name: 'SearchMainScreen',
+              builder: (_, state) => const SearchMainScreen(),
+              routes: [
+                GoRoute(
+                  path: 'result',
+                  name: 'SearchRootScreen',
+                  builder: (_, state) => const SearchRootScreen(),
+                ),
+              ],
             ),
           ],
         ),

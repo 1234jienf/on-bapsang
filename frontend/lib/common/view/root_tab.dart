@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../home/view/home_page_screen.dart';
 
 class RootTab extends StatefulWidget {
   static String get routeName => 'home';
+  final Widget child;
 
-  const RootTab({super.key});
+  const RootTab({super.key, required this.child});
 
   @override
   State<RootTab> createState() => _RootTabState();
@@ -15,6 +16,7 @@ class RootTab extends StatefulWidget {
 class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
 
   late TabController _tabController;
+  final List<String> _tabPaths = ['/', '/recipe', '/shopping', '/community', '/maps', '/search', '/search/result'];
 
   int currentIndex = 0;
 
@@ -22,20 +24,37 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    _tabController.addListener(tabListener);
+    _tabController.addListener(_onTabChanged);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateTabIndex();
+    });
   }
 
   @override
   void dispose() {
-    _tabController.removeListener(tabListener);
+    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     super.dispose();
   }
 
-  void tabListener() {
-    setState(() {
-      currentIndex = _tabController.index;
-    });
+  void _updateTabIndex() {
+    final String location = GoRouterState.of(context).uri.toString();
+    final int index = _tabPaths.indexWhere((path) => location.startsWith(path));
+    if (index != -1 && _tabController.index != index) {
+      _tabController.animateTo(index);
+    }
+  }
+
+  void _onTabChanged() {
+    if (_tabController.indexIsChanging) return;
+
+    final String targetPath = _tabPaths[_tabController.index];
+    final String currentLocation = GoRouterState.of(context).uri.toString();
+
+    if (currentLocation != targetPath) {
+      context.go(targetPath);
+    }
   }
 
   @override
@@ -48,7 +67,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500),
         unselectedFontSize: 12,
         onTap: (int index) {
-          _tabController.animateTo(index);
+          _tabController.animateTo(index, duration: Duration(milliseconds: 300));
         },
         currentIndex: currentIndex,
         items: [
@@ -69,17 +88,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         ],
       ),
 
-      child: TabBarView(
-        controller: _tabController,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          HomePageScreen(),
-          Center(child: Text('receipt')),
-          Center(child: Text('shopping')),
-          Center(child: Text('commu')),
-          Center(child: Text('maps')),
-        ],
-      ),
+      child: widget.child,
     );
   }
 }
