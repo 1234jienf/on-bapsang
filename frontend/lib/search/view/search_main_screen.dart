@@ -17,14 +17,14 @@ class SearchMainScreen extends StatelessWidget {
       '어묵탕',
       '부대찌개',
       '계란찜',
-      '청국장',
+      '오징어 볶음',
       '감자탕',
       '고등어조림',
       '갈비탕',
     ];
 
     return DefaultLayout(
-      appBar: SearchAppBar(),
+      appBar: SearchAppBar(hintText: '레시피를 검색해주세요'),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 23.0, vertical: 16.0),
         child: Column(
@@ -37,11 +37,51 @@ class SearchMainScreen extends StatelessWidget {
               title: '온밥 추천 검색어',
               icon: Icon(Icons.info_outline_rounded, size: 18.0),
             ),
+            _recommandSearch(items: items),
+            // 배너
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 16.0),
+              child: Image.asset('asset/img/search_banner.png'),
+            ),
           ],
         ),
       ),
     );
   }
+}
+
+Padding _recommandSearch({required List<String> items}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10.0),
+    child: SizedBox(
+      height: 80,
+      child: Wrap(
+        direction: Axis.horizontal,
+        alignment: WrapAlignment.start,
+        spacing: 10.0,
+        runSpacing: 10.0,
+        children: List.generate(8, (index) {
+          return ConstrainedBox(
+            constraints: BoxConstraints(minWidth: 66, maxWidth: 80),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              decoration: BoxDecoration(
+                border: Border.all(width: 1.0, color: Colors.grey),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: Center(
+                child: Text(
+                  items[index],
+                  style: TextStyle(fontSize: 13.0),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          );
+        }),
+      ),
+    ),
+  );
 }
 
 Widget _searchTitle({required String title, String? subtitle, Icon? icon}) {
@@ -125,20 +165,14 @@ Padding _recentSearch({required List<String> items}) {
             padding: const EdgeInsets.only(right: 10.0),
             child: Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8.0,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               decoration: BoxDecoration(
                 border: Border.all(width: 1.0, color: Colors.grey),
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: Row(
                 children: [
-                  Text(
-                    items[index],
-                    style: TextStyle(fontSize: 13.0),
-                  ),
+                  Text(items[index], style: TextStyle(fontSize: 13.0)),
                   const SizedBox(width: 5.0),
                   Icon(Icons.close_outlined, size: 16.0),
                 ],
