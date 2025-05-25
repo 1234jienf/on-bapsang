@@ -4,6 +4,8 @@ import 'package:frontend/common/layout/default_layout.dart';
 import '../../home/view/home_page_screen.dart';
 
 class RootTab extends StatefulWidget {
+  static String get routeName => 'home';
+
   const RootTab({super.key});
 
   @override
@@ -11,6 +13,7 @@ class RootTab extends StatefulWidget {
 }
 
 class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
+
   late TabController _tabController;
 
   int currentIndex = 0;
