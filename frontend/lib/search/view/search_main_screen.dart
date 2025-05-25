@@ -79,7 +79,7 @@ Widget _searchTitle({required String title, String? subtitle, Icon? icon}) {
 
 Padding _famousSearch({required List<String> items}) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6.0),
+    padding: const EdgeInsets.only(top: 6.0, bottom: 26.0),
     child: Column(
       children: List.generate(5, (index) {
         final leftIndex = index * 2;
