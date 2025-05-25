@@ -18,9 +18,16 @@ class SearchRootScreen extends ConsumerStatefulWidget {
 }
 
 class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
-  final PageController _pageController = PageController();
+  late PageController _pageController = PageController();
   final double menuGap = 10.0;
   final List<String> tabs = ['레시피', '상품', '커뮤니티'];
+
+  @override
+  void initState() {
+    super.initState();
+    final initialIndex = ref.read(searchTabIndexProvider);
+    _pageController = PageController(initialPage: initialIndex);
+  }
 
   @override
   void dispose() {
@@ -74,7 +81,7 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
                 ref.read(searchTabIndexProvider.notifier).setIndex(index);
                 _pageController.animateToPage(
                   index,
-                  duration: Duration(milliseconds: 200),
+                  duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
               },
