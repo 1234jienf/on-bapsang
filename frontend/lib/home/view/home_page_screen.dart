@@ -24,6 +24,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
     controller.addListener(listener);
   }
 
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   void listener() {}
 
   @override
