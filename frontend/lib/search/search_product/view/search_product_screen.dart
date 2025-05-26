@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../common/layout/default_layout.dart';
 import '../../common/search_recipe_filter_header.dart';
-import '../../common/search_right_filter.dart';
+import '../../common/search_bottom_filter.dart';
 import '../component/search_product_card.dart';
 
 class SearchProductScreen extends StatelessWidget {
@@ -36,7 +36,7 @@ class SearchProductScreen extends StatelessWidget {
   SliverPersistentHeader _searchRecipeFilter() {
     return SliverPersistentHeader(
       pinned: true,
-      delegate: SearchRecipeFilterHeader(rightFilter: SearchRightFilter()),
+      delegate: SearchRecipeFilterHeader(bottomFilter: SearchBottomFilter()),
     );
   }
 }

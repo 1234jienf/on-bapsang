@@ -3,7 +3,7 @@ import 'package:frontend/home/component/community_card.dart';
 
 import '../../../common/layout/default_layout.dart';
 import '../../common/search_recipe_filter_header.dart';
-import '../../common/search_right_filter.dart';
+import '../../common/search_bottom_filter.dart';
 
 class SearchCommunityScreen extends StatelessWidget {
   const SearchCommunityScreen({super.key});
@@ -36,7 +36,7 @@ class SearchCommunityScreen extends StatelessWidget {
   SliverPersistentHeader _searchRecipeFilter() {
     return SliverPersistentHeader(
       pinned: true,
-      delegate: SearchRecipeFilterHeader(rightFilter: SearchRightFilter()),
+      delegate: SearchRecipeFilterHeader(bottomFilter: SearchBottomFilter()),
     );
   }
 

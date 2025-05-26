@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
 class SearchRecipeFilterHeader extends SliverPersistentHeaderDelegate {
-  final Widget? leftFilter;
-  final Widget? rightFilter;
+  final Widget? topFilter;
+  final Widget? bottomFilter;
+  final double _minExtent;
+  final double _maxExtent;
 
-  SearchRecipeFilterHeader({this.leftFilter, this.rightFilter});
+  SearchRecipeFilterHeader({this.topFilter, this.bottomFilter})
+    : _minExtent = (topFilter != null && bottomFilter != null) ? 70.0 : 40.0,
+      _maxExtent = (topFilter != null && bottomFilter != null) ? 70.0 : 40.0;
 
   @override
   Widget build(
@@ -14,31 +18,26 @@ class SearchRecipeFilterHeader extends SliverPersistentHeaderDelegate {
   ) {
     return Container(
       color: Colors.white,
-      height: maxExtent,
+      height: _maxExtent,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (leftFilter != null && rightFilter != null)
-              Row(
+            if (topFilter != null && bottomFilter != null)
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // left
-                  leftFilter!,
+                  topFilter!,
 
                   // right
-                  rightFilter!,
+                  bottomFilter!,
                 ],
               ),
-            if (leftFilter == null && rightFilter != null)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  // right
-                  rightFilter!,
-                ],
-              ),
+            if (topFilter == null && bottomFilter != null)
+              // right
+              bottomFilter!,
           ],
         ),
       ),
@@ -46,10 +45,10 @@ class SearchRecipeFilterHeader extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get minExtent => 50.0;
+  double get minExtent => _minExtent;
 
   @override
-  double get maxExtent => 50.0;
+  double get maxExtent => _maxExtent;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
