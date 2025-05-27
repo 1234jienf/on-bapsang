@@ -32,7 +32,7 @@ class CommunityCard extends StatelessWidget {
                   Expanded(
                     child: Row(
                       children: [
-                        Icon(Icons.account_circle_outlined),
+                        Icon(Icons.account_circle_outlined, size: 20),
                         const SizedBox(width: 5.0),
                         Text(
                           userName,
@@ -44,22 +44,34 @@ class CommunityCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Icon(Icons.favorite_border_outlined),
+                  Icon(Icons.favorite_border_outlined, size: 20),
                 ],
               ),
-              const SizedBox(height: 8.0),
-              Row(
+              const SizedBox(height: 6.0),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    child: Text(
-                      '비건 레시피 만들어봤읍니다. 어쩌고 저쩌고 맛있었읍니다. 어쩌고 저쩌고 맛잇었읍니다.',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w500,
+                  Text(
+                    'Title 영역입니다',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 2,),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          '비건 레시피 만들어봤읍니다. 어쩌고 저쩌고 맛있었읍니다. 어쩌고 저쩌고 맛잇었읍니다.',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),

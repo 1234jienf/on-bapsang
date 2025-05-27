@@ -55,7 +55,6 @@ class _CommunityRootScreenState extends State<CommunityRootScreen> {
               delegate: SliverChildBuilderDelegate(
                 (_, index) => GestureDetector(
                   onTap: () {
-                    print("test");
                     context.pushNamed(
                       CommunityDetailScreen.routeName,
                       pathParameters: {'id': '123'},
