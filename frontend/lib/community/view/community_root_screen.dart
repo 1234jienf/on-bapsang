@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/community/view/community_create_screen.dart';
+import 'package:frontend/community/view/community_detail_screen.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../common/appbar/home_appbar.dart';
 import '../../home/component/community_card.dart';
@@ -32,31 +35,47 @@ class _CommunityRootScreenState extends State<CommunityRootScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      appBar: HomeAppbar(),
+      appBar: HomeAppbar(isImply: false,),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.pushNamed(CommunityCreateScreen.routeName);
+        },
+        heroTag: "actionButton",
+        backgroundColor: Colors.orange,
+        shape: const CircleBorder(),
+        child: const Icon(Icons.add, size: 24, color: Colors.white),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: ExcludeSemantics(
-          child: CustomScrollView(
-            controller: controller,
-            slivers: [
-              SearchRecipeFilter(isTopFilter: false),
-              SliverGrid(
-                delegate: SliverChildBuilderDelegate(
-                  (_, index) => Padding(
+        child: CustomScrollView(
+          controller: controller,
+          slivers: [
+            SearchRecipeFilter(isTopFilter: false),
+            SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (_, index) => GestureDetector(
+                  onTap: () {
+                    print("test");
+                    context.pushNamed(
+                      CommunityDetailScreen.routeName,
+                      pathParameters: {'id': '123'},
+                    );
+                  },
+                  child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6.0),
                     child: CommunityCard(userName: "user_0011"),
                   ),
-                  childCount: 10,
                 ),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: 175 / 255,
-                ),
+                childCount: 10,
               ),
-            ],
-          ),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 175 / 255,
+              ),
+            ),
+          ],
         ),
       ),
     );

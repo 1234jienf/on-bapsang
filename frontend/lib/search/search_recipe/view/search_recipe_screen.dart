@@ -14,21 +14,19 @@ class SearchRecipeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      child: ExcludeSemantics(
-        child: CustomScrollView(
-          slivers: [
-            _searchRecipeFilter(context),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (_, index) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6.0),
-                  child: SearchRecipeCard(),
-                ),
-                childCount: 10,
+      child: CustomScrollView(
+        slivers: [
+          _searchRecipeFilter(context),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (_, index) => Padding(
+                padding: const EdgeInsets.only(bottom: 6.0),
+                child: SearchRecipeCard(),
               ),
+              childCount: 10,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

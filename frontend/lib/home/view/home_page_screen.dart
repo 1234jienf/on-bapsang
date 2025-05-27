@@ -42,7 +42,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     final double sideGap = 5.0;
 
     return DefaultLayout(
-      appBar: HomeAppbar(),
+      appBar: HomeAppbar(isImply: false,),
       backgroundColor: Colors.white,
       child: CustomScrollView(
         controller: controller,

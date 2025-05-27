@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
-  const HomeAppbar({super.key});
+  final bool isImply;
+  const HomeAppbar({super.key, required this.isImply});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       backgroundColor: Colors.white,
       elevation: 0,
       // 그림자 제거
