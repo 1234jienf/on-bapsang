@@ -42,7 +42,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
     final double sideGap = 5.0;
 
     return DefaultLayout(
-      appBar: HomeAppbar(isImply: false,),
+      appBar: HomeAppbar(isImply: false),
       backgroundColor: Colors.white,
       child: CustomScrollView(
         controller: controller,
@@ -153,9 +153,12 @@ class _HomePageScreenState extends State<HomePageScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             sliver: SliverGrid(
               delegate: SliverChildBuilderDelegate(
-                    (_, index) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6.0),
-                  child: CommunityCard(userName: 'user_0028'),
+                (_, index) => GestureDetector(
+                  onTap: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 6.0),
+                    child: CommunityCard(userName: 'user_0028'),
+                  ),
                 ),
                 childCount: 6,
               ),
