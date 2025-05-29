@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/community/view/community_create_recipe_tag_screen.dart';
 import 'package:frontend/community/view/community_create_screen.dart';
+import 'package:frontend/community/view/community_create_upload_screen.dart';
 import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/community/view/community_root_screen.dart';
 import 'package:frontend/maps/view/maps_root_screen.dart';
@@ -53,12 +55,25 @@ class MainProvider extends ChangeNotifier {
                 GoRoute(
                   path: 'detail/:id',
                   name: 'CommunityDetailScreen',
-                  builder: (_, state) => CommunityDetailScreen(id: state.pathParameters['id']!),
+                  builder:
+                      (_, state) => CommunityDetailScreen(
+                        id: state.pathParameters['id']!,
+                      ),
                 ),
                 GoRoute(
                   path: 'create',
                   name: 'CommunityCreateScreen',
                   builder: (_, state) => const CommunityCreateScreen(),
+                ),
+                GoRoute(
+                  path: 'tag',
+                  name: 'CommunityCreateRecipeTagScreen',
+                  builder: (_, state) => CommunityCreateRecipeTagScreen(),
+                ),
+                GoRoute(
+                  path: 'upload',
+                  name: 'CommunityCreateUploadScreen',
+                  builder: (_, state) => const CommunityCreateUploadScreen(),
                 ),
               ],
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common/layout/default_layout.dart';
-import 'package:go_router/go_router.dart';
+import 'package:frontend/community/component/community_app_bar.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class CommunityCreateScreen extends StatefulWidget {
@@ -59,32 +59,7 @@ class _CommunityCreateScreenState extends State<CommunityCreateScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: GestureDetector(
-          onTap: () {
-            context.pop();
-          },
-          child: Icon(Icons.close_outlined),
-        ),
-        elevation: 0,
-        title: Text(
-          "사진 업로드",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: GestureDetector(
-              onTap: () {},
-              child: Text(
-                "다음",
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: CommunityAppBar(index: 0, title: '사진 올리기', next: '다음', isFirst: true,),
       child: Column(
         children: [
           _content(context),
