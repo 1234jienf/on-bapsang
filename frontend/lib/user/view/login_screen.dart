@@ -51,7 +51,7 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16.0),
-          NextBar(title: '로그인',),
+          NextBar(title: '로그인', routeName: 'home'),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: SizedBox(

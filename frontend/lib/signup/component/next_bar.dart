@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class NextBar extends StatelessWidget {
   final String title;
-  const NextBar({super.key, required this.title});
+  final String routeName;
+  const NextBar({super.key, required this.title, required this.routeName});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {context.pushNamed(routeName);},
       child: Container(
-        color: Colors.black,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.black,),
         width: MediaQuery.of(context).size.width,
         height: 60,
         child: Column(

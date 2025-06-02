@@ -15,6 +15,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../home/view/home_page_screen.dart';
 import '../../../search/view/search_main_screen.dart';
+import '../../../signup/view/sign_up_food_prefer_list_screen.dart';
 import '../../view/root_tab.dart';
 
 final mainProvider = ChangeNotifierProvider<MainProvider>((ref) {
@@ -38,6 +39,11 @@ class MainProvider extends ChangeNotifier {
           path: 'signup',
           name: 'SignUpRootScreen',
           builder: (_, state) => SignUpRootScreen(),
+        ),
+        GoRoute(
+          path: 'prefer',
+          name: 'SignUpFoodPreferListScreen',
+          builder: (_, state) => SignUpFoodPreferListScreen(),
         ),
       ],
     ),
