@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:go_router/go_router.dart';
 
-
 class RootTab extends StatefulWidget {
   static String get routeName => 'home';
   final Widget child;
@@ -14,9 +13,14 @@ class RootTab extends StatefulWidget {
 }
 
 class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
-
   late TabController _tabController;
-  final List<String> _tabPaths = ['/', '/recipe', '/shopping', '/community', '/maps', '/search', '/search/result'];
+  final List<String> _tabPaths = [
+    '/',
+    '/recipe',
+    '/shopping',
+    '/community',
+    '/maps',
+  ];
 
   int currentIndex = 0;
 
@@ -24,7 +28,6 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _tabController = TabController(length: 5, vsync: this);
-    _tabController.addListener(_onTabChanged);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _updateTabIndex();
@@ -33,27 +36,32 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     super.dispose();
   }
 
   void _updateTabIndex() {
     final String location = GoRouterState.of(context).uri.toString();
-    final int index = _tabPaths.indexWhere((path) => location.startsWith(path));
-    if (index != -1 && _tabController.index != index) {
-      _tabController.animateTo(index);
+    int index = -1;
+
+    // 정확한 매칭 로직
+    if (location == '/') {
+      index = 0;
+    } else if (location.startsWith('/recipe')) {
+      index = 1;
+    } else if (location.startsWith('/shopping')) {
+      index = 2;
+    } else if (location.startsWith('/community')) {
+      index = 3;
+    } else if (location.startsWith('/maps')) {
+      index = 4;
     }
-  }
 
-  void _onTabChanged() {
-    if (_tabController.indexIsChanging) return;
-
-    final String targetPath = _tabPaths[_tabController.index];
-    final String currentLocation = GoRouterState.of(context).uri.toString();
-
-    if (currentLocation != targetPath) {
-      context.go(targetPath);
+    if (index != -1 && index != currentIndex) {
+      setState(() {
+        currentIndex = index;
+      });
+      _tabController.animateTo(index);
     }
   }
 
@@ -67,12 +75,19 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500),
         unselectedFontSize: 12,
         onTap: (int index) {
-          _tabController.animateTo(index, duration: Duration(milliseconds: 300));
+          setState(() {
+            currentIndex = index;
+          });
+          _tabController.animateTo(index);
+          context.go(_tabPaths[index]);
         },
         currentIndex: currentIndex,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: '홈'),
-          BottomNavigationBarItem(icon: Icon(Icons.receipt_long_outlined), label: '레시피'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt_long_outlined),
+            label: '레시피',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_basket_outlined),
             label: '쇼핑',
@@ -81,10 +96,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
             icon: Icon(Icons.people_outline_outlined),
             label: '커뮤',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map_outlined),
-            label: '주변',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.map_outlined), label: '주변'),
         ],
       ),
 

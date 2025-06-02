@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/community/view/community_create_recipe_tag_screen.dart';
+import 'package:frontend/community/view/community_create_screen.dart';
+import 'package:frontend/community/view/community_create_upload_screen.dart';
+import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/community/view/community_root_screen.dart';
 import 'package:frontend/maps/view/maps_root_screen.dart';
 import 'package:frontend/recipe/view/recipe_root_screen.dart';
@@ -34,27 +38,52 @@ class MainProvider extends ChangeNotifier {
           builder: (_, state) => const HomePageScreen(),
           routes: [
             GoRoute(
-              path: '/recipe',
+              path: 'recipe',
               name: 'recipe',
               builder: (_, state) => const RecipeRootScreen(),
             ),
             GoRoute(
-              path: '/shopping',
+              path: 'shopping',
               name: 'shopping',
               builder: (_, state) => const ShoppingRootScreen(),
             ),
             GoRoute(
-              path: '/community',
+              path: 'community',
               name: 'community',
               builder: (_, state) => const CommunityRootScreen(),
+              routes: [
+                GoRoute(
+                  path: 'detail/:id',
+                  name: 'CommunityDetailScreen',
+                  builder:
+                      (_, state) => CommunityDetailScreen(
+                        id: state.pathParameters['id']!,
+                      ),
+                ),
+                GoRoute(
+                  path: 'create',
+                  name: 'CommunityCreateScreen',
+                  builder: (_, state) => const CommunityCreateScreen(),
+                ),
+                GoRoute(
+                  path: 'tag',
+                  name: 'CommunityCreateRecipeTagScreen',
+                  builder: (_, state) => CommunityCreateRecipeTagScreen(),
+                ),
+                GoRoute(
+                  path: 'upload',
+                  name: 'CommunityCreateUploadScreen',
+                  builder: (_, state) => const CommunityCreateUploadScreen(),
+                ),
+              ],
             ),
             GoRoute(
-              path: '/maps',
+              path: 'maps',
               name: 'maps',
               builder: (_, state) => const MapsRootScreen(),
             ),
             GoRoute(
-              path: '/search',
+              path: 'search',
               name: 'SearchMainScreen',
               builder: (_, state) => const SearchMainScreen(),
               routes: [

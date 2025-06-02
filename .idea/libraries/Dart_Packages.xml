@@ -89,7 +89,7 @@
         <entry key="built_value">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/built_value-8.9.5/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/built_value-8.10.1/lib" />
             </list>
           </value>
         </entry>
@@ -324,6 +324,13 @@
             </list>
           </value>
         </entry>
+        <entry key="intl">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.2/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="io">
           <value>
             <list>
@@ -475,6 +482,13 @@
           <value>
             <list>
               <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="photo_manager">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/photo_manager-3.7.1/lib" />
             </list>
           </value>
         </entry>
@@ -731,7 +745,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/build_runner-2.4.15/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/build_runner_core-8.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/built_collection-5.1.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/built_value-8.9.5/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/built_value-8.10.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/characters-1.4.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/checked_yaml-2.0.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/clock-1.1.2/lib" />
@@ -762,6 +776,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/http-1.4.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/http_multi_server-3.2.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/http_parser-4.1.2/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/io-1.0.5/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/js-0.6.7/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/json_annotation-4.9.0/lib" />
@@ -784,6 +799,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_platform_interface-2.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/photo_manager-3.7.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/platform-3.1.6/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/plugin_platform_interface-2.1.8/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/pool-1.5.1/lib" />
