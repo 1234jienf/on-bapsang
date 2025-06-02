@@ -12,6 +12,7 @@ class CommunityAppBar extends StatelessWidget implements PreferredSizeWidget {
     CommunityCreateUploadScreen.routeName,
   ];
   final String next;
+  final bool isLast;
 
   CommunityAppBar({
     super.key,
@@ -19,6 +20,7 @@ class CommunityAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     required this.next,
     required this.isFirst,
+    this.isLast = false,
   });
 
   @override
@@ -44,7 +46,11 @@ class CommunityAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: GestureDetector(
             onTap: () {
-              context.pushNamed(routeNames[index]);
+              isLast
+                  ? context.pushNamed(routeNames[index])
+                  :
+                  //TODO : submit 로직
+                  context.pushNamed(routeNames[index]);
             },
             child: Text(
               next,
