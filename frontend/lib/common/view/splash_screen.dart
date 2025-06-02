@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 
+import '../../user/view/login_screen.dart';
+
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
@@ -11,7 +13,7 @@ class SplashScreen extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [CircularProgressIndicator()],
+          children: [LoginScreen()],
         ),
       ),
     );

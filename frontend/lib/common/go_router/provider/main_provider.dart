@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/common/view/splash_screen.dart';
 import 'package:frontend/community/view/community_create_recipe_tag_screen.dart';
 import 'package:frontend/community/view/community_create_screen.dart';
 import 'package:frontend/community/view/community_create_upload_screen.dart';
@@ -9,6 +10,7 @@ import 'package:frontend/maps/view/maps_root_screen.dart';
 import 'package:frontend/recipe/view/recipe_root_screen.dart';
 import 'package:frontend/search/view/search_root_screen.dart';
 import 'package:frontend/shopping/view/shopping_root_screen.dart';
+import 'package:frontend/signup/view/sign_up_root_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../home/view/home_page_screen.dart';
@@ -27,6 +29,18 @@ class MainProvider extends ChangeNotifier {
   }
 
   List<RouteBase> get routes => [
+    GoRoute(
+      path: '/login',
+      name: 'login',
+      builder: (_, state) => const SplashScreen(),
+      routes: [
+        GoRoute(
+          path: 'signup',
+          name: 'SignUpRootScreen',
+          builder: (_, state) => SignUpRootScreen(),
+        ),
+      ],
+    ),
     ShellRoute(
       builder: (context, state, child) {
         return RootTab(child: child);
