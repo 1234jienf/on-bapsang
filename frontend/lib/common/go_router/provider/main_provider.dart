@@ -14,6 +14,7 @@ import 'package:frontend/signup/view/sign_up_root_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../home/view/home_page_screen.dart';
+import '../../../search/search_detail/view/search_detail_root_screen.dart';
 import '../../../search/view/search_main_screen.dart';
 import '../../../signup/view/sign_up_food_prefer_list_screen.dart';
 import '../../view/root_tab.dart';
@@ -107,6 +108,11 @@ class MainProvider extends ChangeNotifier {
               name: 'SearchMainScreen',
               builder: (_, state) => const SearchMainScreen(),
               routes: [
+                GoRoute(
+                  path: 'detail',
+                  name: 'SearchDetailRootScreen',
+                  builder: (_, state) => const SearchDetailRootScreen(),
+                ),
                 GoRoute(
                   path: 'result',
                   name: 'SearchRootScreen',

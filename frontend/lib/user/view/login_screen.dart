@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../signup/component/next_bar.dart';
+import '../../signup/component/sign_up_next_bar.dart';
 import '../../signup/view/sign_up_root_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -51,7 +51,7 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16.0),
-          NextBar(title: '로그인', routeName: 'home'),
+          SignUpNextBar(title: '로그인', routeName: 'home'),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: SizedBox(
