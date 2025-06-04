@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import '../search_detail/view/search_detail_root_screen.dart';
+import '../view/search_root_screen.dart';
 
 class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? hintText;
@@ -49,7 +48,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
           onSubmitted: (value) {
-            context.pushNamed(SearchDetailRootScreen.routeName);
+            context.pushNamed(SearchRootScreen.routeName);
           },
         ),
       ),
