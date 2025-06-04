@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
   final bool isImply;
+
   const HomeAppbar({super.key, required this.isImply});
 
   @override
@@ -17,19 +18,15 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
       // 스크롤 후 변화 방지
       title: Text('On-Bapsang'),
       actions: [
-        Icon(Icons.notifications_none_outlined, size: 29),
-        const SizedBox(width: 7),
-        Icon(Icons.shopping_cart_outlined, size: 29),
-        const SizedBox(width: 7),
-        IconButton(
-            onPressed: (){
-              context.pushNamed(
-                MypageRootScreen.routeName,
-              );
-            },
-            icon: Icon(Icons.person_outline_outlined, size: 29),
+        Icon(Icons.notifications_none_outlined, size: 26),
+        const SizedBox(width: 10),
+        Icon(Icons.shopping_cart_outlined, size: 26),
+        const SizedBox(width: 10),
+        GestureDetector(
+          onTap: () {context.pushNamed(MypageRootScreen.routeName);},
+          child: Icon(Icons.person_outline_outlined, size: 26),
         ),
-        const SizedBox(width: 15),
+        const SizedBox(width: 20),
       ],
     );
   }
