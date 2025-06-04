@@ -6,8 +6,13 @@ import 'package:frontend/community/view/community_create_screen.dart';
 import 'package:frontend/community/view/community_create_upload_screen.dart';
 import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/community/view/community_root_screen.dart';
+import 'package:frontend/home/view/home_alarm_screen.dart';
+import 'package:frontend/home/view/home_cart_screen.dart';
+import 'package:frontend/home/view/home_menu_screen.dart';
 import 'package:frontend/maps/view/maps_root_screen.dart';
+import 'package:frontend/mypage/view/mypage_root_screen.dart';
 import 'package:frontend/recipe/view/recipe_root_screen.dart';
+import 'package:frontend/recipe/view/recipe_detail_screen.dart';
 import 'package:frontend/search/view/search_root_screen.dart';
 import 'package:frontend/shopping/view/shopping_root_screen.dart';
 import 'package:frontend/signup/view/sign_up_root_screen.dart';
@@ -67,8 +72,23 @@ class MainProvider extends ChangeNotifier {
           builder: (_, state) => const HomePageScreen(),
           routes: [
             GoRoute(
+              path: 'menu',
+              name: 'HomeMenuScreen',
+              builder: (_, state) => const HomeMenuScreen(),
+            ),
+            GoRoute(
+              path: 'alarm',
+              name: 'HomeAlarmScreen',
+              builder: (_, state) => const HomeAlarmScreen(),
+            ),
+            GoRoute(
+              path: 'cart',
+              name: 'HomeCartScreen',
+              builder: (_, state) => const HomeCartScreen(),
+            ),
+            GoRoute(
               path: 'recipe',
-              name: 'recipe',
+              name: 'RecipeRootScreen',
               builder: (_, state) => const RecipeRootScreen(),
             ),
             GoRoute(
@@ -128,9 +148,23 @@ class MainProvider extends ChangeNotifier {
                 ),
               ],
             ),
+            GoRoute(
+              path: 'mypage',
+              name: 'MypageRootScreen',
+              builder: (_, state) => const MypageRootScreen(),
+            ),
           ],
         ),
       ],
+    ),
+
+    // navbar 사용 안함
+    GoRoute(
+      path: '/recipe/detail/:id',
+      name: 'RecipeDetailScreen',
+      builder: (_, state) => RecipeDetailScreen(
+        id: state.pathParameters['id']!,
+      ),
     ),
   ];
 
