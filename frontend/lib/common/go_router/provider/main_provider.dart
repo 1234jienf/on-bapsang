@@ -35,7 +35,11 @@ class MainProvider extends ChangeNotifier {
   final Ref ref;
 
   MainProvider({required this.ref}) {
-    notifyListeners();
+    ref.listen<UserModelBase?>(userProvider, (previous, next) {
+      if (previous != next) {
+        notifyListeners();
+      }
+    });
   }
 
   List<RouteBase> get routes => [

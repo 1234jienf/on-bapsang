@@ -7,7 +7,9 @@ import 'package:frontend/user/repository/user_repository.dart';
 
 import '../model/user_model.dart';
 
-final userProvider = StateNotifierProvider((ref) {
+final userProvider = StateNotifierProvider<UserStateNotifier, UserModelBase?>((
+  ref,
+) {
   final storage = ref.watch(secureStorageProvider);
   final authRepository = ref.watch(authRepositoryProvider);
   final userRepository = ref.watch(userRepositoryProvider);
@@ -40,11 +42,11 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       state = null;
       return;
     }
-
-    state = await userRepository.getMe();
+    final resp = await userRepository.getMe();
+    state = resp;
   }
 
-  Future<UserModelBase?> login({
+  Future<UserModelBase> login({
     required String username,
     required String password,
   }) async {
@@ -61,7 +63,9 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
         storage.write(key: REFRESH_TOKEN, value: resp.refreshToken),
       ]);
 
-      return state;
+      final userResp = await userRepository.getMe();
+      state = userResp;
+      return userResp;
     } catch (e) {
       state = UserModelError(message: '로그인에 실패했습니다');
       return Future.value(state);

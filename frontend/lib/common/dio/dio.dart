@@ -32,13 +32,13 @@ class CustomInterceptor extends Interceptor {
     if (options.headers['accessToken'] == 'true') {
       options.headers.remove('accessToken');
       final token = await storage.read(key: ACCESS_TOKEN);
-      options.headers.addAll({'authorization': 'Bearer $token'});
+      options.headers.addAll({'Authorization': 'Bearer $token'});
     }
 
     if (options.headers['refreshToken'] == 'true') {
       options.headers.remove('refreshToken');
       final token = await storage.read(key: REFRESH_TOKEN);
-      options.headers.addAll({'authorization': 'Bearer $token'});
+      options.headers.addAll({'Authorization': 'Bearer $token'});
     }
 
     return super.onRequest(options, handler);
@@ -73,22 +73,22 @@ class CustomInterceptor extends Interceptor {
     // 인증 오류
     final isStatus401 = err.response?.statusCode == 401;
     // 인증 Path
-    final pathRefresh = err.requestOptions.path == '/auth/token';
+    final pathRefresh = err.requestOptions.path == '/auth/refresh';
 
     if (isStatus401 && !pathRefresh) {
       final dio = Dio();
 
       try {
         final resp = await dio.post(
-          '',
-          options: Options(headers: {'authorization': 'Bearer $refreshToken'}),
+          '$ip/api/auth/refresh',
+          options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
         );
 
         final accessToken = resp.data['accessToken'];
 
         final options = err.requestOptions;
 
-        options.headers.addAll({'authorization': 'Bearer $accessToken'});
+        options.headers.addAll({'Authorization': 'Bearer $accessToken'});
 
         // storage에 accessToken 저장
         storage.write(key: ACCESS_TOKEN, value: accessToken);

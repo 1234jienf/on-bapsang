@@ -14,11 +14,17 @@ class UserModelLoading extends UserModelBase {}
 
 @JsonSerializable()
 class UserModel extends UserModelBase {
-  final String id;
+  final int id;
   final String username;
 
   UserModel({required this.id, required this.username});
 
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    final data = json['data'];
+
+    return UserModel(
+      id: data['userId'],
+      username: data['username'],
+    );
+  }
 }

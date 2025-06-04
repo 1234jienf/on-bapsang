@@ -28,7 +28,7 @@ class _UserRepository implements UserRepository {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/',
+            '/me',
             queryParameters: queryParameters,
             data: _data,
           )
