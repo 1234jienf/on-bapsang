@@ -23,8 +23,12 @@ class CustomInterceptor extends Interceptor {
 
   // 1) 요청 보낼 때
   @override
-  Future<void> onRequest(RequestOptions options,
-      RequestInterceptorHandler handler,) async {
+  Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    // ignore: avoid_print
+    print('[REQ], [${options.method}], ${options.uri}');
     if (options.headers['accessToken'] == 'true') {
       options.headers.remove('accessToken');
       final token = await storage.read(key: ACCESS_TOKEN);
@@ -44,16 +48,19 @@ class CustomInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     // ignore: avoid_print
-    print('[RES], [${response.requestOptions.method}], ${response.requestOptions
-        .uri}');
+    print(
+      '[RES], [${response.requestOptions.method}], ${response.requestOptions.uri}',
+    );
 
     super.onResponse(response, handler);
   }
 
   // 3) 에러 났을 때
   @override
-  Future<void> onError(DioException err,
-      ErrorInterceptorHandler handler,) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     // ignore: avoid_print
     print('[ERR], [${err.requestOptions}], ${err.requestOptions.uri}');
 
@@ -72,9 +79,10 @@ class CustomInterceptor extends Interceptor {
       final dio = Dio();
 
       try {
-        final resp = await dio.post('',
-          options: Options(
-              headers: {'authorization': 'Bearer $refreshToken'}),);
+        final resp = await dio.post(
+          '',
+          options: Options(headers: {'authorization': 'Bearer $refreshToken'}),
+        );
 
         final accessToken = resp.data['accessToken'];
 
@@ -96,9 +104,6 @@ class CustomInterceptor extends Interceptor {
       }
     }
 
-
     return super.onError(err, handler);
   }
-
-
 }
