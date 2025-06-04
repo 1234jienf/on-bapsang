@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/common/appbar/recipe_appbar.dart';
+import 'package:frontend/recipe/component/recipe_appbar.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 
 import 'package:frontend/recipe/component/recipe_card.dart';
 
 class RecipeRootScreen extends StatefulWidget {
+  static String get routeName => 'RecipeRootScreen';
+
   const RecipeRootScreen({super.key});
 
   @override

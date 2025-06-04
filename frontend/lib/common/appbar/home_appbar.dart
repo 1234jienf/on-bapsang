@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/mypage/view/mypage_root_screen.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
   final bool isImply;
@@ -19,7 +21,14 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
         const SizedBox(width: 7),
         Icon(Icons.shopping_cart_outlined, size: 29),
         const SizedBox(width: 7),
-        Icon(Icons.person_outline_outlined, size: 29),
+        IconButton(
+            onPressed: (){
+              context.pushNamed(
+                MypageRootScreen.routeName,
+              );
+            },
+            icon: Icon(Icons.person_outline_outlined, size: 29),
+        ),
         const SizedBox(width: 15),
       ],
     );
