@@ -3,7 +3,7 @@ import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/signup/component/sign_up_app_bar.dart';
 import 'package:frontend/signup/view/sign_up_food_prefer_list_screen.dart';
 
-import '../component/next_bar.dart';
+import '../component/sign_up_next_bar.dart';
 
 class SignUpRootScreen extends StatelessWidget {
   static String get routeName => 'SignUpRootScreen';
@@ -25,7 +25,7 @@ class SignUpRootScreen extends StatelessWidget {
             titleWithTextField('비밀번호 확인', '8~30자리 영대 · 소문자, 숫자, 특수문자 조합'),
             titleWithTextField('닉네임', '자유롭게 설정'),
             titleWithTextField('나이', '본인의 나이를 적어주세요'),
-            NextBar(
+            SignUpNextBar(
               title: '다음',
               routeName: SignUpFoodPreferListScreen.routeName,
             ),
@@ -53,9 +53,7 @@ class SignUpRootScreen extends StatelessWidget {
               hintText: hintText,
               hintStyle: TextStyle(fontSize: 14.0),
               contentPadding: EdgeInsets.only(top: 10, bottom: 4),
-              // ✅ 간격 줄이기
               isDense: true,
-              // ✅ 높이 줄이는 추가 옵션
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.black, width: 1),
               ),
