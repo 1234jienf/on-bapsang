@@ -16,12 +16,15 @@ import 'package:frontend/recipe/view/recipe_detail_screen.dart';
 import 'package:frontend/search/view/search_root_screen.dart';
 import 'package:frontend/shopping/view/shopping_root_screen.dart';
 import 'package:frontend/signup/view/sign_up_root_screen.dart';
+import 'package:frontend/user/view/login_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../home/view/home_page_screen.dart';
 import '../../../search/search_detail/view/search_detail_root_screen.dart';
 import '../../../search/view/search_main_screen.dart';
 import '../../../signup/view/sign_up_food_prefer_list_screen.dart';
+import '../../../user/model/user_model.dart';
+import '../../../user/provider/user_provider.dart';
 import '../../view/root_tab.dart';
 
 final mainProvider = ChangeNotifierProvider<MainProvider>((ref) {
@@ -32,14 +35,23 @@ class MainProvider extends ChangeNotifier {
   final Ref ref;
 
   MainProvider({required this.ref}) {
-    notifyListeners();
+    ref.listen<UserModelBase?>(userProvider, (previous, next) {
+      if (previous != next) {
+        notifyListeners();
+      }
+    });
   }
 
   List<RouteBase> get routes => [
     GoRoute(
+      path: '/splash',
+      name: 'SplashScreen',
+      builder: (_, state) => const SplashScreen(),
+    ),
+    GoRoute(
       path: '/login',
       name: 'login',
-      builder: (_, state) => const SplashScreen(),
+      builder: (_, state) => const LoginScreen(),
       routes: [
         GoRoute(
           path: 'signup',
@@ -160,16 +172,22 @@ class MainProvider extends ChangeNotifier {
     ),
   ];
 
+  void logout() {
+    ref.read(userProvider.notifier).logout();
+  }
+
   String? redirectLogic(BuildContext context, GoRouterState state) {
-    // TODO :: 로그인 로직 완성되면 Provider로 다시 리펙토링 할 것
-    final isLoggin = false;
+    final UserModelBase? user = ref.read(userProvider);
 
-    final loggingIn = state.matchedLocation == '/login';
+    final login = state.matchedLocation == '/login';
 
-    if (!isLoggin && !loggingIn) {
-      return null;
+    if (user == null) {
+      return login ? null : '/login';
     }
 
+    if (user is UserModel) {
+      return login || state.matchedLocation == '/splash' ? '/' : null;
+    }
     return null;
   }
 }

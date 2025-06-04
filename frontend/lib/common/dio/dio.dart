@@ -23,18 +23,22 @@ class CustomInterceptor extends Interceptor {
 
   // 1) 요청 보낼 때
   @override
-  Future<void> onRequest(RequestOptions options,
-      RequestInterceptorHandler handler,) async {
+  Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    // ignore: avoid_print
+    print('[REQ], [${options.method}], ${options.uri}');
     if (options.headers['accessToken'] == 'true') {
       options.headers.remove('accessToken');
       final token = await storage.read(key: ACCESS_TOKEN);
-      options.headers.addAll({'authorization': 'Bearer $token'});
+      options.headers.addAll({'Authorization': 'Bearer $token'});
     }
 
     if (options.headers['refreshToken'] == 'true') {
       options.headers.remove('refreshToken');
       final token = await storage.read(key: REFRESH_TOKEN);
-      options.headers.addAll({'authorization': 'Bearer $token'});
+      options.headers.addAll({'Authorization': 'Bearer $token'});
     }
 
     return super.onRequest(options, handler);
@@ -44,16 +48,19 @@ class CustomInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     // ignore: avoid_print
-    print('[RES], [${response.requestOptions.method}], ${response.requestOptions
-        .uri}');
+    print(
+      '[RES], [${response.requestOptions.method}], ${response.requestOptions.uri}',
+    );
 
     super.onResponse(response, handler);
   }
 
   // 3) 에러 났을 때
   @override
-  Future<void> onError(DioException err,
-      ErrorInterceptorHandler handler,) async {
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
     // ignore: avoid_print
     print('[ERR], [${err.requestOptions}], ${err.requestOptions.uri}');
 
@@ -66,21 +73,22 @@ class CustomInterceptor extends Interceptor {
     // 인증 오류
     final isStatus401 = err.response?.statusCode == 401;
     // 인증 Path
-    final pathRefresh = err.requestOptions.path == '/auth/token';
+    final pathRefresh = err.requestOptions.path == '/auth/refresh';
 
     if (isStatus401 && !pathRefresh) {
       final dio = Dio();
 
       try {
-        final resp = await dio.post('',
-          options: Options(
-              headers: {'authorization': 'Bearer $refreshToken'}),);
+        final resp = await dio.post(
+          '$ip/api/auth/refresh',
+          options: Options(headers: {'Authorization': 'Bearer $refreshToken'}),
+        );
 
         final accessToken = resp.data['accessToken'];
 
         final options = err.requestOptions;
 
-        options.headers.addAll({'authorization': 'Bearer $accessToken'});
+        options.headers.addAll({'Authorization': 'Bearer $accessToken'});
 
         // storage에 accessToken 저장
         storage.write(key: ACCESS_TOKEN, value: accessToken);
@@ -96,9 +104,6 @@ class CustomInterceptor extends Interceptor {
       }
     }
 
-
     return super.onError(err, handler);
   }
-
-
 }
