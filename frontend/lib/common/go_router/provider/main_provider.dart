@@ -8,6 +8,7 @@ import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/community/view/community_root_screen.dart';
 import 'package:frontend/maps/view/maps_root_screen.dart';
 import 'package:frontend/recipe/view/recipe_root_screen.dart';
+import 'package:frontend/recipe/view/recipe_detail_screen.dart';
 import 'package:frontend/search/view/search_root_screen.dart';
 import 'package:frontend/shopping/view/shopping_root_screen.dart';
 import 'package:frontend/signup/view/sign_up_root_screen.dart';
@@ -123,6 +124,15 @@ class MainProvider extends ChangeNotifier {
           ],
         ),
       ],
+    ),
+
+    // navbar 사용 안함
+    GoRoute(
+      path: '/recipe/detail/:id',
+      name: 'RecipeDetailScreen',
+      builder: (_, state) => RecipeDetailScreen(
+        id: state.pathParameters['id']!,
+      ),
     ),
   ];
 
