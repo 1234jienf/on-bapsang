@@ -83,20 +83,11 @@ def find_and_insert_ingredient_market_mapping(cursor, ingredient_name, market_it
         print(f"🔗 Mapped ingredient '{ingredient_name}' to market_item_id {market_item_id}")
 
 # 파일 리스트
-# 파일 리스트
 market_files = [
-    # '../../data/raw_market/2024년 04월 농수축산물 일자별 도소매 가격-20240516.csv',
-    # '../../data/raw_market/2024년 05월 농수축산물 일자별 도소매 가격-20240617.csv',
-    # '../../data/raw_market/2024년 06월 농수축산물 일자별 도소매 가격-20240716.csv',
-    # '../../data/raw_market/2024년 07월 농수축산물 일자별 도소매 가격-20240816.csv',
-    # '../../data/raw_market/2024년 08월 농수축산물 일자별 도소매 가격-20240919.csv',
-    # '../../data/raw_market/2024년 09월 농수축산물 일자별 도소매 가격-20241016.csv',
-    # '../../data/raw_market/2024년 10월 농수축산물 일자별 도소매 가격-20241115.csv',
-    # '../../data/raw_market/2024년 11월 농수축산물 일자별 도소매 가격-20241216.csv',
-    # '../../data/raw_market/2024년 12월 농수축산물 일자별 도소매 가격-20250116.csv',
-    # '../../data/raw_market/2025년 01월 농수축산물 일자별 도소매 가격-20250218.csv',
-    # '../../data/raw_market/2025년 02월 농수축산물 일자별 도소매 가격-20250318.csv',
-    '../../data/raw_market/2025년 03월 농수축산물 일자별 도소매 가격-20250416.csv',
+    # '../../data/raw_market/2024년 05월 농수축산물 일자별 도소매 가격-20240617.csv',
+    # '../../data/raw_market/2024년 06월 농수축산물 일자별 도소매 가격-20240716.csv',
+    # '../../data/raw_market/2024년 09월 농수축산물 일자별 도소매 가격-20241016.csv',
+    '../../data/raw_market/2024년 10월 농수축산물 일자별 도소매 가격-20241115.csv',
 ]
 
 for file in market_files:
@@ -109,10 +100,12 @@ for file in market_files:
             continue
         if str(row['BULK_GRAD_NM']).strip() == '중품':
             continue
-        if not str(row['PRCE_REG_YMD']).endswith("04"):
-            continue
-
+        
         price_date = str(row['PRCE_REG_YMD'])
+        # 각 달의 1일 데이터만 선택
+        if not price_date.endswith('02'):
+            continue
+        
         pdl_code = str(row['PDLT_CODE'])
         pdl_nm = str(row['PDLT_NM'])
         spcs_code = str(row['SPCS_CODE'])
@@ -121,7 +114,6 @@ for file in market_files:
         unit = str(row['RTSL_SMT_UNIT_NM']) if pd.notnull(row['RTSL_SMT_UNIT_NM']) else ''
         grade = str(row['BULK_GRAD_NM']) if pd.notnull(row['BULK_GRAD_NM']) else ''
         market_name = str(row['MRKT_NM']) 
-
 
         insert_market_item_if_not_exists(cursor, pdl_code, pdl_nm, spcs_code, spcs_nm)
 
@@ -133,6 +125,5 @@ for file in market_files:
 
         cursor.execute("SELECT name FROM RecipeIngredientMaster")
         ingredient_names = [r[0] for r in cursor.fetchall()]
-
 
 conn.close()
