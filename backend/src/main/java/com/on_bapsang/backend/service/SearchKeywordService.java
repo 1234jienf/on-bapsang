@@ -1,5 +1,6 @@
 package com.on_bapsang.backend.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,11 @@ public class SearchKeywordService {
 
     private static final String RECENT_KEY_PREFIX = "recent:";
     private static final String POPULAR_KEY = "popular";
+
+    @PostConstruct
+    public void init() {
+        System.out.println(">>> RedisTemplate in SearchKeywordService: " + redisTemplate);
+    }
 
     /**
      * 사용자별 최근 검색어 저장
@@ -37,9 +43,17 @@ public class SearchKeywordService {
      * 사용자별 최근 검색어 목록 조회
      */
     public List<String> getRecentKeywords(Long userId) {
-        String key = RECENT_KEY_PREFIX + userId;
-        return redisTemplate.opsForList().range(key, 0, 9);
+        String key = "recent:" + userId;
+        System.out.println(">>> RedisTemplate: " + redisTemplate);
+        try {
+            return redisTemplate.opsForList().range(key, 0, 9);
+        } catch (Exception e) {
+            System.out.println(">>> Redis 오류: " + e.getClass().getName() + " / " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Redis 오류: " + e.getMessage());
+        }
     }
+
 
     /**
      * 인기 검색어 목록 조회 (점수 높은 순)

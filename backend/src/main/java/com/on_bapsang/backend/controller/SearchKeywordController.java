@@ -17,11 +17,19 @@ public class SearchKeywordController {
 
     private final SearchKeywordService searchKeywordService;
 
-    // 내 최근 검색어 조회
     @GetMapping("/recent")
     public ApiResponse<List<String>> getRecentKeywords(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        System.out.println(">>> userDetails: " + userDetails);
+        if (userDetails == null) {
+            throw new RuntimeException("userDetails가 null입니다");
+        }
+
         Long userId = userDetails.getUser().getUserId();
+        System.out.println(">>> userId: " + userId);
+
         List<String> recentKeywords = searchKeywordService.getRecentKeywords(userId);
+        System.out.println(">>> result: " + recentKeywords);
+
         return ApiResponse.success("최근 검색어 조회 성공", recentKeywords);
     }
 
