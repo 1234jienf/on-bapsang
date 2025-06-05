@@ -21,6 +21,10 @@ RUN apt-get update \
   && apt-get install -y netcat-openbsd \
   && rm -rf /var/lib/apt/lists/*
 
+# Redis 환경변수 명시
+ENV REDIS_HOST=redis
+ENV REDIS_PORT=6379
+
 # 빌더에서 만든 JAR만 복사
 COPY --from=builder /home/app/build/libs/*.jar app.jar
 

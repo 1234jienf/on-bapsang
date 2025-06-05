@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   db:
     image: mysql:8.0
@@ -30,7 +30,8 @@ services:
     ports:
       - "6379:6379"
     restart: always
-
+    networks:
+      - onbapsang-net
 
   backend:
     build:
@@ -48,8 +49,8 @@ services:
       - UPSTAGE_API_TOKEN=${UPSTAGE_API_TOKEN}
       - PINECONE_API_KEY=${PINECONE_API_KEY}
       - PINECONE_ENVIRONMENT=${PINECONE_ENVIRONMENT}
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
     env_file:
@@ -62,7 +63,6 @@ services:
       - "8081:8081"
     networks:
       - onbapsang-net
-
 
   ai:
     build:
