@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/common/appbar/home_appbar.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/shopping/component/recipe_category.dart';
+import 'package:frontend/shopping/view/shopping_detail/view/shopping_detail_screen.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../home/component/recipe_icon.dart';
 import '../component/recipe_component.dart';
@@ -73,78 +75,83 @@ class _ShoppingRootScreenState extends State<ShoppingRootScreen> {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 6.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      "더보기 ",
-                      style: TextStyle(
+        child: GestureDetector(
+          onTap: () {
+            context.pushNamed(ShoppingDetailScreen.routeName);
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        "더보기 ",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_right_outlined,
+                        size: 20,
                         color: Colors.grey,
-                        fontWeight: FontWeight.w900,
                       ),
-                    ),
-                    Icon(
-                      Icons.keyboard_arrow_right_outlined,
-                      size: 20,
-                      color: Colors.grey,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: SizedBox(
-                height: 210,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 4,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.asset("asset/img/shopping_img.png"),
-                          const SizedBox(height: 7),
-                          Text('상품 타이틀', style: TextStyle(fontSize: 14)),
-                          Row(
-                            children: [
-                              Text(
-                                '26%',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w600,
+                    ],
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: SizedBox(
+                  height: 210,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image.asset("asset/img/shopping_img.png"),
+                            const SizedBox(height: 7),
+                            Text('상품 타이틀', style: TextStyle(fontSize: 14)),
+                            Row(
+                              children: [
+                                Text(
+                                  '26%',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                '9900원',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w800,
+                                const SizedBox(width: 6),
+                                Text(
+                                  '9900원',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w800,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

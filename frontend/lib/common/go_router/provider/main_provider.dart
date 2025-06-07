@@ -22,6 +22,7 @@ import 'package:go_router/go_router.dart';
 import '../../../home/view/home_page_screen.dart';
 import '../../../search/search_detail/view/search_detail_root_screen.dart';
 import '../../../search/view/search_main_screen.dart';
+import '../../../shopping/view/shopping_detail/view/shopping_detail_screen.dart';
 import '../../../signup/view/sign_up_food_prefer_list_screen.dart';
 import '../../../user/model/user_model.dart';
 import '../../../user/provider/user_provider.dart';
@@ -99,6 +100,13 @@ class MainProvider extends ChangeNotifier {
               path: 'shopping',
               name: 'shopping',
               builder: (_, state) => const ShoppingRootScreen(),
+              routes: [
+                GoRoute(
+                  path: 'detail',
+                  name: 'ShoppingDetailScreen',
+                  builder: (_, state) => const ShoppingDetailScreen(),
+                ),
+              ],
             ),
             GoRoute(
               path: 'community',
@@ -166,9 +174,8 @@ class MainProvider extends ChangeNotifier {
     GoRoute(
       path: '/recipe/detail/:id',
       name: 'RecipeDetailScreen',
-      builder: (_, state) => RecipeDetailScreen(
-        id: state.pathParameters['id']!,
-      ),
+      builder:
+          (_, state) => RecipeDetailScreen(id: state.pathParameters['id']!),
     ),
   ];
 
