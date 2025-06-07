@@ -57,7 +57,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           slivers: [
             // 레시피 이미지
             SliverToBoxAdapter(
-              child: Container(
+              child: SizedBox(
                 width: double.infinity,
                 height: 402,
                 child: Image.network(

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/common/go_router/provider/main_provider.dart';
 import 'package:frontend/common/secure_storage/secure_storage.dart';
 
 import '../const/securetoken.dart';
@@ -98,8 +99,8 @@ class CustomInterceptor extends Interceptor {
         return handler.resolve(response);
       } on DioException catch (err) {
         // RefreshToken 마저 만료되었을 경우
+        ref.read(mainProvider.notifier).logout();
 
-        //TODO : 로그아웃 구현
         return handler.reject(err);
       }
     }
