@@ -69,6 +69,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return DefaultLayout(
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         selectedFontSize: 12,
         selectedLabelStyle: TextStyle(fontWeight: FontWeight.w700),
@@ -83,24 +84,58 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
         },
         currentIndex: currentIndex,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: '홈'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long_outlined),
+            icon: _buildIcon(
+              path: 'asset/img/Union.png',
+              pathColor: 'asset/img/house-color.png',
+              isSelected: currentIndex == 0,
+            ),
+            label: '홈',
+          ),
+          BottomNavigationBarItem(
+            icon: _buildIcon(
+              path: 'asset/img/Subtract.png',
+              pathColor: 'asset/img/chef-hat.png',
+              isSelected: currentIndex == 1,
+            ),
             label: '레시피',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_basket_outlined),
+            icon: _buildIcon(
+              path: 'asset/img/local_mall.png',
+              pathColor: 'asset/img/local_mall-color.png',
+              isSelected: currentIndex == 2,
+            ),
             label: '쇼핑',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.people_outline_outlined),
+            icon: _buildIcon(
+              path: 'asset/img/messages-square.png',
+              pathColor: 'asset/img/messages-square-color.png',
+              isSelected: currentIndex == 3,
+            ),
             label: '커뮤',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.map_outlined), label: '주변'),
+          BottomNavigationBarItem(
+            icon: _buildIcon(
+              path: 'asset/img/map.png',
+              pathColor: 'asset/img/map-color.png',
+              isSelected: currentIndex == 4,
+            ),
+            label: '주변',
+          ),
         ],
       ),
 
       child: widget.child,
     );
+  }
+
+  Widget _buildIcon({
+    required String path,
+    required String pathColor,
+    required bool isSelected,
+  }) {
+    return Image.asset(isSelected ? pathColor : path);
   }
 }

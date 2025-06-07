@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SeasonalRecipe extends StatelessWidget {
-  final int count;
-
-  const SeasonalRecipe({super.key, required this.count});
+class ShoppingDetailRelatedScreen extends StatelessWidget {
+  const ShoppingDetailRelatedScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +38,7 @@ class SeasonalRecipe extends StatelessWidget {
                       style: TextStyle(fontSize: 10),
                     ),
                     Text(
-                      '스크랩 수 $count',
+                      '스크랩 수 ',
                       style: TextStyle(fontSize: 10),
                     ),
                   ],
@@ -52,5 +50,4 @@ class SeasonalRecipe extends StatelessWidget {
       ),
     );
   }
-
 }

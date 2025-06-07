@@ -85,7 +85,7 @@ class _MypageRootScreenState extends State<MypageRootScreen> {
               child: Text('회원 정보 수정', style: TextStyle(fontSize: 17),),
             ),
             SizedBox(height: componentGap,),
-            Container(
+            SizedBox(
               width: double.infinity,
               height: 40,
               child: Text('회원 탈퇴', style: TextStyle(fontSize: 17, color: Colors.grey),),

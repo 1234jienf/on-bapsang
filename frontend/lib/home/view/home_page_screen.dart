@@ -21,7 +21,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
   @override
   void initState() {
     super.initState();
-    controller.addListener(listener);
   }
 
   @override
@@ -29,8 +28,6 @@ class _HomePageScreenState extends State<HomePageScreen> {
     controller.dispose();
     super.dispose();
   }
-
-  void listener() {}
 
   @override
   Widget build(BuildContext context) {
