@@ -7,10 +7,6 @@ class SeasonalRecipe extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _renderComponent();
-  }
-
-  _renderComponent() {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 2.0),
@@ -56,4 +52,5 @@ class SeasonalRecipe extends StatelessWidget {
       ),
     );
   }
+
 }
