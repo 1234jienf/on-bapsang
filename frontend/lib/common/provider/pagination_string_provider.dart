@@ -90,15 +90,11 @@ U extends IBasePaginationStringRepository<T>
           data: pState.data,
         );
 
-        // if (pState.data.last.stringId != null) {
-        //   paginationParams = paginationParams.copyWith(
-        //     stringAfterId: pState.data.last.stringId,
-        //   );
-        // } else if (pState.data.last.id != null) {
-        //   paginationParams = paginationParams.copyWith(
-        //     intAfterId: pState.data.last.id,
-        //   );
-        // }
+        if (pState.meta.hasMore) {
+          paginationStringParams = paginationStringParams.copyWith(
+            afterId: pState.data.last.recipe_id,
+          );
+        }
 
       }
       else {

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../common/appbar/home_appbar.dart';
 import '../component/community_card.dart';
+import 'community_detail_screen.dart';
 
 class CommunityRootScreen extends StatefulWidget {
   const CommunityRootScreen({super.key});
@@ -49,7 +50,7 @@ class _CommunityRootScreenState extends State<CommunityRootScreen> {
         provider: communityProvider,
         itemBuilder: <CommunityModel>(_, index, model) {
           return GestureDetector(
-            onTap: () {},
+            onTap: () {context.pushNamed(CommunityDetailScreen.routeName, pathParameters: {'id' : model.id.toString()});},
             child: CommunityCard.fromModel(model: model),
           );
         },

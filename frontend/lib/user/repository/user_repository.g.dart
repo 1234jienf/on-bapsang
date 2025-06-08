@@ -9,7 +9,6 @@ part of 'user_repository.dart';
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
 class _UserRepository implements UserRepository {
-  // ignore: unused_element_parameter
   _UserRepository(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
