@@ -1,9 +1,9 @@
 import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../model/cursor_pagination_model.dart';
-import '../model/model_with_id.dart';
-import '../model/pagination_params.dart';
-import '../repository/base_pagination_repository.dart';
+import 'package:frontend/common/model/int/cursor_pagination_int_model.dart';
+import 'package:frontend/common/repository/base_pagination_int_repository.dart';
+import '../model/int/model_with_id.dart';
+import '../model/int/pagination_int_params.dart';
 
 class _PaginationInfo {
   final int fetchCount;
@@ -17,11 +17,11 @@ class _PaginationInfo {
   });
 }
 
-class PaginationProvider<
-T extends IModelWithId,
-U extends IBasePaginationRepository<T>
+class PaginationIntProvider<
+T extends IModelWithIntId,
+U extends IBasePaginationIntRepository<T>
 >
-    extends StateNotifier<CursorPaginationBase> {
+    extends StateNotifier<CursorIntPaginationBase> {
   final U repository;
   final paginationThrottle = Throttle<_PaginationInfo>(
     Duration(seconds: 3),
@@ -29,8 +29,8 @@ U extends IBasePaginationRepository<T>
     checkEquality: false,
   );
 
-  PaginationProvider({required this.repository})
-      : super(CursorPaginationLoading()) {
+  PaginationIntProvider({required this.repository})
+      : super(CursorIntPaginationLoading()) {
     paginate();
 
     // 3초의 시간이 지난 뒤 실행되는 함수
@@ -60,67 +60,66 @@ U extends IBasePaginationRepository<T>
 
     try {
       // 바로 반환하는 상황
-      if (state is CursorPagination && !forceRefetch) {
-        final pState = state as CursorPagination;
+      if (state is CursorIntPagination && !forceRefetch) {
+        final pState = state as CursorIntPagination;
         if (!pState.meta.isLast) {
           return;
         }
       }
 
       // 2) 로딩중 - fetchMore : true 일 때
-      final isLoading = state is CursorPaginationLoading;
-      final isRefetching = state is CursorPaginationRefetching;
-      final isFetchingMore = state is CursorPaginationFetchingMore;
+      final isLoading = state is CursorIntPaginationLoading;
+      final isRefetching = state is CursorIntPaginationRefetching;
+      final isFetchingMore = state is CursorIntPaginationFetchingMore;
 
       // 반환 상황
       if (fetchMore && (isLoading || isRefetching || isFetchingMore)) {
         return;
       }
 
-      PaginationParams paginationParams = PaginationParams(count: fetchCount);
+      PaginationIntParams paginationIntParams = PaginationIntParams(count: fetchCount);
 
       // fetchMore
-
       if (fetchMore) {
-        final pState = state as CursorPagination<T>;
+        final pState = state as CursorIntPagination<T>;
 
-        state = CursorPaginationFetchingMore(
+        state = CursorIntPaginationFetchingMore(
           meta: pState.meta,
           data: pState.data,
         );
 
-        if (pState.data.last.stringId != null) {
-          paginationParams = paginationParams.copyWith(
-            stringAfterId: pState.data.last.stringId,
-          );
-        } else if (pState.data.last.intId != null) {
-          paginationParams = paginationParams.copyWith(
-            intAfterId: pState.data.last.intId,
-          );
-        }
+        // if (pState.data.last.stringId != null) {
+        //   paginationParams = paginationParams.copyWith(
+        //     stringAfterId: pState.data.last.stringId,
+        //   );
+        // } else if (pState.data.last.id != null) {
+        //   paginationParams = paginationParams.copyWith(
+        //     intAfterId: pState.data.last.id,
+        //   );
+        // }
 
       }
       else {
-        if (state is CursorPagination && !forceRefetch) {
-          final pState = state as CursorPagination<T>;
+        if (state is CursorIntPagination && !forceRefetch) {
+          final pState = state as CursorIntPagination<T>;
 
           // 리패치 진행
-          state = CursorPaginationRefetching<T>(
+          state = CursorIntPaginationRefetching<T>(
             meta: pState.meta,
             data: pState.data,
           );
         }
         else {
-          state = CursorPaginationLoading();
+          state = CursorIntPaginationLoading();
         }
       }
 
       final resp = await repository.paginate(
-        paginationParams: paginationParams,
+        paginationIntParams: paginationIntParams,
       );
 
-      if (state is CursorPaginationFetchingMore<T>) {
-        final pState = state as CursorPaginationFetchingMore<T>;
+      if (state is CursorIntPaginationFetchingMore<T>) {
+        final pState = state as CursorIntPaginationFetchingMore<T>;
 
         // 기존 데이터 + 새로운 데이터 추가.
         state = resp.copyWith(data: [...pState.data, ...resp.data]);
@@ -128,7 +127,7 @@ U extends IBasePaginationRepository<T>
         state = resp;
       }
     } catch (e) {
-      state = CursorPaginationError(message: '데이터를 가져오지 못했습니다.');
+      state = CursorIntPaginationError(message: '데이터를 가져오지 못했습니다.');
     }
   }
 }

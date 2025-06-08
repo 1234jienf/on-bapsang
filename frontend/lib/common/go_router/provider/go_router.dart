@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 final routerProvider = Provider<GoRouter>((ref) {
   final provider = ref.read(mainProvider);
   return GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/test',
     routes: provider.routes,
     refreshListenable: provider,
     redirect: provider.redirectLogic,

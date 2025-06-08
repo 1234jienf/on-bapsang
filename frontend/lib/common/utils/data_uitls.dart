@@ -6,4 +6,8 @@ class DataUtils {
     return '$ip$value';
   }
 
+  static DateTime dateTimeFromJson(String dateStr) {
+    return DateTime.parse(dateStr);
+  }
+
 }

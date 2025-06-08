@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/common/provider/pagination_string_provider.dart';
 
-import '../provider/pagination_provider.dart';
-
-class PaginationUtils {
+class PaginationStringUtils {
   static void paginate({
     required ScrollController controller,
-    required PaginationProvider provider,
+    required PaginationStringProvider provider,
   }) {
     //TODO
     // provider에 paginate 요청
-    }
   }
+}

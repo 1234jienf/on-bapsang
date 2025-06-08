@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import '../../common/utils/data_uitls.dart';
 import 'community_model.dart';
 
 part 'community_detail_model.g.dart';
@@ -17,13 +18,13 @@ class CommunityDetailModel extends CommunityModel {
     required this.profileImage,
     required this.x,
     required this.y,
-    required super.intId,
+    required super.id,
     required super.title,
     required super.imageUrl,
     required super.nickname,
     required super.scrapCount,
     required super.commentCount,
-    required super.createdAt, required super.name,
+    required super.createdAt,
   });
 
   factory CommunityDetailModel.fromJson(Map<String, dynamic> json) =>

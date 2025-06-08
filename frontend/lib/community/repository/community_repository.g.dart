@@ -18,17 +18,19 @@ class _CommunityRepository implements CommunityRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<CursorPagination<CommunityModel>> paginate({
-    PaginationParams? paginationParams = const PaginationParams(),
+  Future<CursorIntPagination<CommunityModel>> paginate({
+    PaginationIntParams? paginationIntParams = const PaginationIntParams(),
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    queryParameters.addAll(paginationParams?.toJson() ?? <String, dynamic>{});
+    queryParameters.addAll(
+      paginationIntParams?.toJson() ?? <String, dynamic>{},
+    );
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CursorPagination<CommunityModel>>(
+    final _options = _setStreamType<CursorIntPagination<CommunityModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -39,9 +41,9 @@ class _CommunityRepository implements CommunityRepository {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late CursorPagination<CommunityModel> _value;
+    late CursorIntPagination<CommunityModel> _value;
     try {
-      _value = CursorPagination<CommunityModel>.fromJson(
+      _value = CursorIntPagination<CommunityModel>.fromJson(
         _result.data!,
         (json) => CommunityModel.fromJson(json as Map<String, dynamic>),
       );
@@ -53,9 +55,7 @@ class _CommunityRepository implements CommunityRepository {
   }
 
   @override
-  Future<CommunityDetailModel> getCommunityDetail({
-    required String intId,
-  }) async {
+  Future<CommunityDetailModel> getCommunityDetail({required int intId}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};

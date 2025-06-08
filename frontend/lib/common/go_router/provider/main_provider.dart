@@ -16,6 +16,7 @@ import 'package:frontend/recipe/view/recipe_detail_screen.dart';
 import 'package:frontend/search/view/search_root_screen.dart';
 import 'package:frontend/shopping/view/shopping_root_screen.dart';
 import 'package:frontend/signup/view/sign_up_root_screen.dart';
+import 'package:frontend/test_page.dart';
 import 'package:frontend/user/view/login_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -169,6 +170,9 @@ class MainProvider extends ChangeNotifier {
         ),
       ],
     ),
+
+    // GoRoute(path: '/test', name: 'Test', builder: (_, state) => TestPage()),
+
 
     // navbar 사용 안함
     GoRoute(

@@ -1,24 +1,32 @@
-import 'package:frontend/common/model/cursor_pagination_model.dart';
-import 'package:frontend/common/provider/pagination_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/community/model/community_model.dart';
 import 'package:frontend/community/repository/community_repository.dart';
 
-class CommunityStateNotifier extends PaginationProvider<CommunityModel, CommunityRepository> {
+import '../../common/model/int/cursor_pagination_int_model.dart';
+import '../../common/provider/pagination_int_provider.dart';
+
+final communityProvider = StateNotifierProvider((ref) {
+  final repository = ref.watch(communityRepositoryProvider);
+  final notifier = CommunityStateNotifier(repository: repository);
+  return notifier;
+});
+
+class CommunityStateNotifier extends PaginationIntProvider<CommunityModel, CommunityRepository> {
   CommunityStateNotifier({required super.repository});
 
   void getDetail({required int intId}) async {
-    if (state is! CursorPagination) {
+    if (state is! CursorIntPagination) {
       await paginate();
     }
 
-    if (state is! CursorPagination) {
+    if (state is! CursorIntPagination) {
       return;
     }
 
-    final pState = state as CursorPagination;
+    final pState = state as CursorIntPagination;
 
     // TODO : resp
-    final resp = [];
+    final resp = await repository.getCommunityDetail(intId: intId);
 
     // 캐시
     if (pState.data.where((e) => e.id == intId).isEmpty) {
