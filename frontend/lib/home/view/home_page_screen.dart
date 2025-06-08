@@ -4,7 +4,6 @@ import 'package:frontend/search/view/search_main_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../common/appbar/home_appbar.dart';
-import '../component/community_card.dart';
 import '../component/recipe_card.dart';
 import '../component/recipe_icon.dart';
 
@@ -154,7 +153,9 @@ class _HomePageScreenState extends State<HomePageScreen> {
                   onTap: () {},
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 6.0),
-                    child: CommunityCard(userName: 'user_0028'),
+                    child: Center(child: Text('hi')),
+
+                    // child: CommunityCard(nickname: 'user_0028'),
                   ),
                 ),
                 childCount: 6,

@@ -170,6 +170,7 @@ class MainProvider extends ChangeNotifier {
       ],
     ),
 
+
     // navbar 사용 안함
     GoRoute(
       path: '/recipe/detail/:id',

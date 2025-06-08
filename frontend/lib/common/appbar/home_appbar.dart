@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:frontend/mypage/view/mypage_root_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -20,10 +21,16 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         Icon(Icons.notifications_none_outlined, size: 26),
         const SizedBox(width: 10),
-        Icon(Icons.shopping_cart_outlined, size: 26),
+        GestureDetector(
+          onTap: () async {
+          },
+          child: Icon(Icons.shopping_cart_outlined, size: 26),
+        ),
         const SizedBox(width: 10),
         GestureDetector(
-          onTap: () {context.pushNamed(MypageRootScreen.routeName);},
+          onTap: () {
+            context.pushNamed(MypageRootScreen.routeName);
+          },
           child: Icon(Icons.person_outline_outlined, size: 26),
         ),
         const SizedBox(width: 20),

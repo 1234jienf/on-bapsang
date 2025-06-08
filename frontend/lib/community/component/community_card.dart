@@ -1,9 +1,29 @@
 import 'package:flutter/material.dart';
 
-class CommunityCard extends StatelessWidget {
-  final String userName;
+import '../model/community_model.dart';
 
-  const CommunityCard({super.key, required this.userName});
+class CommunityCard extends StatelessWidget {
+  final String nickname;
+  final String title;
+  final String imageUrl;
+  final int id;
+
+  const CommunityCard({
+    super.key,
+    required this.nickname,
+    required this.title,
+    required this.imageUrl,
+    required this.id,
+  });
+
+  factory CommunityCard.fromModel({required CommunityModel model}) {
+    return CommunityCard(
+      title: model.title,
+      id: model.id,
+      imageUrl: model.imageUrl,
+      nickname: model.nickname,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,12 +36,9 @@ class CommunityCard extends StatelessWidget {
       height: 260,
       child: Column(
         children: [
-          Image.asset(
-            'asset/img/search_recipe.png',
-            width: 175,
-            height: 175,
-            fit: BoxFit.cover,
-          ),
+          Hero(tag: ObjectKey(id.toString()),
+              child: ClipRRect(borderRadius: BorderRadius.circular(12.0),
+                child: Image.network(imageUrl, fit: BoxFit.cover, width: 175, height: 175,),)),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -35,7 +52,7 @@ class CommunityCard extends StatelessWidget {
                         Icon(Icons.account_circle_outlined, size: 20),
                         const SizedBox(width: 5.0),
                         Text(
-                          userName,
+                          nickname,
                           style: TextStyle(
                             fontSize: 13.0,
                             fontWeight: FontWeight.w500,
@@ -52,17 +69,17 @@ class CommunityCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Title 영역입니다',
+                    title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 2,),
+                  const SizedBox(height: 2),
                   Row(
                     children: [
                       Expanded(
                         child: Text(
-                          '비건 레시피 만들어봤읍니다. 어쩌고 저쩌고 맛있었읍니다. 어쩌고 저쩌고 맛잇었읍니다.',
+                          title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

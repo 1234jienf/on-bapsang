@@ -140,6 +140,7 @@ class HomeMenuScreen extends StatelessWidget {
 }
 
 
+// ignore: non_constant_identifier_names
 Widget CategoryIcon({required String CategoryName}) {
   return Column(
     children: [
