@@ -29,6 +29,8 @@ U extends IBasePaginationIntRepository<T>
     checkEquality: false,
   );
 
+
+
   PaginationIntProvider({required this.repository})
       : super(CursorIntPaginationLoading()) {
     paginate();
@@ -58,11 +60,12 @@ U extends IBasePaginationIntRepository<T>
     final fetchMore = info.fetchMore;
     final forceRefetch = info.forceRefetch;
 
+
     try {
       // 바로 반환하는 상황
       if (state is CursorIntPagination && !forceRefetch) {
         final pState = state as CursorIntPagination;
-        if (!pState.meta.isLast) {
+        if (!pState.meta.last) {
           return;
         }
       }
@@ -114,9 +117,10 @@ U extends IBasePaginationIntRepository<T>
         }
       }
 
-      final resp = await repository.paginate(
+      final wrapper = await repository.paginate(
         paginationIntParams: paginationIntParams,
       );
+      final resp = wrapper.result;
 
       if (state is CursorIntPaginationFetchingMore<T>) {
         final pState = state as CursorIntPaginationFetchingMore<T>;

@@ -11,6 +11,8 @@ class CommunityDetailModel extends CommunityModel {
   final String? profileImage;
   final double x;
   final double y;
+  @JsonKey(fromJson: DataUtils.dateTimeFromJson)
+  final DateTime createdAt;
 
   CommunityDetailModel({
     required this.content,
@@ -22,9 +24,7 @@ class CommunityDetailModel extends CommunityModel {
     required super.title,
     required super.imageUrl,
     required super.nickname,
-    required super.scrapCount,
-    required super.commentCount,
-    required super.createdAt,
+    required this.createdAt
   });
 
   factory CommunityDetailModel.fromJson(Map<String, dynamic> json) =>

@@ -9,6 +9,7 @@ part of 'community_repository.dart';
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
 class _CommunityRepository implements CommunityRepository {
+  // ignore: unused_element_parameter
   _CommunityRepository(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
@@ -18,7 +19,7 @@ class _CommunityRepository implements CommunityRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<CursorIntPagination<CommunityModel>> paginate({
+  Future<PaginationIntWrapperResponse<CommunityModel>> paginate({
     PaginationIntParams? paginationIntParams = const PaginationIntParams(),
   }) async {
     final _extra = <String, dynamic>{};
@@ -30,20 +31,23 @@ class _CommunityRepository implements CommunityRepository {
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CursorIntPagination<CommunityModel>>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/posts',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
+    final _options =
+        _setStreamType<PaginationIntWrapperResponse<CommunityModel>>(
+          Options(method: 'GET', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/posts',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late CursorIntPagination<CommunityModel> _value;
+    late PaginationIntWrapperResponse<CommunityModel> _value;
     try {
-      _value = CursorIntPagination<CommunityModel>.fromJson(
+      _value = PaginationIntWrapperResponse<CommunityModel>.fromJson(
         _result.data!,
         (json) => CommunityModel.fromJson(json as Map<String, dynamic>),
       );
@@ -55,7 +59,7 @@ class _CommunityRepository implements CommunityRepository {
   }
 
   @override
-  Future<CommunityDetailModel> getCommunityDetail({required int intId}) async {
+  Future<CommunityDetailModel> getCommunityDetail({required int id}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
@@ -65,7 +69,7 @@ class _CommunityRepository implements CommunityRepository {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/{id}',
+            '/${id}',
             queryParameters: queryParameters,
             data: _data,
           )

@@ -14,7 +14,7 @@ final communityProvider = StateNotifierProvider((ref) {
 class CommunityStateNotifier extends PaginationIntProvider<CommunityModel, CommunityRepository> {
   CommunityStateNotifier({required super.repository});
 
-  void getDetail({required int intId}) async {
+  void getDetail({required int id}) async {
     if (state is! CursorIntPagination) {
       await paginate();
     }
@@ -25,14 +25,13 @@ class CommunityStateNotifier extends PaginationIntProvider<CommunityModel, Commu
 
     final pState = state as CursorIntPagination;
 
-    // TODO : resp
-    final resp = await repository.getCommunityDetail(intId: intId);
+    final resp = await repository.getCommunityDetail(id: id);
 
     // 캐시
-    if (pState.data.where((e) => e.id == intId).isEmpty) {
+    if (pState.data.where((e) => e.id == id).isEmpty) {
       state = pState.copyWith(data : <CommunityModel>[...pState.data, ]);
     } else {
-      state = pState.copyWith(data : pState.data.map<CommunityModel>((e) => e.id == intId ? resp : e).toList());
+      state = pState.copyWith(data : pState.data.map<CommunityModel>((e) => e.id == id ? resp : e).toList());
     }
 
   }

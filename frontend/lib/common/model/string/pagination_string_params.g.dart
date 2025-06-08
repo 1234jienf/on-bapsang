@@ -10,12 +10,9 @@ PaginationStringParams _$PaginationStringParamsFromJson(
   Map<String, dynamic> json,
 ) => PaginationStringParams(
   count: (json['count'] as num?)?.toInt(),
-  stringAfterId: json['stringAfterId'] as String?,
+  after: json['after'] as String?,
 );
 
 Map<String, dynamic> _$PaginationStringParamsToJson(
   PaginationStringParams instance,
-) => <String, dynamic>{
-  'stringAfterId': instance.stringAfterId,
-  'count': instance.count,
-};
+) => <String, dynamic>{'after': instance.after, 'count': instance.count};

@@ -14,26 +14,11 @@ CursorIntPagination<T> _$CursorIntPaginationFromJson<T>(
   data: (json['data'] as List<dynamic>).map(fromJsonT).toList(),
 );
 
-Map<String, dynamic> _$CursorIntPaginationToJson<T>(
-  CursorIntPagination<T> instance,
-  Object? Function(T value) toJsonT,
-) => <String, dynamic>{
-  'meta': instance.meta,
-  'data': instance.data.map(toJsonT).toList(),
-};
 
 CursorIntPaginationMeta _$CursorIntPaginationMetaFromJson(
   Map<String, dynamic> json,
 ) => CursorIntPaginationMeta(
   totalElements: (json['totalElements'] as num).toInt(),
-  hasMore: json['hasMore'] as bool?,
-  last: json['last'] as bool?,
+  last: json['last'] as bool,
 );
 
-Map<String, dynamic> _$CursorIntPaginationMetaToJson(
-  CursorIntPaginationMeta instance,
-) => <String, dynamic>{
-  'last': instance.last,
-  'hasMore': instance.hasMore,
-  'totalElements': instance.totalElements,
-};

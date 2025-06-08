@@ -62,8 +62,8 @@ U extends IBasePaginationStringRepository<T>
     try {
       // 바로 반환하는 상황
       if (state is CursorIntPagination && !forceRefetch) {
-        final pState = state as CursorIntPagination;
-        if (!pState.meta.isLast) {
+        final pState = state as CursorStringPagination;
+        if (!pState.meta.hasMore) {
           return;
         }
       }
@@ -78,7 +78,7 @@ U extends IBasePaginationStringRepository<T>
         return;
       }
 
-      PaginationStringParams paginationParams = PaginationStringParams(count: fetchCount);
+      PaginationStringParams paginationStringParams = PaginationStringParams(count: fetchCount);
 
       // fetchMore
 
@@ -117,7 +117,7 @@ U extends IBasePaginationStringRepository<T>
       }
 
       final resp = await repository.paginate(
-        paginationStringParams: paginationParams,
+        paginationStringParams: paginationStringParams,
       );
 
       if (state is CursorStringPaginationFetchingMore<T>) {

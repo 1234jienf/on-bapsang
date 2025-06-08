@@ -8,17 +8,17 @@ import '../model/string/cursor_pagination_string_model.dart';
 
 typedef PaginationWidgetBuilder<T extends IModelWithStringId> = Widget Function(BuildContext context, int index, T model);
 
-class PaginationStringListView<T extends IModelWithStringId> extends ConsumerStatefulWidget {
+class PaginationStringGridView<T extends IModelWithStringId> extends ConsumerStatefulWidget {
   final StateNotifierProvider<PaginationStringProvider, CursorStringPaginationBase> provider;
   final PaginationWidgetBuilder<T> itemBuilder;
 
-  const PaginationStringListView({super.key, required this.provider, required this.itemBuilder});
+  const PaginationStringGridView({super.key, required this.provider, required this.itemBuilder});
 
   @override
-  ConsumerState<PaginationStringListView> createState() => _PaginationStringListViewState();
+  ConsumerState<PaginationStringGridView> createState() => _PaginationStringGridViewState();
 }
 
-class _PaginationStringListViewState<T extends IModelWithStringId> extends ConsumerState<PaginationStringListView> {
+class _PaginationStringGridViewState<T extends IModelWithStringId> extends ConsumerState<PaginationStringGridView> {
   final ScrollController controller = ScrollController();
 
   @override
@@ -72,34 +72,22 @@ class _PaginationStringListViewState<T extends IModelWithStringId> extends Consu
         onRefresh: () async {
           ref.read(widget.provider.notifier).paginate();
         },
-        child: ListView.separated(
-          // 항상 스크롤이 되게
-          physics: AlwaysScrollableScrollPhysics(),
+        child: GridView.builder(
           controller: controller,
+          physics: AlwaysScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 10,
+            childAspectRatio: 175 / 250,
+          ),
           itemCount: cp.data.length + 1,
           itemBuilder: (_, index) {
             if (index == cp.data.length) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
-                ),
-                child: Center(
-                  child:
-                  cp is CursorStringPaginationFetchingMore
-                      ? CircularProgressIndicator()
-                      : Text('마지막 데이터입니다.'),
-                ),
-              );
+              return Center(child: CircularProgressIndicator());
             }
 
-            final pItem = cp.data[index];
-
-            // 파싱
-            return widget.itemBuilder(context, index, pItem);
-          },
-          separatorBuilder: (_, index) {
-            return SizedBox(height: 16.0);
+            final item = cp.data[index];
+            return widget.itemBuilder(context, index, item);
           },
         ),
       ),
