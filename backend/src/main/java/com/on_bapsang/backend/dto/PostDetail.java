@@ -15,15 +15,15 @@ public class PostDetail {
     private final String profileImage;
     private final int scrapCount;
     private final int commentCount;
-    private Double x;
-    private Double y;
+    private final Double x;
+    private final Double y;
     private final LocalDateTime createdAt;
 
-    public PostDetail(Post post) {
+    public PostDetail(Post post, String imageUrl) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.imageUrl = post.getImageUrl();
+        this.imageUrl = imageUrl;
         this.nickname = post.getUser().getNickname();
         this.profileImage = post.getUser().getProfileImage();
         this.scrapCount = post.getScrapCount();

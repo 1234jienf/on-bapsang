@@ -40,7 +40,7 @@ public class ScrapService {
 
     // 스크랩 여부 조회
     public boolean isScrapped(Post post, User user) {
-        if (user == null) return false;  // 로그인 안 한 경우 false
-        return scrapRepository.existsByUserAndPost(user, post);
+        if (user == null) return false;
+        return scrapRepository.existsByUserIdAndPostId(user.getUserId(), post.getId());
     }
 }

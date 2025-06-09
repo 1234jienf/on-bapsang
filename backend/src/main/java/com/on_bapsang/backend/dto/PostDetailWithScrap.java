@@ -20,11 +20,11 @@ public class PostDetailWithScrap {
     private final LocalDateTime createdAt;
     private final boolean isScrapped;
 
-    public PostDetailWithScrap(Post post, boolean isScrapped) {
+    public PostDetailWithScrap(Post post, boolean isScrapped, String imageUrl) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.imageUrl = post.getImageUrl();
+        this.imageUrl = imageUrl;
         this.nickname = post.getUser().getNickname();
         this.profileImage = post.getUser().getProfileImage();
         this.scrapCount = post.getScrapCount();

@@ -33,41 +33,33 @@ public class ImageUploader {
         String fileName = UUID.randomUUID() + "." + fileExtension;
 
         try {
-            // S3 업로드
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
             metadata.setContentType(file.getContentType());
             amazonS3.putObject(bucket, fileName, file.getInputStream(), metadata);
 
-            // Presigned URL 생성 후 반환
-            return generatePresignedUrl(fileName, 10);
-
+            // presigned URL은 DB에 저장하지 않고 파일명(key)만 저장
+            return fileName;
         } catch (Exception e) {
-            // 예외 발생 시 업로드한 파일 삭제 시도
             if (amazonS3.doesObjectExist(bucket, fileName)) {
                 amazonS3.deleteObject(bucket, fileName);
             }
-            throw new RuntimeException("S3 업로드 중 오류가 발생하여 업로드된 파일을 삭제했습니다.", e);
+            throw new RuntimeException("S3 업로드 중 오류 발생", e);
         }
     }
 
-    private String generatePresignedUrl(String fileName, int expireMinutes) {
+    public String generatePresignedUrl(String fileName, int expireMinutes) {
         Date expiration = new Date();
         expiration.setTime(expiration.getTime() + 1000L * 60 * expireMinutes);
-
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucket, fileName)
                 .withMethod(HttpMethod.GET)
                 .withExpiration(expiration);
-
-        URL url = amazonS3.generatePresignedUrl(request);
-        return url.toString();
+        return amazonS3.generatePresignedUrl(request).toString();
     }
 
     private String getFileExtension(String filename) {
         int dotIndex = filename.lastIndexOf('.');
-        if (dotIndex == -1) {
-            throw new IllegalArgumentException("파일 확장자가 없습니다.");
-        }
+        if (dotIndex == -1) throw new IllegalArgumentException("파일 확장자가 없습니다.");
         return filename.substring(dotIndex + 1);
     }
 }

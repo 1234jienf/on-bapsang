@@ -32,17 +32,7 @@ public class PostSummary {
         this.y = y;
     }
 
-    public static PostSummary from(Post post) {
-        return new PostSummary(
-                post.getId(),
-                post.getTitle(),
-                post.getImageUrl(),
-                post.getScrapCount(),
-                post.getCommentCount(),
-                post.getCreatedAt(),
-                post.getUser().getNickname(),
-                post.getX(),
-                post.getY()
-        );
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

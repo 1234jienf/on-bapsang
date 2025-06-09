@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.on_bapsang.backend.dto.ApiResponse;
 import com.on_bapsang.backend.dto.PostRequest;
 import com.on_bapsang.backend.dto.PostSummary;
+import com.on_bapsang.backend.dto.PostSummaryWithScrap;
 import com.on_bapsang.backend.entity.Post;
 import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.security.UserDetailsImpl;
@@ -63,15 +64,15 @@ public class PostController {
     // 글 목록 조회
     @GetMapping
     public ResponseEntity<?> getPosts(
-            @RequestParam(required = false) String keyword,  // 검색 키워드
+            @RequestParam(required = false) String keyword,
             @PageableDefault(size = 9, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         User user = userDetails.getUser();
-        Page<PostSummary> posts = postService.getPosts(keyword, pageable, user);
+        Page<PostSummaryWithScrap> posts = postService.getPosts(keyword, pageable, user);
         return ResponseEntity.ok(ApiResponse.success("게시글 목록 조회 성공", posts));
-
     }
+
 
 
     // 단일 글 조회

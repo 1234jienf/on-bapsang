@@ -1,15 +1,14 @@
 package com.on_bapsang.backend.service;
 
-import com.on_bapsang.backend.dto.PostDetail;
-import com.on_bapsang.backend.dto.PostDetailWithScrap;
-import com.on_bapsang.backend.dto.PostRequest;
-import com.on_bapsang.backend.dto.PostSummary;
+import com.on_bapsang.backend.dto.*;
 import com.on_bapsang.backend.entity.Post;
 import com.on_bapsang.backend.entity.Recipe;
 import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.repository.PostRepository;
 import com.on_bapsang.backend.repository.RecipeRepository;
-import com.on_bapsang.backend.repository.ScrapRepository;
+import com.on_bapsang.backend.service.ScrapService;
+import com.on_bapsang.backend.service.SearchKeywordService;
+import com.on_bapsang.backend.util.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -25,8 +24,8 @@ public class PostService {
     private final RecipeRepository recipeRepository;
     private final ScrapService scrapService;
     private final SearchKeywordService searchKeywordService;
+    private final ImageUploader imageUploader;
 
-    // 게시글 생성
     public Post create(PostRequest request, User user, String imageUrl) {
         Post post = new Post();
         post.setTitle(request.getTitle());
@@ -39,7 +38,6 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    // 게시글 생성시 레시피 db 조회
     public List<String> getRecipeTagSuggestions(String keyword) {
         return recipeRepository.findTop10ByNameStartingWithIgnoreCase(keyword)
                 .stream()
@@ -47,47 +45,61 @@ public class PostService {
                 .toList();
     }
 
+    public Page<PostSummaryWithScrap> getPosts(String keyword, Pageable pageable, User user) {
+        Page<Long> postIdPage;
+        List<Post> posts;
 
-    // 게시글 검색
-    public Page<PostSummary> getPosts(String keyword, Pageable pageable, User user) {
         if (keyword != null && !keyword.isBlank()) {
             searchKeywordService.saveRecentKeyword(user.getUserId(), keyword);
             searchKeywordService.increaseKeywordScore(keyword);
-            return postRepository.findPostSummariesWithUser(keyword, pageable);
+
+            // 🔍 검색어 기반 ID 페이징
+            postIdPage = postRepository.findPostIdsByTitleKeyword(keyword, pageable);
         } else {
-            return postRepository.findPostSummariesWithUser(pageable);
+            // 🔍 전체 글 ID 페이징
+            postIdPage = postRepository.findAllPostIds(pageable);
         }
+
+        // ✅ ID 리스트로 Post + User fetch join 조회
+        posts = postRepository.findAllWithUserByIds(postIdPage.getContent());
+
+        List<PostSummaryWithScrap> summaries = posts.stream()
+                .map(post -> {
+                    boolean isScrapped = scrapService.isScrapped(post, user);
+                    String url = post.getImageUrl() != null
+                            ? imageUploader.generatePresignedUrl(post.getImageUrl(), 60)
+                            : null;
+                    return new PostSummaryWithScrap(post, isScrapped, url);
+                }).toList();
+
+        return new PageImpl<>(summaries, pageable, postIdPage.getTotalElements());
     }
 
-
-    // 개별 글 검색
     @Transactional(readOnly = true)
     public PostDetail getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-        return new PostDetail(post);
+        String presignedUrl = post.getImageUrl() != null
+                ? imageUploader.generatePresignedUrl(post.getImageUrl(), 10)
+                : null;
+        return new PostDetail(post, presignedUrl);
     }
 
-    // 로그인 유저 개별 글 검색
     @Transactional(readOnly = true)
     public PostDetailWithScrap getPostById(Long id, User user) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-
         boolean isScrapped = scrapService.isScrapped(post, user);
-
-        return new PostDetailWithScrap(post, isScrapped);
+        String presignedUrl = post.getImageUrl() != null
+                ? imageUploader.generatePresignedUrl(post.getImageUrl(), 10)
+                : null;
+        return new PostDetailWithScrap(post, isScrapped, presignedUrl);
     }
 
-
-
-
-    // 게시글 수정
     public Post update(Long id, PostRequest request, User user, String imageUrl) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-        // 작성자 검증
         if (!post.getUser().getUserId().equals(user.getUserId())) {
             throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
         }
@@ -98,7 +110,6 @@ public class PostService {
         post.setX(request.getX());
         post.setY(request.getY());
 
-        // 이미지가 새로 들어왔을 때만 업데이트
         if (imageUrl != null) {
             post.setImageUrl(imageUrl);
         }
@@ -106,20 +117,14 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    // 게시글 삭제
     public void delete(Long id, User user) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
-        // 작성자 검증
         if (!post.getUser().getUserId().equals(user.getUserId())) {
             throw new IllegalArgumentException("작성자만 삭제할 수 있습니다.");
         }
 
         postRepository.delete(post);
     }
-
-
-
-
 }
