@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class PostSummaryWithScrap {
     private final Long id;
     private final String title;
+    private final String content;
     private final String imageUrl;
     private final String nickname;
     private final String profileImage;
@@ -22,6 +23,7 @@ public class PostSummaryWithScrap {
     public PostSummaryWithScrap(Post post, boolean isScrapped, String presignedImageUrl) {
         this.id = post.getId();
         this.title = post.getTitle();
+        this.content = post.getContent();
         this.imageUrl = presignedImageUrl;
         this.nickname = post.getUser().getNickname();
         this.profileImage = post.getUser().getProfileImage();
