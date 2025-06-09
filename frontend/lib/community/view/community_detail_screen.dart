@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-class CommunityDetailScreen extends StatefulWidget {
+import '../provider/community_detail_provider.dart';
+
+class CommunityDetailScreen extends ConsumerStatefulWidget {
   final String id;
 
   static String get routeName => 'CommunityDetailScreen';
@@ -11,10 +14,10 @@ class CommunityDetailScreen extends StatefulWidget {
   const CommunityDetailScreen({super.key, required this.id});
 
   @override
-  State<CommunityDetailScreen> createState() => _CommunityDetailScreenState();
+  ConsumerState<CommunityDetailScreen> createState() => _CommunityDetailScreenState();
 }
 
-class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
+class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
   final ScrollController controller = ScrollController();
   final double horizontal = 16.0;
   late final DateTime dt;
@@ -25,10 +28,16 @@ class _CommunityDetailScreenState extends State<CommunityDetailScreen> {
     super.initState();
     dt = DateTime.now();
     formattedDate = DateFormat('yy년 M월 d일').format(dt);
+    WidgetsBinding.instance.addPostFrameCallback((_) {ref.read(communityDetailProvider(widget.id).notifier).fetchData();});
   }
+
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(communityDetailProvider(widget.id));
+
+    print(state);
+
     return DefaultLayout(
       appBar: AppBar(
         backgroundColor: Colors.white,

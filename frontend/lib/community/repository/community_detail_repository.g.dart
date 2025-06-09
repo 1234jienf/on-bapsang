@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_repository.dart';
+part of 'community_detail_repository.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'user_repository.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
-class _UserRepository implements UserRepository {
-  _UserRepository(this._dio, {this.baseUrl, this.errorLogger});
+class _CommunityDetailRepository implements CommunityDetailRepository {
+  _CommunityDetailRepository(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -18,26 +18,34 @@ class _UserRepository implements UserRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<UserModel> getMe() async {
+  Future<IntDataWrapperResponse<CommunityDetailModel>> fetchData({
+    required String id,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<UserModel>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/me',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
+    final _options =
+        _setStreamType<IntDataWrapperResponse<CommunityDetailModel>>(
+          Options(method: 'GET', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/posts/${id}',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UserModel _value;
+    late IntDataWrapperResponse<CommunityDetailModel> _value;
     try {
-      _value = UserModel.fromJson(_result.data!);
+      _value = IntDataWrapperResponse<CommunityDetailModel>.fromJson(
+        _result.data!,
+        (json) => CommunityDetailModel.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

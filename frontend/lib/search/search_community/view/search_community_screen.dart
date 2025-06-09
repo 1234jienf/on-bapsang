@@ -1,43 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/common/component/pagination_int_grid_view.dart';
+import 'package:frontend/community/provider/community_provider.dart';
 
-import '../../../common/layout/default_layout.dart';
-import '../../common/search_recipe_filter_header.dart';
-import '../../common/search_bottom_filter.dart';
+import '../../../community/component/community_card.dart';
+
 
 class SearchCommunityScreen extends StatelessWidget {
   const SearchCommunityScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return DefaultLayout(
-      child: CustomScrollView(
-        slivers: [
-          _searchRecipeFilter(),
-          SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              (_, index) => Padding(
-                padding: const EdgeInsets.only(bottom: 6.0),
-                child: Center(child: Text('hi')),
-                // child: CommunityCard(nickname: 'user_0091'),
-              ),
-              childCount: 10,
-            ),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              childAspectRatio: 175 / 255,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  SliverPersistentHeader _searchRecipeFilter() {
-    return SliverPersistentHeader(
-      pinned: true,
-      delegate: SearchRecipeFilterHeader(bottomFilter: SearchBottomFilter()),
-    );
+    return PaginationIntGridView(childAspectRatio : 175 / 275 , provider: communityProvider,
+        itemBuilder: <CommunityModel>(_, index, model) {
+          return GestureDetector(
+            onTap: () {}, child: CommunityCard.fromModel(model: model),);
+        });
   }
 }
+

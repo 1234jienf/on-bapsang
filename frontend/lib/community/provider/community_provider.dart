@@ -33,6 +33,5 @@ class CommunityStateNotifier extends PaginationIntProvider<CommunityModel, Commu
     } else {
       state = pState.copyWith(data : pState.data.map<CommunityModel>((e) => e.id == id ? resp : e).toList());
     }
-
   }
 }

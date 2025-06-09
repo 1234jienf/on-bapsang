@@ -11,7 +11,7 @@ class _PaginationInfo {
   final bool forceRefetch;
 
   _PaginationInfo({
-    this.fetchCount = 20,
+    this.fetchCount = 10,
     this.fetchMore = false,
     this.forceRefetch = false,
   });
@@ -42,7 +42,7 @@ U extends IBasePaginationIntRepository<T>
   }
 
   Future<void> paginate({
-    int fetchCount = 20,
+    int fetchCount = 10,
     bool fetchMore = false,
     bool forceRefetch = false,
   }) async {
@@ -91,16 +91,11 @@ U extends IBasePaginationIntRepository<T>
           data: pState.data,
         );
 
-        // if (pState.data.last.stringId != null) {
-        //   paginationParams = paginationParams.copyWith(
-        //     stringAfterId: pState.data.last.stringId,
-        //   );
-        // } else if (pState.data.last.id != null) {
-        //   paginationParams = paginationParams.copyWith(
-        //     intAfterId: pState.data.last.id,
-        //   );
-        // }
-
+        if (!pState.meta.last) {
+          paginationIntParams = paginationIntParams.copyWith(
+            afterId: pState.data.last.id
+          );
+        }
       }
       else {
         if (state is CursorIntPagination && !forceRefetch) {

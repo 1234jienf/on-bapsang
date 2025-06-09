@@ -14,11 +14,13 @@ CommunityDetailModel _$CommunityDetailModelFromJson(
   profileImage: json['profileImage'] as String?,
   x: (json['x'] as num).toDouble(),
   y: (json['y'] as num).toDouble(),
+  scrapCount: (json['scrapCount'] as num).toInt(),
+  commentCount: (json['commentCount'] as num).toInt(),
+  createdAt: DataUtils.dateTimeFromJson(json['createdAt'] as String),
   id: (json['id'] as num).toInt(),
   title: json['title'] as String,
   imageUrl: json['imageUrl'] as String,
   nickname: json['nickname'] as String,
-  createdAt: DataUtils.dateTimeFromJson(json['createdAt'] as String),
 );
 
 Map<String, dynamic> _$CommunityDetailModelToJson(
@@ -31,6 +33,8 @@ Map<String, dynamic> _$CommunityDetailModelToJson(
   'content': instance.content,
   'scrapped': instance.scrapped,
   'profileImage': instance.profileImage,
+  'scrapCount': instance.scrapCount,
+  'commentCount': instance.commentCount,
   'x': instance.x,
   'y': instance.y,
   'createdAt': instance.createdAt.toIso8601String(),
