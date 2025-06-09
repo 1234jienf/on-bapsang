@@ -1,12 +1,12 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/dio/dio.dart';
+import 'package:frontend/common/model/wrapper/int_list_wrapper_response.dart';
 import 'package:frontend/community/model/community_model.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 
 import '../../common/const/securetoken.dart';
-import '../../common/model/wrapper/pagination_int_wrapper_response.dart';
 
 part 'home_screen_community_repository.g.dart';
 
@@ -30,5 +30,5 @@ abstract class HomeScreenCommunityRepository<CommuintyModel> {
 
   @GET('/posts')
   @Headers({'accessToken': 'true'})
-  Future<PaginationIntWrapperResponse<CommunityModel>> fetchData({@Query('size') int size = 6});
+  Future<IntListWrapperResponse<CommunityModel>> fetchData({@Query('size') int size = 6});
 }

@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 import '../int/cursor_pagination_int_model.dart';
 
+part 'pagination_int_wrapper_response.g.dart';
+
 @JsonSerializable(genericArgumentFactories: true)
 class PaginationIntWrapperResponse<T> {
   final String message;

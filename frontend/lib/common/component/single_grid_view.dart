@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../provider/single_state_notifier.dart';
+import '../model/wrapper/int_list_wrapper_response.dart';
+import '../provider/single_int_state_notifier.dart';
 
 typedef SingleWidgetBuilder<T> = Widget Function(BuildContext context, int index, T model);
 
 class SingleIntGridView<T> extends ConsumerStatefulWidget {
-  final StateNotifierProvider<SingleStateNotifier<T>, AsyncValue<List<T>>> provider;
+  final StateNotifierProvider<SingleIntListStateNotifier<T>, AsyncValue<IntListWrapperResponse<T>>> provider;
   final SingleWidgetBuilder<T> itemBuilder;
   final double childAspectRatio;
   const SingleIntGridView({super.key, required this.itemBuilder, required this.provider, required this.childAspectRatio});
@@ -27,7 +28,7 @@ class _SingleIntGridViewState<T> extends ConsumerState<SingleIntGridView<T>> {
     final items = ref.watch(widget.provider);
 
     return items.when(
-      data: (item) => _buildGrid(item),
+      data: (item) => _buildGrid(item.result),
       loading: () => const SliverToBoxAdapter(
         child: Center(child: CircularProgressIndicator()),
       ),

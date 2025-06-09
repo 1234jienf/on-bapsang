@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../common/appbar/home_appbar.dart';
 import '../../community/component/community_card.dart';
+import '../../community/view/community_detail_screen.dart';
 import '../component/recipe_card.dart';
 import '../component/recipe_icon.dart';
 
@@ -152,7 +153,12 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
           SingleIntGridView(
             itemBuilder: <CommunityModel>(_, index, model) {
               return GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  context.pushNamed(
+                    CommunityDetailScreen.routeName,
+                    pathParameters: {'id': model.id.toString()},
+                  );
+                },
                 child: CommunityCard.fromModel(model: model),
               );
             },

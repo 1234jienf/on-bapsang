@@ -50,7 +50,7 @@ class CustomInterceptor extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     // ignore: avoid_print
     print(
-      '[RES], [${response.requestOptions.method}], ${response.requestOptions.uri}',
+      '[RES], [${response.requestOptions.method}], ${response.requestOptions.uri},}',
     );
 
     super.onResponse(response, handler);
