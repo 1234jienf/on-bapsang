@@ -81,13 +81,13 @@ class _PaginationIntGridViewState<T extends IModelWithIntId> extends ConsumerSta
             crossAxisSpacing: 10,
             childAspectRatio: widget.childAspectRatio,
           ),
-          itemCount: cp.data.length + 1,
+          itemCount: cp.data.content.length + 1,
           itemBuilder: (_, index) {
-            if (index == cp.data.length) {
+            if (index == cp.data.content.length) {
               return Center(child: CircularProgressIndicator());
             }
 
-            final item = cp.data[index];
+            final item = cp.data.content[index];
             return widget.itemBuilder(context, index, item);
           },
         ),

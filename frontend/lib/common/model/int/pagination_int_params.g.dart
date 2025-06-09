@@ -8,10 +8,10 @@ part of 'pagination_int_params.dart';
 
 PaginationIntParams _$PaginationIntParamsFromJson(Map<String, dynamic> json) =>
     PaginationIntParams(
-      afterId: (json['afterId'] as num?)?.toInt(),
-      count: (json['count'] as num?)?.toInt(),
+      size: (json['size'] as num?)?.toInt(),
+      page: (json['page'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$PaginationIntParamsToJson(
   PaginationIntParams instance,
-) => <String, dynamic>{'afterId': instance.afterId, 'count': instance.count};
+) => <String, dynamic>{'page': instance.page, 'size': instance.size};

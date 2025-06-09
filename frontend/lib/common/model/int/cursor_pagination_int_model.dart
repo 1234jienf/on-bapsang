@@ -15,44 +15,81 @@ class CursorIntPaginationLoading extends CursorIntPaginationBase {}
 @JsonSerializable(genericArgumentFactories: true)
 class CursorIntPagination<T> extends CursorIntPaginationBase {
 
-  final CursorIntPaginationMeta meta;
-  final List<T> data;
+  final int status;
+  final String message;
+  final CursorIntPaginationData<T> data;
 
-  CursorIntPagination({required this.meta, required this.data});
+  CursorIntPagination(
+      {required this.data, required this.status, required this.message});
 
-  CursorIntPagination copyWith({
-    final CursorIntPaginationMeta? meta,
-    final List<T>? data,
+  CursorIntPagination<T> copyWith({
+    final int? status,
+    final String? message,
+    final CursorIntPaginationData<T>? data
   }) {
     return CursorIntPagination<T>(
-        meta: meta ?? this.meta, data: data ?? this.data);
+        status : status ?? this.status, data: data ?? this.data, message : message ?? this.message);
   }
 
-  factory CursorIntPagination.fromJson(Map<String, dynamic> json, T Function(Object? json) fromJsonT) => _$CursorIntPaginationFromJson(json, fromJsonT);
+  factory CursorIntPagination.fromJson(Map<String, dynamic> json,
+      T Function(Object? json) fromJsonT) =>
+      _$CursorIntPaginationFromJson(json, fromJsonT);
+
+  Map<String, dynamic> toJson(
+      Object? Function(T value) toJsonT,
+      ) =>
+      _$CursorIntPaginationToJson(this, toJsonT);
+}
+
+@JsonSerializable(genericArgumentFactories: true)
+class CursorIntPaginationData<T> {
+  final List<T> content;
+  final CursorIntPaginationPageable? pageable;
+  final bool? last;
+
+  CursorIntPaginationData({required this.content, this.pageable, this.last});
+
+  CursorIntPaginationData<T> copyWith({
+    final List<T>? content,
+    final CursorIntPaginationPageable? pageable,
+    final bool? last,
+  }) {
+    return CursorIntPaginationData<T>(
+        content: content ?? this.content, pageable: pageable ?? this.pageable, last : last ?? this.last);
+  }
+
+  factory CursorIntPaginationData.fromJson(
+      Map<String, dynamic> json,
+      T Function(Object? json) fromJsonT,
+      ) => _$CursorIntPaginationDataFromJson(json, fromJsonT);
+
+  Map<String, dynamic> toJson(
+      Object? Function(T value) toJsonT,
+      ) =>
+      _$CursorIntPaginationDataToJson(this, toJsonT);
 }
 
 @JsonSerializable()
-class CursorIntPaginationMeta {
-  final bool last;
-  final int totalElements;
+class CursorIntPaginationPageable {
+  final int pageNumber;
 
-  CursorIntPaginationMeta({required this.totalElements, required this.last});
+  CursorIntPaginationPageable({required this.pageNumber});
 
-  CursorIntPaginationMeta copyWith({
-    final int? totalElement,
-    final bool? last,
-  }) {
-    return CursorIntPaginationMeta(totalElements: totalElements, last: last ?? this.last);
+  CursorIntPaginationPageable copyWith({
+    final int? pageNumber,
+}) {
+    return CursorIntPaginationPageable(pageNumber : pageNumber ?? this.pageNumber);
   }
 
-  factory CursorIntPaginationMeta.fromJson(Map<String, dynamic> json) => _$CursorIntPaginationMetaFromJson(json);
+  factory CursorIntPaginationPageable.fromJson(Map<String, dynamic> json) => _$CursorIntPaginationPageableFromJson(json);
 
+  Map<String, dynamic> toJson() => _$CursorIntPaginationPageableToJson(this);
 }
 
 class CursorIntPaginationRefetching<T> extends CursorIntPagination<T> {
-  CursorIntPaginationRefetching({required super.meta, required super.data});
+  CursorIntPaginationRefetching({required super.status, required super.data, required super.message});
 }
 
 class CursorIntPaginationFetchingMore<T> extends CursorIntPagination<T> {
-  CursorIntPaginationFetchingMore({required super.meta, required super.data});
+  CursorIntPaginationFetchingMore({required super.status, required super.data, required super.message});
 }

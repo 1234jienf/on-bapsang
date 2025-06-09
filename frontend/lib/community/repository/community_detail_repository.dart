@@ -6,7 +6,7 @@ import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 
 import '../../common/const/securetoken.dart';
-import '../../common/model/wrapper/int_data_wrapper_response.dart';
+import '../../common/model/int/single_int_one_page_model.dart';
 
 part 'community_detail_repository.g.dart';
 
@@ -15,14 +15,13 @@ final communityDetailRepositoryProvider = Provider<CommunityDetailRepository>((
 ) {
   final dio = ref.watch(dioProvider);
 
-  final repository = _CommunityDetailRepository(
+  final repository = CommunityDetailRepository(
     dio,
     baseUrl: '$ip/api/community',
   );
 
   return repository;
 });
-
 
 @RestApi()
 abstract class CommunityDetailRepository {
@@ -31,7 +30,7 @@ abstract class CommunityDetailRepository {
 
   @GET('/posts/{id}')
   @Headers({'accessToken': 'true'})
-  Future<IntDataWrapperResponse<CommunityDetailModel>> fetchData({
+  Future<SingleIntOnePageModel<CommunityDetailModel>> fetchData({
     @Path() required String id,
   });
 }

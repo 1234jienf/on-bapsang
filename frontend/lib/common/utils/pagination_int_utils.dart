@@ -6,7 +6,8 @@ class PaginationIntUtils {
     required ScrollController controller,
     required PaginationIntProvider provider,
   }) {
-    //TODO
-    // provider에 paginate 요청
+    if (controller.offset > controller.position.maxScrollExtent - 100) {
+      provider.paginate(fetchMore: true);
     }
   }
+}

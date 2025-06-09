@@ -4,6 +4,8 @@ import 'package:frontend/common/layout/default_layout.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../component/community_comment.dart';
+import '../model/community_detail_model.dart';
 import '../provider/community_detail_provider.dart';
 
 class CommunityDetailScreen extends ConsumerStatefulWidget {
@@ -14,7 +16,8 @@ class CommunityDetailScreen extends ConsumerStatefulWidget {
   const CommunityDetailScreen({super.key, required this.id});
 
   @override
-  ConsumerState<CommunityDetailScreen> createState() => _CommunityDetailScreenState();
+  ConsumerState<CommunityDetailScreen> createState() =>
+      _CommunityDetailScreenState();
 }
 
 class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
@@ -28,15 +31,19 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
     super.initState();
     dt = DateTime.now();
     formattedDate = DateFormat('yy년 M월 d일').format(dt);
-    WidgetsBinding.instance.addPostFrameCallback((_) {ref.read(communityDetailProvider(widget.id).notifier).fetchData();});
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(communityDetailProvider(widget.id).notifier).fetchData();
+    });
   }
-
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(communityDetailProvider(widget.id));
-
+    final state = ref.watch(communityDetailProvider(widget.id)).value?.data;
     print(state);
+    
+    if (state == null) {
+      return DefaultLayout(child: Center(child: CircularProgressIndicator(),));
+    }
 
     return DefaultLayout(
       appBar: AppBar(
@@ -53,11 +60,12 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
       ),
-      child: _content(),
+      child: _content(state),
     );
   }
 
-  Widget _content() {
+  Widget _content(CommunityDetailModel state) {
+    final imageWidth = MediaQuery.of(context).size.width;
     return CustomScrollView(
       controller: controller,
       slivers: [
@@ -71,21 +79,37 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.account_circle_outlined, size: 32),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child:
+                          state.profileImage == null
+                              ? Icon(Icons.account_circle_outlined, size: 32)
+                              : Image.network(
+                                state.profileImage!,
+                                width: 32,
+                                height: 32,
+                                fit: BoxFit.cover,
+                              ),
+                    ),
                     const SizedBox(width: 10),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('user_0287', style: TextStyle(fontSize: 14)),
-                        Text(formattedDate, style: TextStyle(fontSize: 14)),
+                        Text(state.nickname, style: TextStyle(fontSize: 14)),
+                        Text(
+                          DateFormat('yy년 M월 d일').format(state.createdAt),
+                          style: TextStyle(fontSize: 14),
+                        ),
                       ],
                     ),
                   ],
                 ),
               ),
-              Image.asset(
-                'asset/img/community_detail_pic.png',
+              Image.network(
+                state.imageUrl,
                 fit: BoxFit.cover,
+                width: imageWidth,
+                height: imageWidth,
               ),
               const SizedBox(height: 12),
             ],
@@ -94,7 +118,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
 
         SliverPadding(
           padding: EdgeInsets.only(left: horizontal),
-          sliver: _tagDetail(),
+          sliver: _tagDetail(state),
         ),
 
         SliverToBoxAdapter(
@@ -107,7 +131,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
           ),
         ),
 
-        _contentDetail(),
+        _contentDetail(state),
 
         SliverToBoxAdapter(
           child: Padding(
@@ -119,18 +143,18 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
           ),
         ),
 
-        _comment(),
+        CommunityComment(),
       ],
     );
   }
 
-  Widget _tagDetail() {
+  Widget _tagDetail(CommunityDetailModel state) {
     return SliverToBoxAdapter(
       child: SizedBox(
         height: 90,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: 5,
+          itemCount: 1,
           itemBuilder: (_, index) {
             return Padding(
               padding: const EdgeInsets.only(right: 12.0),
@@ -149,7 +173,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "간단하게 만드는 밥도둑, 팽이버섯 두부 조림",
+                                '간단하게 만드는 밥도둑, 팽이버섯 두부 조림',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -174,7 +198,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
     );
   }
 
-  Widget _contentDetail() {
+  Widget _contentDetail(CommunityDetailModel state) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: horizontal),
@@ -184,8 +208,20 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Text(
+                  state.commentCount.toString(),
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(width: 4.0),
                 Icon(Icons.comment_outlined, size: 24),
-                Icon(Icons.bookmark_border_outlined, size: 26),
+                const SizedBox(width: 10.0),
+                Text(
+                  state.scrapCount.toString(),
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+                ),
+                state.scrapped
+                    ? Icon(Icons.bookmark, size: 26)
+                    : Icon(Icons.bookmark_border_outlined, size: 26),
               ],
             ),
             Padding(
@@ -200,7 +236,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                       child: Text(
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        "간단하게 만드는 밥도둑, 팽이버섯 두부 조림",
+                        state.title,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -215,7 +251,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                       child: Text(
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        "요리에 대한 소개 영역입니다. 요리에 대한 소개 영역입니다. 요리에 대한 소개 영역입니다. 요리에 대한 소개 영역입니다. 요리에 대한 소개 영역입니다.",
+                        state.content,
                         style: TextStyle(fontSize: 14),
                       ),
                     ),
@@ -224,70 +260,6 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _comment() {
-    return SliverPadding(
-      padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: horizontal),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          childCount: 3,
-          (_, index) => Padding(
-            padding: const EdgeInsets.only(bottom: 12.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 38,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Icon(Icons.account_circle_outlined, size: 32)],
-                  ),
-                ),
-
-                const SizedBox(width: 10),
-
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('user_0287', style: TextStyle(fontSize: 14)),
-                    Text(
-                      formattedDate,
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(width: 10),
-
-                Expanded(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          height: 38,
-                          child: Text(
-                            "댓글 영역입니다. 댓글 영역입니다. 댓글 영역입니다.",
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(width: 15),
-
-                      // 하트 아이콘
-                      Icon(Icons.favorite_border_outlined, size: 20),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );

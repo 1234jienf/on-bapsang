@@ -1,35 +1,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../model/wrapper/int_data_wrapper_response.dart';
-import '../model/wrapper/int_list_wrapper_response.dart';
+import '../model/int/cursor_pagination_int_model.dart';
 
-class SingleIntListStateNotifier<T> extends StateNotifier<AsyncValue<IntListWrapperResponse<T>>> {
-  final Future<IntListWrapperResponse<T>> Function() fetchFunction;
+class SingleIntStateNotifier<T>
+    extends StateNotifier<AsyncValue<CursorIntPagination<T>>> {
+  final Future<CursorIntPagination<T>> Function() fetchFunction;
 
-  SingleIntListStateNotifier({required this.fetchFunction}) : super(const AsyncValue.loading());
+  SingleIntStateNotifier({required this.fetchFunction})
+    : super(const AsyncValue.loading());
 
-  Future<List<T>> fetchData() async {
-    state = const AsyncValue.loading();
-    final response = await fetchFunction();
-    state = AsyncValue.data(response);
-    return response.result;
-  }
-
-  Future<void> refresh() async {
-    await fetchData();
-  }
-}
-
-class SingleIntDataStateNotifier<T> extends StateNotifier<AsyncValue<IntDataWrapperResponse<T>>> {
-  final Future<IntDataWrapperResponse<T>> Function() fetchFunction;
-
-  SingleIntDataStateNotifier({required this.fetchFunction}) : super(const AsyncValue.loading());
-
-  Future<T> fetchData() async {
-    state = const AsyncValue.loading();
-    final response = await fetchFunction();
-    state = AsyncValue.data(response);
-    return response.result;
+  Future<CursorIntPaginationData<T>> fetchData() async {
+    try {
+      state = const AsyncValue.loading();
+      final response = await fetchFunction();
+      state = AsyncValue.data(response);
+      return response.data;
+    } catch (error, stackTrace) {
+      print("error : $error");
+      print("stackTrace : $stackTrace");
+      state = AsyncValue.error(error, stackTrace);
+      return CursorIntPaginationData(content: []);
+    }
   }
 
   Future<void> refresh() async {

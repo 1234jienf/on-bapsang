@@ -18,7 +18,7 @@ class _CommunityDetailRepository implements CommunityDetailRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<IntDataWrapperResponse<CommunityDetailModel>> fetchData({
+  Future<SingleIntOnePageModel<CommunityDetailModel>> fetchData({
     required String id,
   }) async {
     final _extra = <String, dynamic>{};
@@ -27,7 +27,7 @@ class _CommunityDetailRepository implements CommunityDetailRepository {
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _options =
-        _setStreamType<IntDataWrapperResponse<CommunityDetailModel>>(
+        _setStreamType<SingleIntOnePageModel<CommunityDetailModel>>(
           Options(method: 'GET', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
@@ -40,9 +40,9 @@ class _CommunityDetailRepository implements CommunityDetailRepository {
               ),
         );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late IntDataWrapperResponse<CommunityDetailModel> _value;
+    late SingleIntOnePageModel<CommunityDetailModel> _value;
     try {
-      _value = IntDataWrapperResponse<CommunityDetailModel>.fromJson(
+      _value = SingleIntOnePageModel<CommunityDetailModel>.fromJson(
         _result.data!,
         (json) => CommunityDetailModel.fromJson(json as Map<String, dynamic>),
       );
