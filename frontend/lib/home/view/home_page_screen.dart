@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/common/component/single_grid_view.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/home/provider/home_screen_community_provider.dart';
 import 'package:frontend/search/view/search_main_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../common/appbar/home_appbar.dart';
+import '../../community/component/community_card.dart';
 import '../component/recipe_card.dart';
 import '../component/recipe_icon.dart';
 
-class HomePageScreen extends StatefulWidget {
+class HomePageScreen extends ConsumerStatefulWidget {
   const HomePageScreen({super.key});
 
   @override
-  State<HomePageScreen> createState() => _HomePageScreenState();
+  ConsumerState<HomePageScreen> createState() => _HomePageScreenState();
 }
 
-class _HomePageScreenState extends State<HomePageScreen> {
+class _HomePageScreenState extends ConsumerState<HomePageScreen> {
   final ScrollController controller = ScrollController();
 
   @override
@@ -145,28 +149,15 @@ class _HomePageScreenState extends State<HomePageScreen> {
           ),
 
           // SliverPadding 안에 CustomScrollView 중첩해서 쓰면 안된다.
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 15.0),
-            sliver: SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (_, index) => GestureDetector(
-                  onTap: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 6.0),
-                    child: Center(child: Text('hi')),
-
-                    // child: CommunityCard(nickname: 'user_0028'),
-                  ),
-                ),
-                childCount: 6,
-              ),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                childAspectRatio: 175 / 255,
-              ),
-            ),
+          SingleIntGridView(
+            itemBuilder: <CommunityModel>(_, index, model) {
+              return GestureDetector(
+                onTap: () {},
+                child: CommunityCard.fromModel(model: model),
+              );
+            },
+            provider: homeScreenCommunityProvider,
+            childAspectRatio: 175 / 255,
           ),
         ],
       ),

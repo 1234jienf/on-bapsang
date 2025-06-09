@@ -46,11 +46,10 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
       appBar: SearchAppBar(),
       child: Padding(
         // 전체 패딩 갭
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
           children: [
             _menuBar(state),
-
             Expanded(
               child: PageView(
                 controller: _pageController,

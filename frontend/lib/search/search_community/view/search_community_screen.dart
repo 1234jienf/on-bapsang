@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/common/component/pagination_int_grid_view.dart';
 import 'package:frontend/community/provider/community_provider.dart';
 
-import '../../../common/layout/default_layout.dart';
 import '../../../community/component/community_card.dart';
 
 
@@ -11,14 +10,11 @@ class SearchCommunityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultLayout(
-        child: PaginationIntGridView(provider: communityProvider,
-            itemBuilder: <CommunityModel>(_, index, model) {
-              return GestureDetector(
-                onTap: () {}, child: CommunityCard.fromModel(model: model),);
-            })
-    );
+    return PaginationIntGridView(childAspectRatio : 175 / 275 , provider: communityProvider,
+        itemBuilder: <CommunityModel>(_, index, model) {
+          return GestureDetector(
+            onTap: () {}, child: CommunityCard.fromModel(model: model),);
+        });
   }
-
 }
 

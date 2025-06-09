@@ -11,8 +11,9 @@ typedef PaginationWidgetBuilder<T extends IModelWithIntId> = Widget Function(Bui
 class PaginationIntGridView<T extends IModelWithIntId> extends ConsumerStatefulWidget {
   final StateNotifierProvider<PaginationIntProvider, CursorIntPaginationBase> provider;
   final PaginationWidgetBuilder<T> itemBuilder;
+  final double childAspectRatio;
 
-  const PaginationIntGridView({super.key, required this.provider, required this.itemBuilder});
+  const PaginationIntGridView({super.key, required this.provider, required this.itemBuilder, required this.childAspectRatio});
 
   @override
   ConsumerState<PaginationIntGridView> createState() => _PaginationIntGridViewState();
@@ -75,10 +76,10 @@ class _PaginationIntGridViewState<T extends IModelWithIntId> extends ConsumerSta
         child: GridView.builder(
           controller: controller,
           physics: AlwaysScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 10,
-            childAspectRatio: 175 / 250,
+            childAspectRatio: widget.childAspectRatio,
           ),
           itemCount: cp.data.length + 1,
           itemBuilder: (_, index) {

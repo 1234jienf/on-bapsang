@@ -36,9 +36,15 @@ class CommunityCard extends StatelessWidget {
       height: 260,
       child: Column(
         children: [
-          Hero(tag: ObjectKey(id.toString()),
-              child: ClipRRect(borderRadius: BorderRadius.circular(12.0),
-                child: Image.network(imageUrl, fit: BoxFit.cover, width: 175, height: 175,),)),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12.0),
+            child: Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+              width: 175,
+              height: 175,
+            ),
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

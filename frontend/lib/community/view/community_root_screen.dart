@@ -53,7 +53,7 @@ class _CommunityRootScreenState extends State<CommunityRootScreen> {
             onTap: () {context.pushNamed(CommunityDetailScreen.routeName, pathParameters: {'id' : model.id.toString()});},
             child: CommunityCard.fromModel(model: model),
           );
-        },
+        }, childAspectRatio: 175 / 255,
       ),
     );
   }

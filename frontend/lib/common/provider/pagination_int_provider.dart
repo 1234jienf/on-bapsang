@@ -11,7 +11,7 @@ class _PaginationInfo {
   final bool forceRefetch;
 
   _PaginationInfo({
-    this.fetchCount = 4,
+    this.fetchCount = 10,
     this.fetchMore = false,
     this.forceRefetch = false,
   });
@@ -42,7 +42,7 @@ U extends IBasePaginationIntRepository<T>
   }
 
   Future<void> paginate({
-    int fetchCount = 4,
+    int fetchCount = 10,
     bool fetchMore = false,
     bool forceRefetch = false,
   }) async {
