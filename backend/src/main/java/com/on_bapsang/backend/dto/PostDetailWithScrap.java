@@ -10,6 +10,7 @@ public class PostDetailWithScrap {
     private final Long id;
     private final String title;
     private final String content;
+    private final String recipeTag;
     private final String imageUrl;
     private final String nickname;
     private final String profileImage;
@@ -24,6 +25,7 @@ public class PostDetailWithScrap {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
+        this.recipeTag = post.getRecipeTag();
         this.imageUrl = imageUrl;
         this.nickname = post.getUser().getNickname();
         this.profileImage = post.getUser().getProfileImage();
