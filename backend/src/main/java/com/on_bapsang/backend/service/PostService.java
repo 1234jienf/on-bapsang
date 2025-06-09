@@ -53,21 +53,21 @@ public class PostService {
             searchKeywordService.saveRecentKeyword(user.getUserId(), keyword);
             searchKeywordService.increaseKeywordScore(keyword);
 
-            // 🔍 검색어 기반 ID 페이징
+            // 검색어 기반 ID 페이징
             postIdPage = postRepository.findPostIdsByTitleKeyword(keyword, pageable);
         } else {
-            // 🔍 전체 글 ID 페이징
+            // 전체 글 ID 페이징
             postIdPage = postRepository.findAllPostIds(pageable);
         }
 
-        // ✅ ID 리스트로 Post + User fetch join 조회
+        // ID 리스트로 Post + User fetch join 조회
         posts = postRepository.findAllWithUserByIds(postIdPage.getContent());
 
         List<PostSummaryWithScrap> summaries = posts.stream()
                 .map(post -> {
                     boolean isScrapped = scrapService.isScrapped(post, user);
                     String url = post.getImageUrl() != null
-                            ? imageUploader.generatePresignedUrl(post.getImageUrl(), 60)
+                            ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
                             : null;
                     return new PostSummaryWithScrap(post, isScrapped, url);
                 }).toList();
@@ -80,7 +80,7 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
         String presignedUrl = post.getImageUrl() != null
-                ? imageUploader.generatePresignedUrl(post.getImageUrl(), 10)
+                ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
                 : null;
         return new PostDetail(post, presignedUrl);
     }
@@ -91,7 +91,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
         boolean isScrapped = scrapService.isScrapped(post, user);
         String presignedUrl = post.getImageUrl() != null
-                ? imageUploader.generatePresignedUrl(post.getImageUrl(), 10)
+                ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
                 : null;
         return new PostDetailWithScrap(post, isScrapped, presignedUrl);
     }

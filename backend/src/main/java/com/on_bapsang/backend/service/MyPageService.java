@@ -24,7 +24,7 @@ public class MyPageService {
         Page<MyPost> page = postRepository.findMyPostsByUser(user.getUserId(), pageable);
         List<MyPost> modified = page.getContent().stream().map(post -> {
             String url = post.getImageUrl() != null
-                    ? imageUploader.generatePresignedUrl(post.getImageUrl(), 60)
+                    ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
                     : null;
             post.setImageUrl(url);
             return post;
@@ -37,7 +37,7 @@ public class MyPageService {
             Page<ScrappedPost> page = postRepository.findScrappedPostsByUser(user.getUserId(), pageable);
             List<ScrappedPost> modified = page.getContent().stream().map(post -> {
                 String url = post.getImageUrl() != null
-                        ? imageUploader.generatePresignedUrl(post.getImageUrl(), 60)
+                        ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
                         : null;
                 post.setImageUrl(url);
                 return post;
