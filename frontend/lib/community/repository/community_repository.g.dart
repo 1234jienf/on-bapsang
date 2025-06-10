@@ -18,8 +18,8 @@ class _CommunityRepository implements CommunityRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<PaginationIntWrapperResponse<CommunityModel>> paginate({
-    PaginationIntParams? paginationIntParams = const PaginationIntParams(),
+  Future<CursorIntPagination<CommunityModel>> paginate({
+    PaginationIntParams? paginationIntParams,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -30,54 +30,23 @@ class _CommunityRepository implements CommunityRepository {
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options =
-        _setStreamType<PaginationIntWrapperResponse<CommunityModel>>(
-          Options(method: 'GET', headers: _headers, extra: _extra)
-              .compose(
-                _dio.options,
-                '/posts',
-                queryParameters: queryParameters,
-                data: _data,
-              )
-              .copyWith(
-                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
-              ),
-        );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late PaginationIntWrapperResponse<CommunityModel> _value;
-    try {
-      _value = PaginationIntWrapperResponse<CommunityModel>.fromJson(
-        _result.data!,
-        (json) => CommunityModel.fromJson(json as Map<String, dynamic>),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<CommunityDetailModel> getCommunityDetail({required int id}) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CommunityDetailModel>(
+    final _options = _setStreamType<CursorIntPagination<CommunityModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/${id}',
+            '/posts',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late CommunityDetailModel _value;
+    late CursorIntPagination<CommunityModel> _value;
     try {
-      _value = CommunityDetailModel.fromJson(_result.data!);
+      _value = CursorIntPagination<CommunityModel>.fromJson(
+        _result.data!,
+        (json) => CommunityModel.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
