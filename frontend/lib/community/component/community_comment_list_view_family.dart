@@ -4,13 +4,13 @@ import '../../common/model/int/single_int_one_page_model.dart';
 import '../../common/provider/single_int_one_page_notifier.dart';
 
 typedef SingleWidgetBuilder<T> =
-Widget Function(BuildContext context, int index, T model);
+    Widget Function(BuildContext context, int index, T model);
 
 class CommunityCommentListViewFamily<T> extends ConsumerStatefulWidget {
   final StateNotifierProviderFamily<
-      SingleIntOnePageNotifier<List<T>>,
-      AsyncValue<SingleIntOnePageModel<List<T>>>,
-      String
+    SingleIntOnePageNotifier<List<T>>,
+    AsyncValue<SingleIntOnePageModel<List<T>>>,
+    String
   >
   provider;
   final SingleWidgetBuilder<T> itemBuilder;
@@ -35,9 +35,7 @@ class _CommunityCommentListViewFamilyState<T>
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(widget
-          .provider(widget.id)
-          .notifier).fetchData();
+      ref.read(widget.provider(widget.id).notifier).fetchData();
     });
     super.initState();
   }
@@ -46,19 +44,14 @@ class _CommunityCommentListViewFamilyState<T>
   Widget build(BuildContext context) {
     final items = ref.watch(widget.provider(widget.id));
 
-    print("HIHNDLHNLSDF");
-    print(items);
-
     return items.when(
       data: (item) => _buildGrid(item.data),
       loading:
-          () =>
-      const SliverToBoxAdapter(
-        child: Center(child: CircularProgressIndicator()),
-      ),
+          () => const SliverToBoxAdapter(
+            child: Center(child: CircularProgressIndicator()),
+          ),
       error:
-          (error, stack) =>
-          SliverToBoxAdapter(
+          (error, stack) => SliverToBoxAdapter(
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -68,9 +61,7 @@ class _CommunityCommentListViewFamilyState<T>
                   ElevatedButton(
                     onPressed: () {
                       ref
-                          .read(widget
-                          .provider(widget.id)
-                          .notifier)
+                          .read(widget.provider(widget.id).notifier)
                           .fetchFunction();
                     },
                     child: const Text('다시 시도'),
@@ -83,10 +74,23 @@ class _CommunityCommentListViewFamilyState<T>
   }
 
   Widget _buildGrid(List<T> items) {
+    if (items.isEmpty) {
+      return SliverToBoxAdapter(child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 26.0, horizontal: 16.0),
+        child: Center(child: Text('아직 댓글이 없습니다')),
+      ));
+    }
+
     return SliverPadding(
-        padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
-        sliver: SliverList(delegate: SliverChildBuilderDelegate(childCount: items.length, (_, index) {
+      padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(childCount: items.length, (
+          _,
+          index,
+        ) {
           return widget.itemBuilder(context, index, items[index]);
-        })));
+        }),
+      ),
+    );
   }
 }

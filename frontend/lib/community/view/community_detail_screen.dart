@@ -43,7 +43,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
     final state = ref.watch(communityDetailProvider(widget.id)).value?.data;
 
     if (state == null) {
-      return DefaultLayout(child: Center(child: CircularProgressIndicator(),));
+      return DefaultLayout(child: Center(child: CircularProgressIndicator()));
     }
 
     return DefaultLayout(
@@ -143,8 +143,14 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
             child: const Divider(thickness: 0.5, color: Colors.grey),
           ),
         ),
-        CommunityCommentListViewFamily(itemBuilder: <CommunityCommentModel>(_, index, model) {return CommunityComment.fromModel(model : model);}, provider: communityCommentProvider, childAspectRatio: 175/ 250, id: state.id.toString(),)
-
+        CommunityCommentListViewFamily(
+          itemBuilder: <CommunityCommentModel>(_, index, model) {
+            return CommunityComment.fromModel(model: model);
+          },
+          provider: communityCommentProvider,
+          childAspectRatio: 175 / 250,
+          id: state.id.toString(),
+        ),
       ],
     );
   }
