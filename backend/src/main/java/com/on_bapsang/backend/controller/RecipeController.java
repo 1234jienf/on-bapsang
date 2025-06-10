@@ -22,10 +22,14 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     /** 외부 AI 추천 */
+    /** 외부 AI 추천 + 페이지네이션 */
     @PostMapping("/foreign")
     public ResponseEntity<RecommendResponse> recommend(
-            @Valid @RequestBody RecommendRequest request) {
-        RecommendResponse resp = recommendationService.getRecommendations(request);
+            @Valid @RequestBody RecommendRequest request,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        RecommendResponse resp = recommendationService.getRecommendations(request, page, size);
         return ResponseEntity.status(HttpStatus.CREATED).body(resp);
     }
 
