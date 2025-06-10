@@ -2,10 +2,7 @@ package com.on_bapsang.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.on_bapsang.backend.dto.ApiResponse;
-import com.on_bapsang.backend.dto.PostRequest;
-import com.on_bapsang.backend.dto.PostSummary;
-import com.on_bapsang.backend.dto.PostSummaryWithScrap;
+import com.on_bapsang.backend.dto.*;
 import com.on_bapsang.backend.entity.Post;
 import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.security.UserDetailsImpl;
@@ -55,10 +52,11 @@ public class PostController {
 
     // 레시피 db 조회
     @GetMapping("/autocomplete")
-    public ResponseEntity<ApiResponse<List<String>>> getRecipeTags(@RequestParam String keyword) {
-        List<String> suggestions = postService.getRecipeTagSuggestions(keyword);
+    public ResponseEntity<ApiResponse<List<RecipeTagSuggestion>>> getRecipeTags(@RequestParam String keyword) {
+        List<RecipeTagSuggestion> suggestions = postService.getRecipeTagSuggestions(keyword);
         return ResponseEntity.ok(ApiResponse.success("레시피 태그 조회 성공", suggestions));
     }
+
 
 
     // 글 목록 조회
