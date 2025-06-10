@@ -30,7 +30,7 @@ public class RecipeService {
     @Getter
     @AllArgsConstructor
     public static class Meta {
-        private long totalElements; // 전체 요소 수
+        private int currentPage; // 현재 페이지 번호
         private boolean hasMore; // 다음 페이지 여부
     }
 
@@ -67,8 +67,8 @@ public class RecipeService {
         if (raw != null && !raw.isBlank()) {
             steps = Arrays.stream(raw.split("\\r?\\n"))
                     .map(String::trim)
-                    .filter(s -> s.matches("^\\d+\\..+")) // “1. …” 형태만
-                    .map(s -> s.replaceFirst("^\\d+\\.\\s*", "")) // “1. ” 제거
+                    .filter(s -> s.matches("^\\d+\\..+")) // "1. …" 형태만
+                    .map(s -> s.replaceFirst("^\\d+\\.\\s*", "")) // "1. " 제거
                     .collect(Collectors.toList());
         }
 
@@ -121,7 +121,7 @@ public class RecipeService {
                 })
                 .collect(Collectors.toList());
 
-        Meta meta = new Meta(recipePage.getTotalElements(), recipePage.hasNext());
+        Meta meta = new Meta(recipePage.getNumber(), recipePage.hasNext());
         return new PagedResponse<>(meta, summaries);
     }
 
@@ -156,8 +156,7 @@ public class RecipeService {
                 })
                 .collect(Collectors.toList());
 
-        Meta meta = new Meta(recipePage.getTotalElements(), recipePage.hasNext());
+        Meta meta = new Meta(recipePage.getNumber(), recipePage.hasNext());
         return new PagedResponse<>(meta, summaries);
     }
-
 }
