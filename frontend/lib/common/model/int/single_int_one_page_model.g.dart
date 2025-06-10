@@ -1,25 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'int_list_wrapper_response.dart';
+part of 'single_int_one_page_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-IntListWrapperResponse<T> _$IntListWrapperResponseFromJson<T>(
+SingleIntOnePageModel<T> _$SingleIntOnePageModelFromJson<T>(
   Map<String, dynamic> json,
   T Function(Object? json) fromJsonT,
-) => IntListWrapperResponse<T>(
-  message: json['message'] as String,
+) => SingleIntOnePageModel<T>(
   status: (json['status'] as num).toInt(),
-  result: (json['result'] as List<dynamic>).map(fromJsonT).toList(),
+  message: json['message'] as String,
+  data: fromJsonT(json['data']),
 );
 
-Map<String, dynamic> _$IntListWrapperResponseToJson<T>(
-  IntListWrapperResponse<T> instance,
+Map<String, dynamic> _$SingleIntOnePageModelToJson<T>(
+  SingleIntOnePageModel<T> instance,
   Object? Function(T value) toJsonT,
 ) => <String, dynamic>{
-  'message': instance.message,
   'status': instance.status,
-  'result': instance.result.map(toJsonT).toList(),
+  'message': instance.message,
+  'data': toJsonT(instance.data),
 };
