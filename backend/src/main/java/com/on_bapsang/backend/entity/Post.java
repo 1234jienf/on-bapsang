@@ -33,6 +33,10 @@ public class Post {
     // 자동완성으로 선택된 레시피 분류명
     private String recipeTag;
 
+    // 레시피 아이디
+    @Column(length = 32)
+    private String recipeId;
+
     // 스크랩 수
     @Column(nullable = false)
     private int scrapCount = 0;

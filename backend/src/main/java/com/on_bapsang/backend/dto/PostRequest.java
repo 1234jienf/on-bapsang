@@ -11,6 +11,7 @@ public class PostRequest {
     private String title;
     private String content;
     private String recipeTag;
+    private String recipeId;
     private Double x;
     private Double y;
 }
