@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/common/component/single_grid_view.dart';
+import 'package:frontend/common/component/single_int_grid_view.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/home/provider/home_screen_community_provider.dart';
 import 'package:frontend/search/view/search_main_screen.dart';

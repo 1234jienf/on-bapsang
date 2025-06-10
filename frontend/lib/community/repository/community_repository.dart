@@ -32,4 +32,6 @@ abstract class CommunityRepository
     @Queries() PaginationIntParams? paginationIntParams,
   });
 
+
+
 }

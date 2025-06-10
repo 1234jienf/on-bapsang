@@ -8,7 +8,7 @@ class CommunityCommentModel {
   final int id;
   final String content;
   final String nickname;
-  final String profileImage;
+  final String? profileImage;
   @JsonKey(fromJson: DataUtils.dateTimeFromJson)
   final DateTime createdAt;
   final List<dynamic> children;
@@ -24,4 +24,6 @@ class CommunityCommentModel {
 
   factory CommunityCommentModel.fromJson(Map<String, dynamic> json) =>
       _$CommunityCommentModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CommunityCommentModelToJson(this);
 }

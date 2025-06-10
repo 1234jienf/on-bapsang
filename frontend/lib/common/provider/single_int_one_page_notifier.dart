@@ -1,7 +1,10 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../model/int/single_int_one_page_model.dart';
 
+// 세부 페이지 (페이지네이션X) 보여주는 페이지
 class SingleIntOnePageNotifier<T>
     extends StateNotifier<AsyncValue<SingleIntOnePageModel<T>>> {
   final Future<SingleIntOnePageModel<T>> Function() fetchFunction;
@@ -19,13 +22,8 @@ class SingleIntOnePageNotifier<T>
       print("error : $error");
       print("stackTrace : $stackTrace");
       state = AsyncValue.error(error, stackTrace);
-      return SingleIntOnePageModel(status: 500, message: 'message', data: _emptyData<T>(),);
+      rethrow;
     }
-  }
-
-  T _emptyData<T>() {
-    if (T == List) return [] as T;
-    throw UnimplementedError('T 타입에 대한 기본값이 정의되지 않았어요');
   }
 
   Future<void> refresh() async {

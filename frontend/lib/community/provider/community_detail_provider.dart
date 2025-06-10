@@ -18,4 +18,5 @@ final communityDetailProvider = StateNotifierProvider.family<
       return response;
     },
   );
+
 });

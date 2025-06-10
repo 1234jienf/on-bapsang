@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/community/component/community_comment_list_view_family.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../component/community_comment.dart';
 import '../model/community_detail_model.dart';
+import '../provider/community_comment_provider.dart';
 import '../provider/community_detail_provider.dart';
 
 class CommunityDetailScreen extends ConsumerStatefulWidget {
@@ -39,8 +41,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(communityDetailProvider(widget.id)).value?.data;
-    print(state);
-    
+
     if (state == null) {
       return DefaultLayout(child: Center(child: CircularProgressIndicator(),));
     }
@@ -142,8 +143,8 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
             child: const Divider(thickness: 0.5, color: Colors.grey),
           ),
         ),
+        CommunityCommentListViewFamily(itemBuilder: <CommunityCommentModel>(_, index, model) {return CommunityComment.fromModel(model : model);}, provider: communityCommentProvider, childAspectRatio: 175/ 250, id: state.id.toString(),)
 
-        CommunityComment(),
       ],
     );
   }
