@@ -1,17 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchDetailNextBar extends StatelessWidget {
-  final String routeName;
+import '../provider/search_detail_tab_index_provider.dart';
+
+class SearchDetailNextBar extends ConsumerStatefulWidget {
   final String title;
-  const SearchDetailNextBar({super.key, required this.title, required this.routeName});
+  final SearchDetailTabIndexNotifier provider;
 
+  const SearchDetailNextBar({
+    super.key,
+    required this.provider,
+    required this.title,
+  });
+
+  @override
+  ConsumerState<SearchDetailNextBar> createState() => _ConsumerSearchDetailNextBarState();
+}
+
+class _ConsumerSearchDetailNextBarState extends ConsumerState<SearchDetailNextBar> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {context.pushNamed(routeName);},
+      onTap: () {
+        widget.provider.setIndexUp();
+      },
       child: Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0), color: Colors.black,),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: Colors.black,
+        ),
         width: MediaQuery.of(context).size.width,
         height: 60,
         child: Column(
@@ -19,7 +36,7 @@ class SearchDetailNextBar extends StatelessWidget {
           children: [
             Text(
               textAlign: TextAlign.center,
-              title,
+              widget.title,
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,

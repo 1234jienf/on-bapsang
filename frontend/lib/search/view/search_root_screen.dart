@@ -36,7 +36,6 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
 
   @override
   void dispose() {
-
     _pageController.dispose();
     super.dispose();
   }
