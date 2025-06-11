@@ -29,7 +29,7 @@ abstract class CommunityRepository
   @GET('/posts')
   @Headers({'accessToken': 'true'})
   Future<CursorIntPagination<CommunityModel>> paginate({
-    @Queries() PaginationIntParams? paginationIntParams,
+    @Queries() PaginationIntParams paginationIntParams = const PaginationIntParams()
   });
 
 

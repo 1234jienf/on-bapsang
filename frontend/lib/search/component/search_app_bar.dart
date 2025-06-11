@@ -48,7 +48,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
           onSubmitted: (value) {
-            context.pushNamed(SearchRootScreen.routeName);
+            context.pushNamed(SearchRootScreen.routeName, extra: value);
           },
         ),
       ),

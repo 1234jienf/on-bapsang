@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'community_repository.dart';
+part of 'search_repository.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'community_repository.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
-class _CommunityRepository implements CommunityRepository {
-  _CommunityRepository(this._dio, {this.baseUrl, this.errorLogger});
+class _SearchRepository implements SearchRepository {
+  _SearchRepository(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -18,31 +18,32 @@ class _CommunityRepository implements CommunityRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<CursorIntPagination<CommunityModel>> paginate({
-    PaginationIntParams paginationIntParams = const PaginationIntParams(),
+  Future<CursorStringPagination<SearchRecipeModel>> paginate({
+    PaginationStringParams paginationStringParams =
+        const PaginationStringParams(),
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    queryParameters.addAll(paginationIntParams.toJson());
+    queryParameters.addAll(paginationStringParams.toJson());
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CursorIntPagination<CommunityModel>>(
+    final _options = _setStreamType<CursorStringPagination<SearchRecipeModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/posts',
+            '/search',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late CursorIntPagination<CommunityModel> _value;
+    late CursorStringPagination<SearchRecipeModel> _value;
     try {
-      _value = CursorIntPagination<CommunityModel>.fromJson(
+      _value = CursorStringPagination<SearchRecipeModel>.fromJson(
         _result.data!,
-        (json) => CommunityModel.fromJson(json as Map<String, dynamic>),
+        (json) => SearchRecipeModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

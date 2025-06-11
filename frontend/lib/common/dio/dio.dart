@@ -50,8 +50,9 @@ class CustomInterceptor extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     // ignore: avoid_print
     print(
-      '[RES], [${response.requestOptions.method}], ${response.requestOptions.uri},}',
+      '[RES], [${response.requestOptions.method}], ${response.requestOptions.uri}, ${response.data}',
     );
+
 
     super.onResponse(response, handler);
   }
@@ -72,11 +73,11 @@ class CustomInterceptor extends Interceptor {
     }
 
     // 인증 오류
-    final isStatus401 = err.response?.statusCode == 401;
+    final isStatus403 = err.response?.statusCode == 403;
     // 인증 Path
     final pathRefresh = err.requestOptions.path == '/auth/refresh';
 
-    if (isStatus401 && !pathRefresh) {
+    if (isStatus403 && !pathRefresh) {
       final dio = Dio();
 
       try {

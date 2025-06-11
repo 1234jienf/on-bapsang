@@ -2,8 +2,8 @@ import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/model/int/cursor_pagination_int_model.dart';
 import 'package:frontend/common/repository/base_pagination_int_repository.dart';
+import '../../community/model/community_search_pagination_params.dart';
 import '../model/int/model_with_id.dart';
-import '../model/int/pagination_int_params.dart';
 
 class _PaginationInfo {
   final int fetchCount;
@@ -23,13 +23,14 @@ class PaginationIntProvider<
 >
     extends StateNotifier<CursorIntPaginationBase> {
   final U repository;
+  final String? keyword;
   final paginationThrottle = Throttle<_PaginationInfo>(
     Duration(seconds: 3),
     initialValue: _PaginationInfo(),
     checkEquality: false,
   );
 
-  PaginationIntProvider({required this.repository})
+  PaginationIntProvider({required this.repository, this.keyword})
     : super(CursorIntPaginationLoading()) {
     paginate();
 
@@ -91,9 +92,11 @@ class PaginationIntProvider<
         return;
       }
 
-      PaginationIntParams paginationIntParams = PaginationIntParams(
-        size: fetchCount,
-      );
+      dynamic paginationParams;
+
+      if (keyword != null) {
+        paginationParams = CommunitySearchPaginationParams(keyword: keyword!, page: 0, size: fetchCount);
+      }
 
       // fetchMore
       if (fetchMore) {
@@ -105,7 +108,19 @@ class PaginationIntProvider<
           status: pState.status
         );
 
-        paginationIntParams = paginationIntParams.copyWith(
+        if (pState.data.last!) {
+          return;
+        }
+
+        if (!pState.data.last!) {
+          if (keyword != null) {
+            paginationParams = CommunitySearchPaginationParams(keyword: keyword!, page: pState.data.pageable!.pageNumber + 1);
+          } else {
+            paginationParams = CommunitySearchPaginationParams(page : pState.data.pageable!.pageNumber + 1);
+          }
+        }
+
+        paginationParams = paginationParams.copyWith(
           page: pState.data.pageable!.pageNumber + 1,
           size : 10
         );
@@ -125,7 +140,7 @@ class PaginationIntProvider<
         }
       }
 
-      final resp = await repository.paginate(paginationIntParams: paginationIntParams);
+      final resp = await repository.paginate(paginationIntParams: paginationParams);
 
       if (state is CursorIntPaginationFetchingMore<T>) {
         final pState = state as CursorIntPaginationFetchingMore<T>;

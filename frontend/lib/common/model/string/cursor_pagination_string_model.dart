@@ -34,15 +34,15 @@ class CursorStringPagination<T> extends CursorStringPaginationBase {
 @JsonSerializable()
 class CursorStringPaginationMeta {
   final bool hasMore;
-  final int totalElements;
+  final int currentPage;
 
-  CursorStringPaginationMeta({required this.totalElements, required this.hasMore});
+  CursorStringPaginationMeta({required this.currentPage, required this.hasMore});
 
   CursorStringPaginationMeta copyWith({
-    final int? totalElement,
+    final int? currentPage,
     final bool? hasMore,
 }) {
-    return CursorStringPaginationMeta(totalElements: totalElements, hasMore : hasMore ?? this.hasMore);
+    return CursorStringPaginationMeta(currentPage: currentPage ?? this.currentPage, hasMore : hasMore ?? this.hasMore);
   }
 
   factory CursorStringPaginationMeta.fromJson(Map<String, dynamic> json) => _$CursorStringPaginationMetaFromJson(json);
