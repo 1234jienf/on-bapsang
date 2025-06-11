@@ -43,6 +43,7 @@ class _PaginationIntGridViewState<T extends IModelWithIntId> extends ConsumerSta
   Widget build(BuildContext context) {
     final state = ref.watch(widget.provider);
 
+
     if (state is CursorIntPaginationLoading) {
       return Center(child: CircularProgressIndicator(),);
     }
@@ -81,7 +82,7 @@ class _PaginationIntGridViewState<T extends IModelWithIntId> extends ConsumerSta
             crossAxisSpacing: 10,
             childAspectRatio: widget.childAspectRatio,
           ),
-          itemCount: cp.data.content.length + 1,
+          itemCount: cp.data.content.length,
           itemBuilder: (_, index) {
             if (index == cp.data.content.length) {
               return Center(child: CircularProgressIndicator());

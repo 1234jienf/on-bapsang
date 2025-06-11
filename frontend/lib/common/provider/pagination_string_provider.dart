@@ -1,5 +1,6 @@
 import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../search/model/search_recipe_pagination_params.dart';
 import '../model/int/cursor_pagination_int_model.dart';
 import '../model/string/cursor_pagination_string_model.dart';
 import '../model/string/model_with_string_id.dart';
@@ -12,26 +13,28 @@ class _PaginationInfo {
   final bool forceRefetch;
 
   _PaginationInfo({
-    this.fetchCount = 20,
+    this.fetchCount = 10,
     this.fetchMore = false,
     this.forceRefetch = false,
   });
 }
 
 class PaginationStringProvider<
-T extends IModelWithStringId,
-U extends IBasePaginationStringRepository<T>
+  T extends IModelWithStringId,
+  U extends IBasePaginationStringRepository<T>
 >
     extends StateNotifier<CursorStringPaginationBase> {
   final U repository;
+  final String? name;
+
   final paginationThrottle = Throttle<_PaginationInfo>(
     Duration(seconds: 3),
     initialValue: _PaginationInfo(),
     checkEquality: false,
   );
 
-  PaginationStringProvider({required this.repository})
-      : super(CursorStringPaginationLoading()) {
+  PaginationStringProvider({required this.repository, this.name})
+    : super(CursorStringPaginationLoading()) {
     paginate();
 
     // 3초의 시간이 지난 뒤 실행되는 함수
@@ -41,7 +44,7 @@ U extends IBasePaginationStringRepository<T>
   }
 
   Future<void> paginate({
-    int fetchCount = 20,
+    int fetchCount = 10,
     bool fetchMore = false,
     bool forceRefetch = false,
   }) async {
@@ -78,7 +81,11 @@ U extends IBasePaginationStringRepository<T>
         return;
       }
 
-      PaginationStringParams paginationStringParams = PaginationStringParams(count: fetchCount);
+      dynamic paginationParams;
+
+      if (name != null) {
+        paginationParams = SearchRecipePaginationParams(name: name!, page: 0, size: fetchCount);
+      }
 
       // fetchMore
 
@@ -91,13 +98,19 @@ U extends IBasePaginationStringRepository<T>
         );
 
         if (pState.meta.hasMore) {
-          paginationStringParams = paginationStringParams.copyWith(
-            afterId: pState.data.last.recipe_id,
-          );
+          if (name != null) {
+            paginationParams = SearchRecipePaginationParams(
+              page: pState.meta.currentPage + 1,
+              name: name!,
+            );
+          } else {
+            paginationParams = PaginationStringParams(
+              page: pState.meta.currentPage + 1,
+            );
+          }
         }
 
-      }
-      else {
+      } else {
         if (state is CursorStringPagination && !forceRefetch) {
           final pState = state as CursorStringPagination<T>;
 
@@ -106,15 +119,14 @@ U extends IBasePaginationStringRepository<T>
             meta: pState.meta,
             data: pState.data,
           );
-        }
-        else {
+        } else {
           state = CursorStringPaginationLoading();
         }
       }
+        final resp = await repository.paginate(
+          paginationStringParams: paginationParams,
+        );
 
-      final resp = await repository.paginate(
-        paginationStringParams: paginationStringParams,
-      );
 
       if (state is CursorStringPaginationFetchingMore<T>) {
         final pState = state as CursorStringPaginationFetchingMore<T>;
@@ -125,7 +137,7 @@ U extends IBasePaginationStringRepository<T>
         state = resp;
       }
     } catch (e) {
-      state = CursorStringPaginationError(message: '데이터를 가져오지 못했습니다.');
+      state = CursorStringPaginationError(message: name!);
     }
   }
 }

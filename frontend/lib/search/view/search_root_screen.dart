@@ -4,6 +4,8 @@ import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/search/search_community/view/search_community_screen.dart';
 import 'package:frontend/search/search_product/view/search_product_screen.dart';
 import 'package:frontend/search/search_recipe/view/search_recipe_screen.dart';
+import 'package:frontend/search/serach_merged/view/search_merged_screen.dart';
+import 'package:go_router/go_router.dart';
 
 import '../common/search_recipe_filter_header.dart';
 import '../component/search_app_bar.dart';
@@ -23,7 +25,7 @@ class SearchRootScreen extends ConsumerStatefulWidget {
 class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
   late PageController _pageController = PageController();
   final double menuGap = 10.0;
-  final List<String> tabs = ['레시피', '상품', '커뮤니티'];
+  final List<String> tabs = ['통합','레시피', '상품', '커뮤니티'];
 
   @override
   void initState() {
@@ -41,6 +43,7 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(searchTabIndexProvider);
+    final String name = GoRouterState.of(context).extra as String;
 
     return DefaultLayout(
       appBar: SearchAppBar(),
@@ -54,10 +57,11 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
               child: PageView(
                 controller: _pageController,
                 onPageChanged: (index) {ref.read(searchTabIndexProvider.notifier).setIndex(index);},
-                children: const [
-                  SearchRecipeScreen(),
+                children: [
+                  const SearchMergedScreen(),
+                  SearchRecipeScreen(name : name),
                   SearchProductScreen(),
-                  SearchCommunityScreen(),
+                  SearchCommunityScreen(name : name),
                 ],
               ),
             ),
@@ -107,6 +111,6 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
   }
 
   Widget _selected(int selectedIndex) {
-    return selectedIndex == 0 ? SearchRecipeFilterBar() : SearchRecipeFilterHeader(bottomFilter: SearchBottomFilter());
+    return selectedIndex == 0 ? SizedBox() : selectedIndex == 1 ? SearchRecipeFilterBar() : SearchRecipeFilterHeader(bottomFilter: SearchBottomFilter());
   }
 }

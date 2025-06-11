@@ -11,8 +11,9 @@ typedef PaginationWidgetBuilder<T extends IModelWithStringId> = Widget Function(
 class PaginationStringGridView<T extends IModelWithStringId> extends ConsumerStatefulWidget {
   final StateNotifierProvider<PaginationStringProvider, CursorStringPaginationBase> provider;
   final PaginationWidgetBuilder<T> itemBuilder;
+  final void Function(WidgetRef ref)? fetchFunction;
 
-  const PaginationStringGridView({super.key, required this.provider, required this.itemBuilder});
+  const PaginationStringGridView({super.key, required this.provider, required this.itemBuilder, this.fetchFunction});
 
   @override
   ConsumerState<PaginationStringGridView> createState() => _PaginationStringGridViewState();
@@ -28,7 +29,8 @@ class _PaginationStringGridViewState<T extends IModelWithStringId> extends Consu
   }
 
   void listener() {
-    PaginationStringUtils.paginate(controller: controller, provider: ref.read(widget.provider.notifier));
+    final notifier = ref.read(widget.provider.notifier);
+    PaginationStringUtils.paginate(controller: controller, provider: notifier);
   }
 
   @override

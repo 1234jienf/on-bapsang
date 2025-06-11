@@ -6,7 +6,6 @@ import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../signup/view/sign_up_root_screen.dart';
-import '../model/user_model.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   static String get routeName => 'login';
@@ -21,26 +20,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   String username = '';
   String password = '';
 
-
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(userProvider);
-    return
-      DefaultLayout(
-        child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Padding(
+    return DefaultLayout(
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
                   children: [
                     TextFormField(
                       onChanged: (String value) {
-                        username = value;
+                        setState(() {
+                          username = value;
+                        });
                       },
                       decoration: _customTextFormField('아이디'),
                       autofocus: true,
@@ -49,19 +48,32 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     TextFormField(
                       obscureText: true,
                       onChanged: (String value) {
-                        password = value;
+                        setState(() {
+                          password = value;
+                        });
                       },
                       decoration: _customTextFormField('비밀번호'),
                     ),
                     const SizedBox(height: 16.0),
                     ElevatedButton(
-                      onPressed: state is UserModelLoading ? null : () async {
-                        ref.read(userProvider.notifier).login(username: username, password: password);
-                      },
+                      onPressed:
+                          (username.isNotEmpty && password.isNotEmpty)
+                              ? () async {
+                                ref
+                                    .read(userProvider.notifier)
+                                    .login(
+                                      username: username,
+                                      password: password,
+                                    );
+                              }
+                              : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
-                        minimumSize: Size(MediaQuery.of(context).size.width, 60),
+                        minimumSize: Size(
+                          MediaQuery.of(context).size.width,
+                          60,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
@@ -80,7 +92,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             GestureDetector(
-                              onTap: () {},
+                              onTap: () {
+                                ref.read(userProvider.notifier).logout();
+                              },
                               child: Text(
                                 '아이디 찾기',
                                 style: TextStyle(
@@ -137,11 +151,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ],
                 ),
-              ),],
-            ),
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    );
   }
 
   InputDecoration _customTextFormField(String hintText) {

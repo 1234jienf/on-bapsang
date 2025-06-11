@@ -1,7 +1,50 @@
 import 'package:flutter/material.dart';
 
+import '../../model/search_recipe_model.dart';
+
 class SearchRecipeCard extends StatelessWidget {
-  const SearchRecipeCard({super.key});
+  final String recipe_id;
+  final String name;
+  final List<String> ingredients;
+  final String descriptions;
+  final String review;
+  final String time;
+  final String difficulty;
+  final String portion;
+  final String method;
+  final String material_type;
+  final String image_url;
+
+  const SearchRecipeCard({
+    super.key,
+    required this.recipe_id,
+    required this.name,
+    required this.ingredients,
+    required this.descriptions,
+    required this.difficulty,
+    required this.image_url,
+    required this.material_type,
+    required this.method,
+    required this.portion,
+    required this.review,
+    required this.time,
+  });
+
+  factory SearchRecipeCard.fromModel({required SearchRecipeModel model}) {
+    return SearchRecipeCard(
+      recipe_id: model.recipe_id,
+      review: model.review,
+      name: model.name,
+      descriptions: model.descriptions,
+      difficulty: model.difficulty,
+      image_url: model.image_url,
+      material_type: model.material_type,
+      method: model.method,
+      portion: model.portion,
+      time: model.time,
+      ingredients: model.ingredients,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -9,16 +52,18 @@ class SearchRecipeCard extends StatelessWidget {
       height: 100.0,
       child: Row(
         children: [
-          Image.asset(
-            'asset/img/main_commu.png',
-            width: 90,
-            height: 90,
-            fit: BoxFit.cover,
+          ClipRRect(
+            child: Image.network(
+              image_url,
+              fit: BoxFit.cover,
+              width: 90,
+              height: 90,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 16.0, left: 16.0, top: 6.0),
             child: SizedBox(
-              width: 150.0,
+              width: 210.0,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,17 +71,19 @@ class SearchRecipeCard extends StatelessWidget {
                   Text(
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
-                    '간단하게 만드는 밥도둑, 팽이버섯두부조림',
+                    name,
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 6.0),
                   Row(
                     children: [
-                      Text('7000원', style: TextStyle(fontSize: 12)),
+                      Text(portion, style: TextStyle(fontSize: 12)),
                       const SizedBox(width: 8.0),
-                      Text('30분', style: TextStyle(fontSize: 12)),
+                      Text(method, style: TextStyle(fontSize: 12)),
                       const SizedBox(width: 8.0),
-                      Text('초보', style: TextStyle(fontSize: 12)),
+                      Text(time, style: TextStyle(fontSize: 12)),
+                      const SizedBox(width: 8.0),
+                      Text(difficulty, style: TextStyle(fontSize: 12)),
                     ],
                   ),
                   const SizedBox(height: 6.0),
@@ -52,7 +99,7 @@ class SearchRecipeCard extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          Icon(Icons.bookmark_border_outlined, size: 22.0,),
+          Icon(Icons.bookmark_border_outlined, size: 22.0),
         ],
       ),
     );

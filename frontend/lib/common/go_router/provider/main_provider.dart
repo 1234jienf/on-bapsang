@@ -144,23 +144,6 @@ class MainProvider extends ChangeNotifier {
               builder: (_, state) => const MapsRootScreen(),
             ),
             GoRoute(
-              path: 'search',
-              name: 'SearchMainScreen',
-              builder: (_, state) => const SearchMainScreen(),
-              routes: [
-                GoRoute(
-                  path: 'detail',
-                  name: 'SearchDetailRootScreen',
-                  builder: (_, state) => const SearchDetailRootScreen(),
-                ),
-                GoRoute(
-                  path: 'result',
-                  name: 'SearchRootScreen',
-                  builder: (_, state) => const SearchRootScreen(),
-                ),
-              ],
-            ),
-            GoRoute(
               path: 'mypage',
               name: 'MypageRootScreen',
               builder: (_, state) => const MypageRootScreen(),
@@ -170,7 +153,23 @@ class MainProvider extends ChangeNotifier {
       ],
     ),
 
-
+    GoRoute(
+      path: '/search',
+      name: 'SearchMainScreen',
+      builder: (_, state) => const SearchMainScreen(),
+      routes: [
+        GoRoute(
+          path: 'detail',
+          name: 'SearchDetailRootScreen',
+          builder: (_, state) => SearchDetailRootScreen(),
+        ),
+        GoRoute(
+          path: 'result',
+          name: 'SearchRootScreen',
+          builder: (_, state) => const SearchRootScreen(),
+        ),
+      ],
+    ),
     // navbar 사용 안함
     GoRoute(
       path: '/recipe/detail/:id',

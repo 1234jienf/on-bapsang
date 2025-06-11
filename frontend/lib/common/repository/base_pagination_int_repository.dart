@@ -9,6 +9,6 @@ abstract class IBasePaginationIntRepository<T extends IModelWithIntId> {
   @GET('/')
   @Headers({'accessToken' : 'true'})
   Future<CursorIntPagination<T>> paginate({
-    PaginationIntParams? paginationIntParams = const PaginationIntParams(),
+    PaginationIntParams paginationIntParams = const PaginationIntParams(),
   });
 }

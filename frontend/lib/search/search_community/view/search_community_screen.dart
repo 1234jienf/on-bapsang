@@ -6,11 +6,12 @@ import '../../../community/component/community_card.dart';
 
 
 class SearchCommunityScreen extends StatelessWidget {
-  const SearchCommunityScreen({super.key});
+  final String name;
+  const SearchCommunityScreen({super.key, required this.name});
 
   @override
   Widget build(BuildContext context) {
-    return PaginationIntGridView(childAspectRatio : 175 / 275 , provider: communityProvider,
+    return PaginationIntGridView(childAspectRatio : 175 / 275 , provider: communityProvider(name),
         itemBuilder: <CommunityModel>(_, index, model) {
           return GestureDetector(
             onTap: () {}, child: CommunityCard.fromModel(model: model),);
