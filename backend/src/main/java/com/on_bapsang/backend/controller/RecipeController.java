@@ -1,15 +1,14 @@
 package com.on_bapsang.backend.controller;
 
-import com.on_bapsang.backend.dto.RecipeDetailDto;
-import com.on_bapsang.backend.dto.RecommendRequest;
-import com.on_bapsang.backend.dto.RecommendResponse;
+import com.on_bapsang.backend.dto.*;
+import com.on_bapsang.backend.entity.Recipe;
 import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.security.UserDetailsImpl;
 import com.on_bapsang.backend.service.DailyRecommendationService;
+import com.on_bapsang.backend.service.PopularRecipeService;
 import com.on_bapsang.backend.service.RecommendationService;
 import com.on_bapsang.backend.service.RecipeService;
 import com.on_bapsang.backend.service.RecipeService.PagedResponse;
-import com.on_bapsang.backend.dto.RecipeSummaryDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/recipe")
@@ -27,19 +27,29 @@ public class RecipeController {
     private final RecommendationService recommendationService;
     private final RecipeService recipeService;
     private final DailyRecommendationService dailyRecommendationService;
+    private final PopularRecipeService popularRecipeService;
 
 
     @GetMapping("/recommend")
-    public ResponseEntity<List<RecipeSummaryDto>> recommendDailyRecipes(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        User user = userDetails.getUser();
-        List<RecipeSummaryDto> result = dailyRecommendationService
-                .convertToSummaryDtos(
-                        dailyRecommendationService.getDailyRecommendedRecipes(user)
-                );
-        return ResponseEntity.ok(result);
+    public ResponseEntity<?> getRecommendedRecipes(@AuthenticationPrincipal UserDetailsImpl user) {
+        try {
+            List<Recipe> recipes = dailyRecommendationService.getDailyRecommendedRecipes(user.getUser());
+            List<RecipeSummaryDto> dtos = dailyRecommendationService.convertToSummaryDtos(recipes);
+            return ResponseEntity.ok(dtos);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "서버 내부 오류가 발생했습니다."));
+        }
     }
+
+
+    @GetMapping("/popular")
+    public ResponseEntity<List<PopularRecipeDto>> getPopularRecipes() {
+        return ResponseEntity.ok(popularRecipeService.getPopularRecipes());
+    }
+
+
 
     /** 외부 AI 추천 */
     /** 외부 AI 추천 + 페이지네이션 */

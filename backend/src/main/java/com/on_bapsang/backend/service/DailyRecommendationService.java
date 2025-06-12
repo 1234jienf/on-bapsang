@@ -4,16 +4,18 @@ import com.on_bapsang.backend.dto.RecipeSummaryDto;
 import com.on_bapsang.backend.entity.DailyIndex;
 import com.on_bapsang.backend.entity.Recipe;
 import com.on_bapsang.backend.entity.User;
+import com.on_bapsang.backend.entity.UserDailyRecipe;
 import com.on_bapsang.backend.repository.*;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class DailyRecommendationService {
@@ -23,53 +25,91 @@ public class DailyRecommendationService {
     private final UserFavoriteDishRepository userFavoriteDishRepository;
     private final UserFavoriteIngredientRepository userFavoriteIngredientRepository;
     private final DailyIndexRepository dailyIndexRepository;
+    private final UserDailyRecipeRepository userDailyRecipeRepository;
 
+    @Transactional(readOnly = true)
     public List<Recipe> getDailyRecommendedRecipes(User user) {
-        // 1. 오늘의 시작 지점 확인
-        DailyIndex index = dailyIndexRepository.findById(1L)
-                .orElseGet(() -> new DailyIndex());
+        LocalDate today = LocalDate.now();
 
+        // 1. 이미 저장된 추천이 있으면 반환
+        Optional<UserDailyRecipe> saved = userDailyRecipeRepository.findByUserAndDate(user, today);
+        if (saved.isPresent()) {
+            List<String> recipeIds = saved.get().getRecipeIds();
+            return recipeRepository.findAllById(recipeIds);
+        }
+
+        // 2. 오늘의 시작 ID 구간 확인
+        DailyIndex index = dailyIndexRepository.findById(1L).orElseGet(DailyIndex::new);
         Long startId = index.getStartRecipeId() == null ? 7016813L : index.getStartRecipeId();
         Long endId = startId + 100;
 
-        // 2. 유저 선호 재료와 음식명 불러오기
+        // 3. 유저 선호 정보 조회
         List<Long> ingredientIds = userFavoriteIngredientRepository.findIngredientIdsByUser(user);
         List<String> dishNames = userFavoriteDishRepository.findDishNamesByUser(user);
 
-        // 3. 100개 중 유사도 점수 계산
+        // 4. 후보 레시피 추출
         List<Recipe> candidates = recipeRepository.findByRecipeIdBetween(startId, endId);
-        List<RecipeScore> scored = new ArrayList<>();
 
+        // 5. 점수 계산
+        List<RecipeScore> scored = new ArrayList<>();
         for (Recipe recipe : candidates) {
             int score = 0;
 
-            // 음식명 일치 여부
-            if (dishNames.contains(recipe.getName())) {
-                score += 2;
-            }
-
-            // 재료 일치 개수 세기
-            List<Long> recipeIngreIds = recipeIngredientRepository.findIngredientIdsByRecipe(recipe.getRecipeId());
-            for (Long ingId : recipeIngreIds) {
-                if (ingredientIds.contains(ingId)) {
+            for (String dishName : dishNames) {
+                if (recipe.getName().equalsIgnoreCase(dishName)) {
+                    score += 3;
+                } else if (recipe.getName().contains(dishName)) {
                     score += 1;
                 }
+            }
+
+            List<Long> recipeIngreIds = recipeIngredientRepository.findIngredientIdsByRecipe(recipe.getRecipeId());
+            if (!recipeIngreIds.isEmpty()) {
+                long matchCount = recipeIngreIds.stream().filter(ingredientIds::contains).count();
+                double similarity = (double) matchCount / recipeIngreIds.size();
+                score += (int) (similarity * 10); // 최대 10점
             }
 
             scored.add(new RecipeScore(recipe, score));
         }
 
-        // 4. 점수 기준으로 내림차순 정렬 후 상위 6개 리턴
-        scored.sort((a, b) -> b.score - a.score);
-        return scored.stream().limit(6).map(rs -> rs.recipe).toList();
+        // 6. 점수 높은 순으로 정렬
+        List<Recipe> topRecipes = scored.stream()
+                .filter(rs -> rs.score > 0)
+                .sorted((a, b) -> Integer.compare(b.score, a.score))
+                .limit(6)
+                .map(rs -> rs.recipe)
+                .collect(Collectors.toList());
+
+        // 7. fallback: 점수 0이면 랜덤 6개
+        if (topRecipes.isEmpty()) {
+            Collections.shuffle(candidates);
+            topRecipes = candidates.stream().limit(6).collect(Collectors.toList());
+        }
+
+        // 8. 추천 결과 저장 (존재하는 ID만 저장)
+        List<String> topRecipeIds = topRecipes.stream()
+                .map(Recipe::getRecipeId)
+                .filter(id -> recipeRepository.existsById(id))  // 필수 안전장치
+                .collect(Collectors.toList());
+
+        // 저장 전 유효성 체크
+        if (!topRecipeIds.isEmpty()) {
+            UserDailyRecipe newEntry = new UserDailyRecipe();
+            newEntry.setUser(user);
+            newEntry.setDate(today);
+            newEntry.setRecipeIds(topRecipeIds);
+            userDailyRecipeRepository.save(newEntry);
+        }
+
+        return topRecipes;
     }
 
-    // 5. 하루마다 실행되는 자동 증가 로직 (스케줄러)
-    @Scheduled(cron = "0 0 0 * * ?")  // 매일 자정
+    // 하루마다 시작 레시피 ID 갱신
+    @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void updateDailyIndex() {
-        DailyIndex index = dailyIndexRepository.findById(1L)
-                .orElseGet(() -> new DailyIndex());
+        DailyIndex index = dailyIndexRepository.findById(1L).orElseGet(DailyIndex::new);
 
         long maxId = 7038813L; // 예시
         long next = index.getStartRecipeId() + 100;
@@ -105,5 +145,4 @@ public class DailyRecommendationService {
             );
         }).collect(Collectors.toList());
     }
-
 }
