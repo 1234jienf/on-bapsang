@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/recipe/component/recipe_appbar.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:frontend/recipe/component/recipe_card.dart';
+import 'package:frontend/recipe/view/recipe_season_list_screen.dart';
 
 class RecipeRootScreen extends StatefulWidget {
   static String get routeName => 'RecipeRootScreen';
@@ -51,12 +53,20 @@ class _RecipeRootScreenState extends State<RecipeRootScreen> {
                 delegate: SliverChildListDelegate([
                   SizedBox(height: componentGap),
                   // 제철 레시피 이미지 들어가야함
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: sideGap),
-                    child: Container(
-                      width: 360,
-                      height: 90,
-                      decoration: BoxDecoration(color: Colors.grey),
+                  GestureDetector(
+                    onTap: () {
+                      context.pushNamed(
+                        RecipeSeasonListScreen.routeName
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: sideGap),
+                      child: Container(
+                        width: 360,
+                        height: 90,
+                        decoration: BoxDecoration(color: Colors.grey),
+                        child: Text('제철레시피(이미지 들어갈 예정)'),
+                      ),
                     ),
                   ),
                   SizedBox(height: componentGap),
@@ -71,9 +81,9 @@ class _RecipeRootScreenState extends State<RecipeRootScreen> {
                   RecipeCard(count: 6),
                   SizedBox(height: componentGap),
 
-                  // 월별 추천 레시피(농축식 제공 레시피)
+                  // AI 추천 레시피
                   titleWidget(
-                    title: '월별 추천 레시피',
+                    title: 'AI 추천 레시피',
                     fontSize: 16,
                     sidePadding: sideGap,
                   ),
@@ -105,7 +115,7 @@ Widget titleWidget({
           title,
           style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w700),
         ),
-        Text('더보기 >'),
+        // Text('더보기 >'),  // 더보기가 있나?
       ],
     ),
   );

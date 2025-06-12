@@ -11,8 +11,11 @@ import 'package:frontend/home/view/home_cart_screen.dart';
 import 'package:frontend/home/view/home_menu_screen.dart';
 import 'package:frontend/maps/view/maps_root_screen.dart';
 import 'package:frontend/mypage/view/mypage_root_screen.dart';
+import 'package:frontend/recipe/view/recipe_category_list_screen.dart';
 import 'package:frontend/recipe/view/recipe_root_screen.dart';
 import 'package:frontend/recipe/view/recipe_detail_screen.dart';
+import 'package:frontend/recipe/view/recipe_season_detail_screen.dart';
+import 'package:frontend/recipe/view/recipe_season_list_screen.dart';
 import 'package:frontend/search/view/search_root_screen.dart';
 import 'package:frontend/shopping/view/shopping_root_screen.dart';
 import 'package:frontend/signup/view/sign_up_root_screen.dart';
@@ -95,6 +98,20 @@ class MainProvider extends ChangeNotifier {
               path: 'recipe',
               name: 'RecipeRootScreen',
               builder: (_, state) => const RecipeRootScreen(),
+              routes: [
+                GoRoute(
+                  path: 'season',
+                  name: 'RecipeSeasonListScreen',
+                  builder: (_, state) => const RecipeSeasonListScreen()
+                ),
+                GoRoute(
+                  path: ':category',
+                  name: 'RecipeCategoryListScreen',
+                  builder: (_, state) => RecipeCategoryListScreen(
+                    categoryName: state.pathParameters['category']!
+                  )
+                ),
+              ]
             ),
             GoRoute(
               path: 'shopping',
