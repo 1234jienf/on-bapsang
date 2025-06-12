@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/recipe/view/recipe_ingredient_price_screen.dart';
 import 'package:frontend/recipe/data/data_loader.dart';
+import 'package:frontend/recipe/view/recipe_ingredient_shopping_screen.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final String id;
@@ -287,7 +288,14 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           width: double.infinity,
           padding: EdgeInsetsGeometry.symmetric(horizontal: 10.0),
           child: ElevatedButton(
-            onPressed: (){},
+            onPressed: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RecipeIngredientShoppingScreen()
+                )
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
