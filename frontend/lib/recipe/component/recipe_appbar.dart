@@ -51,12 +51,13 @@ class RecipeAppbar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         const SizedBox(width: 7),
-        GestureDetector(
-          onTap: () {
-            context.pushNamed(HomeAlarmScreen.routeName);
-          },
-          child: Icon(Icons.notifications_none_outlined, size: 29)
-        ),
+        // 알림 들어가는지 확인필요
+        // GestureDetector(
+        //   onTap: () {
+        //     context.pushNamed(HomeAlarmScreen.routeName);
+        //   },
+        //   child: Icon(Icons.notifications_none_outlined, size: 29)
+        // ),
         const SizedBox(width: 7),
         GestureDetector(
             onTap: () {

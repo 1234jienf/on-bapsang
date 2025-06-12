@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/recipe/view/recipe_ingredient_price_screen.dart';
+import 'package:frontend/recipe/data/data_loader.dart';
+import 'package:frontend/recipe/view/recipe_ingredient_shopping_screen.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final String id;
@@ -138,15 +141,15 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      gradientWidget(name: '청양고추', quantity: '2 개'),
+                      gradientWidget(context: context, ingredientId: 40813, name: '청양고추', quantity: '2 개'),
                       Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                      gradientWidget(name: '감자', quantity: '1 개'),
+                      gradientWidget(context: context, ingredientId: 55825, name: '감자', quantity: '1 개'),
                       Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                      gradientWidget(name: '감자', quantity: '1 개'),
+                      gradientWidget(context: context, ingredientId: 1234, name: '감자', quantity: '1 개'),
                       Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                      gradientWidget(name: '감자', quantity: '1 개'),
+                      gradientWidget(context: context, ingredientId: 2345, name: '감자', quantity: '1 개'),
                       Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                      gradientWidget(name: '감자', quantity: '1 개'),
+                      gradientWidget(context: context, ingredientId: 3333, name: '감자', quantity: '1 개'),
                     ],
                   ),
                   SizedBox(height: componentGap),
@@ -224,9 +227,24 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   SizedBox(height: componentGap),
-                  Text(
-                    '레시피 후기',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '레시피 후기',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                      ),
+                      TextButton(
+                          onPressed: (){
+                            // 커뮤니티 글 쓰는 페이지로 보내주기
+                          },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: Text('리뷰쓰기')
+                      )
+                    ],
                   ),
                   SizedBox(height: componentGap),
 
@@ -270,7 +288,14 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           width: double.infinity,
           padding: EdgeInsetsGeometry.symmetric(horizontal: 10.0),
           child: ElevatedButton(
-            onPressed: (){},
+            onPressed: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RecipeIngredientShoppingScreen()
+                )
+              );
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
@@ -316,24 +341,73 @@ Widget infoWidget({
 }
 
 Widget gradientWidget({
+  required BuildContext context,
+  required int ingredientId,
   required String name,
-  required String quantity
+  required String quantity,
 }) {
-  return SizedBox(
-    height: 60.0,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          name,
-          style: TextStyle(fontSize: 16),
+  return FutureBuilder(
+    future: getMarketItemIdFromIngredient(ingredientId),
+    builder: (context, AsyncSnapshot<int?> snapshot) {
+      final marketItemId = snapshot.data;
+
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return CircularProgressIndicator();
+      }
+
+      if (marketItemId == null) {
+        return SizedBox(
+          height: 60.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                name,
+                style: TextStyle(fontSize: 16),
+              ),
+              Text(
+                quantity,
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        );
+      }
+
+      return GestureDetector(
+        onTap: (){
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))
+            ),
+            builder: (context) {
+              return RecipeIngredientPriceScreen(
+                ingredientName: name,
+                ingredientId: marketItemId,
+              );
+            });
+        },
+        child: SizedBox(
+          height: 60.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                name,
+                style: TextStyle(fontSize: 16, color: Colors.blue), // 시세 있는 애들은 어떻게 표시?
+              ),
+              Text(
+                quantity,
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
         ),
-        Text(
-          quantity,
-          style: TextStyle(fontSize: 16),
-        ),
-      ],
-    ),
-  );
-}
+      );
+
+    });
+  }
