@@ -1,5 +1,6 @@
 package com.on_bapsang.backend.repository;
 
+import com.on_bapsang.backend.entity.Recipe;
 import com.on_bapsang.backend.entity.RecipeIngredient;
 import com.on_bapsang.backend.entity.RecipeIngredientKey;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +27,8 @@ public interface RecipeIngredientRepository
             " JOIN FETCH ri.ingredientMaster " +
             " WHERE ri.id.recipeId = :recipeId")
     List<RecipeIngredient> findByRecipeId(@Param("recipeId") String recipeId);
+
+    @Query("SELECT ri.id.ingredientId FROM RecipeIngredient ri WHERE ri.recipe.recipeId = :recipeId")
+    List<Long> findIngredientIdsByRecipe(@Param("recipeId") String recipeId);
+
 }
