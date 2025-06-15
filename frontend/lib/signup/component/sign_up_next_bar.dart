@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-
+// 사용 안할지도?
 class SignUpNextBar extends ConsumerStatefulWidget {
   final String title;
   final String routeName;
@@ -11,7 +11,6 @@ class SignUpNextBar extends ConsumerStatefulWidget {
     super.key,
     required this.title,
     required this.routeName,
-
   });
 
   @override

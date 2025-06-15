@@ -6,6 +6,7 @@ import 'package:frontend/user/repository/auth_repository.dart';
 import 'package:frontend/user/repository/user_repository.dart';
 
 import '../model/user_model.dart';
+import 'package:frontend/signup/model/sign_up_request_model.dart';
 
 final userProvider = StateNotifierProvider<UserStateNotifier, UserModelBase?>((
   ref,
@@ -79,5 +80,21 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       storage.delete(key: ACCESS_TOKEN),
       storage.delete(key: REFRESH_TOKEN),
     ]);
+  }
+
+  Future<void> signup({
+    required SignupRequest userInfo
+  }) async {
+    try {
+      state = UserModelLoading();
+
+      await authRepository.signup(userInfo: userInfo);
+
+      state = null;
+      login(username: userInfo.username, password: userInfo.password);
+    } catch (e) {
+      state = UserModelError(message: '회원가입에 실패했습니다.');
+      print(e.toString());
+    }
   }
 }

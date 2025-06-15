@@ -1,67 +1,99 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // 추가 필요
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/signup/component/sign_up_app_bar.dart';
 import 'package:frontend/signup/view/sign_up_food_prefer_list_screen.dart';
+import 'package:frontend/signup/view/sign_up_info_screen.dart';
 
-import '../component/sign_up_next_bar.dart';
+import 'package:frontend/signup/model/sign_up_request_model.dart';
+import 'package:frontend/signup/view/sign_up_taste_dish_prefer_list_screen.dart';
+import 'package:frontend/user/provider/user_provider.dart';
 
-class SignUpRootScreen extends StatelessWidget {
+// todo: 프로필 이미지....?
+class SignUpRootScreen extends ConsumerStatefulWidget { // StatefulWidget → ConsumerStatefulWidget
   static String get routeName => 'SignUpRootScreen';
 
   const SignUpRootScreen({super.key});
+
+  @override
+  ConsumerState<SignUpRootScreen> createState() => _SignUpRootScreenState(); // State → ConsumerState
+}
+
+class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State → ConsumerState
+  int currentStep = 1;
+  SignupRequest signupData = SignupRequest(
+      username: '',
+      password: ''
+  );
+
+  void nextStep() {
+    setState(() {
+      if (currentStep < 3) {
+        currentStep++;
+      }
+    });
+  }
+
+  void updateStep1Data({
+    required String username,
+    required String password,
+    required String nickname,
+    required String country,
+    required int age,
+    required String location,
+  }) {
+    setState(() {
+      signupData.username = username;
+      signupData.password = password;
+      signupData.nickname = nickname;
+      signupData.country = country;
+      signupData.age = age;
+      signupData.location = location;
+    });
+    nextStep();
+  }
+
+  void updateStep2Data(List<int> favoriteTasteIds) {
+    setState(() {
+      signupData.favoriteTasteIds = favoriteTasteIds;
+    });
+    nextStep();
+  }
+
+  void updateStep3Data({
+    required List<int> favoriteDishIds,
+    required List<int> favoriteIngredientIds,
+  }) async { // async 키워드를 메소드에 직접 추가
+    setState(() {
+      signupData.favoriteDishIds = favoriteDishIds;
+      signupData.favoriteIngredientIds = favoriteIngredientIds;
+    });
+
+    // 익명 함수 대신 직접 호출
+    await ref.read(userProvider.notifier).signup(userInfo: signupData);
+  }
 
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
       appBar: SignUpAppBar(),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16.0),
-            titleWithTextField('이메일', '이메일을 입력해주세요'),
-            titleWithTextField('비밀번호', '8~30자리 영대 · 소문자, 숫자, 특수문자 조합'),
-            titleWithTextField('비밀번호 확인', '8~30자리 영대 · 소문자, 숫자, 특수문자 조합'),
-            titleWithTextField('닉네임', '자유롭게 설정'),
-            titleWithTextField('나이', '본인의 나이를 적어주세요'),
-            SignUpNextBar(
-              title: '다음',
-              routeName: SignUpFoodPreferListScreen.routeName,
-            ),
-          ],
-        ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: currentStep == 1
+              ? SignUpInfoScreen(
+              onComplete: updateStep1Data,
+              initialData: signupData
+          )
+              : currentStep == 2
+              ? SignUpFoodPreferListScreen(
+              onComplete: updateStep2Data,
+              initialData: signupData
+          )
+              : SignUpTasteDishPreferListScreen(
+              onComplete: updateStep3Data,
+              initialData: signupData
+          )
       ),
-    );
-  }
-
-  Widget titleWithTextField(String title, String hintText) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Text(
-            title,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: TextStyle(fontSize: 14.0),
-              contentPadding: EdgeInsets.only(top: 10, bottom: 4),
-              isDense: true,
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.black, width: 1),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 48.0),
-      ],
     );
   }
 }

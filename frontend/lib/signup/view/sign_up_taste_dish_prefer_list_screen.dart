@@ -1,0 +1,161 @@
+import 'package:flutter/material.dart';
+import 'package:frontend/signup/model/sign_up_request_model.dart';
+
+class SignUpTasteDishPreferListScreen extends StatefulWidget {
+  final Function({
+  required List<int> favoriteDishIds,
+  required List<int> favoriteIngredientIds,
+  }) onComplete;
+  final SignupRequest? initialData;
+
+  const SignUpTasteDishPreferListScreen({
+    super.key,
+    required this.onComplete,
+    required this.initialData
+  });
+
+  @override
+  State<SignUpTasteDishPreferListScreen> createState() => _SignUpTasteDishPreferListScreenState();
+}
+
+class _SignUpTasteDishPreferListScreenState extends State<SignUpTasteDishPreferListScreen> {
+  final List<String> dishOptions = ['김치찌개', '된장찌개', '비빔밥', '불고기', '갈비', '삼계탕', '잡채', '김밥', '갈비탕', '칼국수'];
+  final List<String> tasteOptions = ['매운맛', '짠맛', '단맛', '쓴맛', '신맛', '감칠맛'];
+
+  List<int> selectedDishes = [];
+  List<int> selectedTastes = [];
+
+  void onSkipPressed() {
+    widget.onComplete(
+        favoriteDishIds: [],
+        favoriteIngredientIds: []
+    );
+  }
+
+  void onNextPressed() {
+    widget.onComplete(
+      favoriteDishIds: selectedDishes.map((index) => index + 1).toList(),
+      favoriteIngredientIds: selectedTastes.map((index) => index + 1).toList()
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(height: 16.0,),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '맛의 선호',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            SizedBox(height: 15.0,),
+            Wrap(
+              spacing: 7.0,
+              runSpacing: 2.0,
+              children: tasteOptions.asMap().entries.map((entry) {
+                final index = entry.key;
+                final label = entry.value;
+                final isSelected = selectedTastes.contains(index);
+                return ChoiceChip(
+                  label: Text(label),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    setState(() {
+                      if (selected) {
+                        selectedTastes.add(index);
+                      } else {
+                        selectedTastes.remove(index);
+                      }
+                    });
+                  },
+                  selectedColor: Colors.blueAccent,
+                  backgroundColor: Colors.white,
+                  showCheckmark: false,
+                  labelStyle: TextStyle(
+                      color: isSelected ? Colors.white : Colors.black
+                  ),
+                );
+              }).toList()
+            ),
+
+            SizedBox(height: 30.0,),
+            Text(
+              '좋아하는 한식',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            SizedBox(height: 15.0,),
+            Wrap(
+              spacing: 7.0,
+              runSpacing: 2.0,
+              children: dishOptions.asMap().entries.map((entry) {
+                final index = entry.key;
+                final label = entry.value;
+                final isSelected = selectedDishes.contains(index);
+                return ChoiceChip(
+                  label: Text(label),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    setState(() {
+                      if (selected) {
+                        selectedDishes.add(index);
+                      } else {
+                        selectedDishes.remove(index);
+                      }
+                    });
+                  },
+                  selectedColor: Colors.blueAccent,
+                  backgroundColor: Colors.white,
+                  showCheckmark: false,
+                  labelStyle: TextStyle(
+                      color: isSelected ? Colors.white : Colors.black
+                  ),
+                );
+              }).toList()
+            ),
+          ],
+        ),
+        SizedBox(height: 15.0,),
+
+        Expanded(child: SizedBox()),
+
+        GestureDetector(
+          onTap: () {
+            onSkipPressed();
+          },
+          child: Center(
+            child: Text('건너뛰기'),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 25.0),
+          child: GestureDetector(
+            onTap: onNextPressed,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Colors.black
+              ),
+              width: MediaQuery.of(context).size.width,
+              height: 60,
+              child: Center(
+                child: Text(
+                  '다음',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18.0
+                  )
+                )
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+}
