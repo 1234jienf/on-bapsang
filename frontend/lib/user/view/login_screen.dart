@@ -133,7 +133,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                ref.read(mainProvider.notifier).logout();
+                                // ref.read(mainProvider.notifier).logout();
                                 context.pushNamed(SignUpRootScreen.routeName);
                               },
                               child: Text(

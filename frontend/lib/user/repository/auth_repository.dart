@@ -4,6 +4,8 @@ import 'package:frontend/common/const/securetoken.dart';
 import 'package:frontend/common/dio/dio.dart';
 import 'package:frontend/user/model/login_response_model.dart';
 
+import 'package:frontend/signup/model/sign_up_request_model.dart';
+
 // Provider
 final authRepositoryProvider = Provider((ref) {
   final dio = ref.watch(dioProvider);
@@ -35,5 +37,25 @@ class AuthRepository {
       options: Options(headers: {'Content-Type': 'application/json', 'Authorization' : 'Bearer $refreshToken'}),
     );
     return LoginResponseModel.fromJson(resp.data);
+  }
+
+  Future<void> signup({
+    required SignupRequest userInfo
+  }) async {
+    await dio.post(
+      '$ip/api/users/signup',
+      data: {
+        'username' : userInfo.username,
+        'password' : userInfo.password,
+        'nickname' : userInfo.nickname,
+        'country' : userInfo.country,
+        'age' : userInfo.age,
+        'location': userInfo.location,
+        'favoriteTasteIds' : userInfo.favoriteTasteIds,
+        'favoriteDishIds' : userInfo.favoriteDishIds,
+        'favoriteIngredientIds': userInfo.favoriteIngredientIds
+      },
+      options: Options(headers: {'Content-Type': 'application/json'})
+    );
   }
 }

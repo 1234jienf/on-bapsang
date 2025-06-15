@@ -61,12 +61,7 @@ class MainProvider extends ChangeNotifier {
           path: 'signup',
           name: 'SignUpRootScreen',
           builder: (_, state) => SignUpRootScreen(),
-        ),
-        GoRoute(
-          path: 'prefer',
-          name: 'SignUpFoodPreferListScreen',
-          builder: (_, state) => SignUpFoodPreferListScreen(),
-        ),
+        )
       ],
     ),
     ShellRoute(
@@ -204,9 +199,10 @@ class MainProvider extends ChangeNotifier {
     final UserModelBase? user = ref.read(userProvider);
 
     final login = state.matchedLocation == '/login';
+    final isSignup = state.matchedLocation == '/login/signup'; // 회원가입도 예외처리
 
     if (user == null) {
-      return login ? null : '/login';
+      return (login || isSignup) ? null : '/login';
     }
 
     if (user is UserModel) {
