@@ -30,7 +30,7 @@ class _ConsumerSearchDetailNextBarState extends ConsumerState<SearchDetailNextBa
           color: Colors.black,
         ),
         width: MediaQuery.of(context).size.width,
-        height: 60,
+        height: 48,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
