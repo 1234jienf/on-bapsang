@@ -20,13 +20,14 @@ public class PostSummaryWithScrap {
     private final Double x;
     private final Double y;
 
-    public PostSummaryWithScrap(Post post, boolean isScrapped, String presignedImageUrl) {
+    public PostSummaryWithScrap(Post post, boolean isScrapped,
+            String imageUrl, String profileImageUrl) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.imageUrl = presignedImageUrl;
+        this.imageUrl = imageUrl;
         this.nickname = post.getUser().getNickname();
-        this.profileImage = post.getUser().getProfileImage();
+        this.profileImage = profileImageUrl;
         this.scrapCount = post.getScrapCount();
         this.commentCount = post.getCommentCount();
         this.createdAt = post.getCreatedAt();

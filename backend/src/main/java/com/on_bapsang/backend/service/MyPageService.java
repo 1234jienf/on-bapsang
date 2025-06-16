@@ -17,36 +17,50 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MyPageService {
 
-    private final PostRepository postRepository;
-    private final ImageUploader imageUploader;
+        private final PostRepository postRepository;
+        private final ImageUploader imageUploader;
 
-    public Page<MyPost> getMyPosts(User user, Pageable pageable) {
-        Page<MyPost> page = postRepository.findMyPostsByUser(user.getUserId(), pageable);
-        List<MyPost> modified = page.getContent().stream().map(post -> {
-            String url = post.getImageUrl() != null
-                    ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
-                    : null;
-            post.setImageUrl(url);
-            return post;
-        }).toList();
-        return new PageImpl<>(modified, pageable, page.getTotalElements());
-    }
+        public Page<MyPost> getMyPosts(User user, Pageable pageable) {
+                Page<MyPost> page = postRepository.findMyPostsByUser(user.getUserId(), pageable);
+                String profileImageUrl = user.getProfileImage() != null
+                                ? imageUploader.generatePresignedUrl(user.getProfileImage(), 120)
+                                : null;
 
-    public Page<ScrappedPost> getScrappedPosts(User user, Pageable pageable) {
-        try {
-            Page<ScrappedPost> page = postRepository.findScrappedPostsByUser(user.getUserId(), pageable);
-            List<ScrappedPost> modified = page.getContent().stream().map(post -> {
-                String url = post.getImageUrl() != null
-                        ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
-                        : null;
-                post.setImageUrl(url);
-                return post;
-            }).toList();
-            return new PageImpl<>(modified, pageable, page.getTotalElements());
-        } catch (Exception e) {
-            e.printStackTrace(); // 실제 예외 로그 확인
-            throw e;
+                List<MyPost> modified = page.getContent().stream().map(post -> {
+                        post.setNickname(user.getNickname());
+                        post.setProfileImage(profileImageUrl);
+
+                        String imageUrl = post.getImageUrl() != null
+                                        ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
+                                        : null;
+                        post.setImageUrl(imageUrl);
+
+                        return post;
+                }).toList();
+
+                return new PageImpl<>(modified, pageable, page.getTotalElements());
         }
-    }
+
+        public Page<ScrappedPost> getScrappedPosts(User user, Pageable pageable) {
+                Page<ScrappedPost> page = postRepository.findScrappedPostsByUser(user.getUserId(), pageable);
+
+                List<ScrappedPost> modified = page.getContent().stream().map(post -> {
+                        // 글 이미지 presigned
+                        String postImageUrl = post.getImageUrl() != null
+                                        ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
+                                        : null;
+                        post.setImageUrl(postImageUrl);
+
+                        // 작성자 프로필 presigned
+                        String profileImageUrl = post.getProfileImage() != null
+                                        ? imageUploader.generatePresignedUrl(post.getProfileImage(), 120)
+                                        : null;
+                        post.setProfileImage(profileImageUrl);
+
+                        return post;
+                }).toList();
+
+                return new PageImpl<>(modified, pageable, page.getTotalElements());
+        }
 
 }

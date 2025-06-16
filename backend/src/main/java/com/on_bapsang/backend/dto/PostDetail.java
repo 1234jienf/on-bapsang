@@ -11,6 +11,8 @@ public class PostDetail {
     private final String title;
     private final String content;
     private final String recipeTag;
+    private final String recipeId;
+    private final String recipeImageUrl;
     private final String imageUrl;
     private final String nickname;
     private final String profileImage;
@@ -20,18 +22,21 @@ public class PostDetail {
     private final Double y;
     private final LocalDateTime createdAt;
 
-    public PostDetail(Post post, String imageUrl) {
+    public PostDetail(Post post, String imageUrl, String recipeImageUrl, String profileImageUrl) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.recipeTag = post.getRecipeTag();
+        this.recipeId = post.getRecipeId();
+        this.recipeImageUrl = recipeImageUrl;
         this.imageUrl = imageUrl;
         this.nickname = post.getUser().getNickname();
-        this.profileImage = post.getUser().getProfileImage();
+        this.profileImage = profileImageUrl;
         this.scrapCount = post.getScrapCount();
         this.commentCount = post.getCommentCount();
         this.x = post.getX();
         this.y = post.getY();
         this.createdAt = post.getCreatedAt();
     }
+
 }

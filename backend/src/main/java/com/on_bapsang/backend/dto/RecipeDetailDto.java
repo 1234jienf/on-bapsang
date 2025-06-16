@@ -32,4 +32,5 @@ public class RecipeDetailDto {
 
     private String review;
     private String descriptions;
+    private boolean isScrapped;
 }

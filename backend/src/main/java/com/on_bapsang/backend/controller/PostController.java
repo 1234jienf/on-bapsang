@@ -2,10 +2,7 @@ package com.on_bapsang.backend.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.on_bapsang.backend.dto.ApiResponse;
-import com.on_bapsang.backend.dto.PostRequest;
-import com.on_bapsang.backend.dto.PostSummary;
-import com.on_bapsang.backend.dto.PostSummaryWithScrap;
+import com.on_bapsang.backend.dto.*;
 import com.on_bapsang.backend.entity.Post;
 import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.security.UserDetailsImpl;
@@ -36,14 +33,13 @@ public class PostController {
     public ResponseEntity<?> createPost(
             @RequestPart("data") String data,
             @RequestPart(value = "image", required = false) MultipartFile image,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         ObjectMapper objectMapper = new ObjectMapper();
         PostRequest request;
         try {
             request = objectMapper.readValue(data, PostRequest.class);
         } catch (JsonProcessingException e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error(400,"잘못된 데이터 형식입니다."));
+            return ResponseEntity.badRequest().body(ApiResponse.error(400, "잘못된 데이터 형식입니다."));
         }
 
         User user = userDetails.getUser();
@@ -52,33 +48,28 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.success("게시글 작성 완료", savedPost.getId()));
     }
 
-
     // 레시피 db 조회
     @GetMapping("/autocomplete")
-    public ResponseEntity<ApiResponse<List<String>>> getRecipeTags(@RequestParam String keyword) {
-        List<String> suggestions = postService.getRecipeTagSuggestions(keyword);
+    public ResponseEntity<ApiResponse<List<RecipeTagSuggestion>>> getRecipeTags(@RequestParam String keyword) {
+        List<RecipeTagSuggestion> suggestions = postService.getRecipeTagSuggestions(keyword);
         return ResponseEntity.ok(ApiResponse.success("레시피 태그 조회 성공", suggestions));
     }
-
 
     // 글 목록 조회
     @GetMapping
     public ResponseEntity<?> getPosts(
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 9, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         Page<PostSummaryWithScrap> posts = postService.getPosts(keyword, pageable, user);
         return ResponseEntity.ok(ApiResponse.success("게시글 목록 조회 성공", posts));
     }
 
-
-
     // 단일 글 조회
     @GetMapping("/{id}")
     public ResponseEntity<?> getPost(@PathVariable Long id,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails != null) {
             return ResponseEntity.ok(ApiResponse.success("게시글 조회 성공",
                     postService.getPostById(id, userDetails.getUser())));
@@ -88,16 +79,13 @@ public class PostController {
         }
     }
 
-
-
     // 게시글 수정
     @PatchMapping("/{id}")
     public ResponseEntity<?> updatePost(
             @PathVariable Long id,
             @RequestPart("data") PostRequest request,
             @RequestPart(value = "image", required = false) MultipartFile image,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         String imageUrl = (image != null && !image.isEmpty()) ? imageUploader.upload(image) : null;
         Post updated = postService.update(id, request, user, imageUrl);
@@ -109,14 +97,11 @@ public class PostController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePost(
             @PathVariable Long id,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         postService.delete(id, user);
         return ResponseEntity.ok(ApiResponse.success("게시글 삭제 완료"));
 
     }
-
-
 
 }

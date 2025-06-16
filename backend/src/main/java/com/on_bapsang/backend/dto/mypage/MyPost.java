@@ -7,9 +7,12 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @AllArgsConstructor
 public class MyPost {
     private Long postId;
+    private String nickname;
+    private String profileImage;
     private String title;
     private String content;
 

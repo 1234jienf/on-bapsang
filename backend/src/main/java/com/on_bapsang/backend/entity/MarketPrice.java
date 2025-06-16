@@ -4,7 +4,7 @@ import lombok.*;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "marketprice")
+@Table(name = "market_price")
 @Getter
 @Setter
 public class MarketPrice {

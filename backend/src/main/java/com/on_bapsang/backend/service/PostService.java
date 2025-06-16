@@ -31,6 +31,7 @@ public class PostService {
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
         post.setRecipeTag(request.getRecipeTag());
+        post.setRecipeId(request.getRecipeId());
         post.setImageUrl(imageUrl);
         post.setX(request.getX());
         post.setY(request.getY());
@@ -38,12 +39,16 @@ public class PostService {
         return postRepository.save(post);
     }
 
-    public List<String> getRecipeTagSuggestions(String keyword) {
+    public List<RecipeTagSuggestion> getRecipeTagSuggestions(String keyword) {
         return recipeRepository.findTop10ByNameStartingWithIgnoreCase(keyword)
                 .stream()
-                .map(Recipe::getName)
+                .map(r -> new RecipeTagSuggestion(r.getRecipeId(), r.getName(), r.getImageUrl()))
                 .toList();
     }
+
+    public Page<PostSummaryWithScrap> getPosts(String keyword, Pageable pageable, User user) {
+        Page<Long> postIdPage;
+        List<Post> posts;
 
     public Page<PostSummaryWithScrap> getPosts(String keyword, Pageable pageable, User user) {
         Page<Long> postIdPage;
@@ -69,20 +74,48 @@ public class PostService {
                     String url = post.getImageUrl() != null
                             ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
                             : null;
-                    return new PostSummaryWithScrap(post, isScrapped, url);
+                    String profileImageUrl = post.getUser().getProfileImage() != null
+                            ? imageUploader.generatePresignedUrl(post.getUser().getProfileImage(), 120)
+                            : null;
+
+                    return new PostSummaryWithScrap(post, isScrapped, url, profileImageUrl);
+
                 }).toList();
 
         return new PageImpl<>(summaries, pageable, postIdPage.getTotalElements());
+    }
+
+    private String getRecipeImageUrl(String recipeId) {
+        if (recipeId == null)
+            return null;
+        return recipeRepository.findById(recipeId)
+                .map(Recipe::getImageUrl)
+                .orElse(null);
     }
 
     @Transactional(readOnly = true)
     public PostDetail getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-        String presignedUrl = post.getImageUrl() != null
+
+        String postImageUrl = post.getImageUrl() != null
                 ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
                 : null;
-        return new PostDetail(post, presignedUrl);
+
+        // 레시피 이미지 URL 조회
+        String recipeImageUrl = null;
+        if (post.getRecipeId() != null) {
+            Recipe recipe = recipeRepository.findById(post.getRecipeId()).orElse(null);
+            if (recipe != null) {
+                recipeImageUrl = recipe.getImageUrl();
+            }
+        }
+        String profileImageUrl = post.getUser().getProfileImage() != null
+                ? imageUploader.generatePresignedUrl(post.getUser().getProfileImage(), 120)
+                : null;
+
+        return new PostDetail(post, postImageUrl, recipeImageUrl, profileImageUrl);
+
     }
 
     @Transactional(readOnly = true)
@@ -90,10 +123,34 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
         boolean isScrapped = scrapService.isScrapped(post, user);
+
         String presignedUrl = post.getImageUrl() != null
                 ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
                 : null;
-        return new PostDetailWithScrap(post, isScrapped, presignedUrl);
+
+        // 레시피 이미지 URL 조회
+        String recipeImageUrl = null;
+        String recipeId = post.getRecipeId();
+        System.out.println("DEBUG - recipeId in post: " + recipeId);
+
+        if (recipeId != null) {
+            Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
+            if (recipe != null) {
+                recipeImageUrl = recipe.getImageUrl();
+                System.out.println("DEBUG - Found recipe imageUrl: " + recipeImageUrl);
+            } else {
+                System.out.println("DEBUG - No recipe found with id: " + recipeId);
+            }
+        } else {
+            System.out.println("DEBUG - recipeId is null in Post");
+        }
+
+        String profileImageUrl = post.getUser().getProfileImage() != null
+                ? imageUploader.generatePresignedUrl(post.getUser().getProfileImage(), 120)
+                : null;
+
+        return new PostDetailWithScrap(post, isScrapped, presignedUrl, recipeImageUrl, profileImageUrl);
+
     }
 
     public Post update(Long id, PostRequest request, User user, String imageUrl) {
