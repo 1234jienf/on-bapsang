@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from recommend import recommend
 
+
 app = FastAPI(title="Bapsang AI Recipe Recommendation")
 
 class Req(BaseModel):
@@ -37,4 +38,6 @@ def route_recommend(req: Req):
     try:
         return recommend(req.food_name, top_k=100)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        traceback.print_exc()  # 이게 있어야 docker logs 에 뜸
+        raise e

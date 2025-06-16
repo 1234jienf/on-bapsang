@@ -1,17 +1,17 @@
 -- init_schema.sql
 CREATE DATABASE IF NOT EXISTS bapsang;
 USE bapsang;
-CREATE TABLE IF NOT EXISTS Recipe (
+CREATE TABLE IF NOT EXISTS recipe (
   recipe_id BIGINT PRIMARY KEY,
   name VARCHAR(255),
   description TEXT
 );
-CREATE TABLE IF NOT EXISTS RecipeIngredientMaster (
+CREATE TABLE IF NOT EXISTS recipe_ingredient_master (
   ingredient_id BIGINT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) UNIQUE,
   type VARCHAR(100)
 );
-CREATE TABLE IF NOT EXISTS RecipeIngredient (
+CREATE TABLE IF NOT EXISTS recipe_ingredient (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   recipe_id BIGINT,
   ingredient_id BIGINT,

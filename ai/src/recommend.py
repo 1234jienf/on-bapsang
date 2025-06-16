@@ -52,9 +52,9 @@ def fetch_recipes_bulk(ids: list[str]) -> dict[str, dict]:
         f"""SELECT r.recipe_id, r.name, r.description, r.review, r.time,
                   r.difficulty, r.portion, r.method, r.material_type, r.image_url,
                   rim.name AS ingredient
-             FROM Recipe r
-        LEFT JOIN RecipeIngredient ri  ON r.recipe_id = ri.recipe_id
-        LEFT JOIN RecipeIngredientMaster rim ON ri.ingredient_id = rim.ingredient_id
+             FROM recipe r
+        LEFT JOIN recipe_ingredient ri  ON r.recipe_id = ri.recipe_id
+        LEFT JOIN recipe_ingredient_master rim ON ri.ingredient_id = rim.ingredient_id
             WHERE r.recipe_id IN ({", ".join(['%s'] * len(ids))})""",
         ids
     )

@@ -4,9 +4,12 @@ import com.on_bapsang.backend.dto.IngredientDetailDto;
 import com.on_bapsang.backend.dto.RecipeDetailDto;
 import com.on_bapsang.backend.dto.RecipeSummaryDto;
 import com.on_bapsang.backend.entity.Recipe;
+import com.on_bapsang.backend.entity.User;
+import com.on_bapsang.backend.entity.RecipeScrap;
 import com.on_bapsang.backend.exception.CustomException;
 import com.on_bapsang.backend.repository.RecipeIngredientRepository;
 import com.on_bapsang.backend.repository.RecipeRepository;
+import com.on_bapsang.backend.repository.RecipeScrapRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +30,8 @@ import java.util.stream.Collectors;
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
+    private final RecipeScrapRepository recipeScrapRepository;
+
 
     @Getter
     @AllArgsConstructor
@@ -44,7 +50,7 @@ public class RecipeService {
     /**
      * 상세 조회
      */
-    public RecipeDetailDto getRecipeDetail(String recipeId) {
+    public RecipeDetailDto getRecipeDetail(String recipeId, User user) {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new CustomException("레시피를 찾을 수 없습니다.", HttpStatus.NOT_FOUND));
 
@@ -71,6 +77,7 @@ public class RecipeService {
                     .map(s -> s.replaceFirst("^\\d+\\.\\s*", "")) // "1. " 제거
                     .collect(Collectors.toList());
         }
+        boolean isScrapped = recipeScrapRepository.existsByUserAndRecipe(user, recipe);
 
         // ③ DTO 조립
         return new RecipeDetailDto(
@@ -85,13 +92,36 @@ public class RecipeService {
                 ingredients,
                 steps,
                 recipe.getReview(),
-                recipe.getDescription());
+                recipe.getDescription(),
+                isScrapped
+        );
+
     }
 
+    public void addScrap(User user, String recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new CustomException("레시피가 존재하지 않습니다.", HttpStatus.NOT_FOUND));
+
+        if (recipeScrapRepository.existsByUserAndRecipe(user, recipe)) {
+            throw new CustomException("이미 스크랩한 레시피입니다.", HttpStatus.CONFLICT);
+        }
+
+        RecipeScrap scrap = new RecipeScrap();
+        scrap.setUser(user);
+        scrap.setRecipe(recipe);
+        recipeScrapRepository.save(scrap);
+    }
+
+    public void removeScrap(User user, String recipeId) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new CustomException("레시피가 존재하지 않습니다.", HttpStatus.NOT_FOUND));
+
+        recipeScrapRepository.deleteByUserAndRecipe(user, recipe);
+    }
     /**
      * 이름으로 검색 (페이징)
      */
-    public PagedResponse<RecipeSummaryDto> getRecipesByName(String name, int page, int size) {
+    public PagedResponse<RecipeSummaryDto> getRecipesByName(User user, String name, int page, int size) {
         if (name == null || name.isBlank() || page < 0 || size <= 0) {
             throw new CustomException("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
@@ -101,11 +131,18 @@ public class RecipeService {
         if (recipePage.isEmpty()) {
             throw new CustomException("일치하는 레시피가 존재하지 않습니다.", HttpStatus.NOT_FOUND);
         }
+        Set<String> scrappedIds = recipeScrapRepository
+                .findAllByUser(user)
+                .stream()
+                .map(scrap -> scrap.getRecipe().getRecipeId())
+                .collect(Collectors.toSet());
 
         List<RecipeSummaryDto> summaries = recipePage.getContent().stream()
                 .map(r -> {
                     List<String> ingrNames = recipeIngredientRepository
                             .findIngredientNamesByRecipeId(r.getRecipeId());
+                    boolean isScrapped = scrappedIds.contains(r.getRecipeId());
+
                     return new RecipeSummaryDto(
                             r.getRecipeId(),
                             r.getName(),
@@ -117,7 +154,9 @@ public class RecipeService {
                             r.getPortion(),
                             r.getMethod(),
                             r.getMaterialType(),
-                            r.getImageUrl());
+                            r.getImageUrl(),
+                            isScrapped
+                    );
                 })
                 .collect(Collectors.toList());
 
@@ -126,7 +165,7 @@ public class RecipeService {
     }
 
     // ② 카테고리 검색 + 페이징
-    public PagedResponse<RecipeSummaryDto> getRecipesByCategory(String category, int page, int size) {
+    public PagedResponse<RecipeSummaryDto> getRecipesByCategory(User user, String category, int page, int size) {
         if (category == null || category.isBlank() || page < 0 || size <= 0) {
             throw new CustomException("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
@@ -136,11 +175,18 @@ public class RecipeService {
         if (recipePage.isEmpty()) {
             throw new CustomException("일치하는 레시피가 존재하지 않습니다.", HttpStatus.NOT_FOUND);
         }
+        Set<String> scrappedIds = recipeScrapRepository
+                .findAllByUser(user)
+                .stream()
+                .map(scrap -> scrap.getRecipe().getRecipeId())
+                .collect(Collectors.toSet());
 
         List<RecipeSummaryDto> summaries = recipePage.getContent().stream()
                 .map(r -> {
                     List<String> ingrNames = recipeIngredientRepository
                             .findIngredientNamesByRecipeId(r.getRecipeId());
+                    boolean isScrapped = scrappedIds.contains(r.getRecipeId());
+
                     return new RecipeSummaryDto(
                             r.getRecipeId(),
                             r.getName(),
@@ -152,7 +198,9 @@ public class RecipeService {
                             r.getPortion(),
                             r.getMethod(),
                             r.getMaterialType(),
-                            r.getImageUrl());
+                            r.getImageUrl(),
+                            isScrapped
+                    );
                 })
                 .collect(Collectors.toList());
 

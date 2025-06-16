@@ -26,8 +26,9 @@ public class DailyRecommendationService {
     private final UserFavoriteIngredientRepository userFavoriteIngredientRepository;
     private final DailyIndexRepository dailyIndexRepository;
     private final UserDailyRecipeRepository userDailyRecipeRepository;
+    private final RecipeScrapRepository recipeScrapRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<Recipe> getDailyRecommendedRecipes(User user) {
         LocalDate today = LocalDate.now();
 
@@ -125,10 +126,18 @@ public class DailyRecommendationService {
         int score;
     }
 
-    public List<RecipeSummaryDto> convertToSummaryDtos(List<Recipe> recipes) {
+    public List<RecipeSummaryDto> convertToSummaryDtos(User user, List<Recipe> recipes) {
         return recipes.stream().map(r -> {
+            Set<String> scrappedIds = recipeScrapRepository
+                    .findAllByUser(user)
+                    .stream()
+                    .map(scrap -> scrap.getRecipe().getRecipeId())
+                    .collect(Collectors.toSet());
+
             List<String> ingrNames = recipeIngredientRepository
                     .findIngredientNamesByRecipeId(r.getRecipeId());
+
+            boolean isScrapped = scrappedIds.contains(r.getRecipeId());
 
             return new RecipeSummaryDto(
                     r.getRecipeId(),
@@ -141,7 +150,8 @@ public class DailyRecommendationService {
                     r.getPortion(),
                     r.getMethod(),
                     r.getMaterialType(),
-                    r.getImageUrl()
+                    r.getImageUrl(),
+                    isScrapped
             );
         }).collect(Collectors.toList());
     }

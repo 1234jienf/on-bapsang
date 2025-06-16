@@ -17,7 +17,7 @@ public class RecipeSummaryDto {
     /** 재료 이름만 간단히 */
     private List<String> ingredients;
 
-    private String descriptions;
+    private String description;
     private String review;
     private String time;
     private String difficulty;
@@ -29,5 +29,5 @@ public class RecipeSummaryDto {
 
     @JsonProperty("image_url")
     private String imageUrl;
-
+    private boolean isScrapped;
 }
