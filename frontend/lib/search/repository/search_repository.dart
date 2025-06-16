@@ -11,12 +11,10 @@ import '../../common/model/string/pagination_string_params.dart';
 
 part 'search_repository.g.dart';
 
-final searchRepositoryProvider = Provider<
-    SearchRepository>((ref) {
+final searchRepositoryProvider = Provider<SearchRepository>((ref) {
   final dio = ref.watch(dioProvider);
 
-  final repository = SearchRepository(
-      dio, baseUrl: '$ip/api/recipe');
+  final repository = SearchRepository(dio, baseUrl: '$ip/api/recipe');
 
   return repository;
 });
@@ -24,13 +22,18 @@ final searchRepositoryProvider = Provider<
 @RestApi()
 abstract class SearchRepository
     implements IBasePaginationStringRepository<SearchRecipeModel> {
-  factory SearchRepository(Dio dio,
-      {String baseUrl}) = _SearchRepository;
+  factory SearchRepository(Dio dio, {String baseUrl}) = _SearchRepository;
 
   @override
   @GET('/search')
   @Headers({'accessToken': 'true'})
   Future<CursorStringPagination<SearchRecipeModel>> paginate({
-    @Queries() PaginationStringParams paginationStringParams = const PaginationStringParams(),
+    @Queries()
+    PaginationStringParams paginationStringParams =
+        const PaginationStringParams(),
   });
+
+  @POST('/foreign')
+  @Headers({'accessToken': 'true'})
+  Future<void> postRecipe({@Body() required Map<String, dynamic> body});
 }

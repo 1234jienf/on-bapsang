@@ -336,7 +336,9 @@ class _ShoppingRootScreenState extends State<ShoppingRootScreen> {
                             );
                           },
                         );
-                        context.pop();
+                        if (context.mounted) {
+                          context.pop();
+                        }
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width,
