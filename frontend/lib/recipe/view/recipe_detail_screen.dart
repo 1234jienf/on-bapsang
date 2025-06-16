@@ -3,16 +3,20 @@ import 'package:frontend/recipe/view/recipe_ingredient_price_screen.dart';
 import 'package:frontend/recipe/data/data_loader.dart';
 import 'package:frontend/recipe/view/recipe_ingredient_shopping_screen.dart';
 
-class RecipeDetailScreen extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/recipe/provider/recipe_provider.dart';
+
+class RecipeDetailScreen extends ConsumerStatefulWidget {
   final String id;
   static String get routeName => 'RecipeDetailScreen';
+
   const RecipeDetailScreen({super.key, required this.id});
 
   @override
-  State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
+  ConsumerState<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
 }
 
-class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
+class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
   final ScrollController controller = ScrollController();
 
   @override
@@ -31,6 +35,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final recipeAsync = ref.watch(recipeDetailProvider(int.parse(widget.id)));
+
     // 사진, 텍스트 사이 갭
     final double titleTextGap = 10.0;
     // 컴포넌트 사이 갭
@@ -55,265 +61,273 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
             ),
           ],
         ),
-        body: CustomScrollView(
-          controller: controller,
-          slivers: [
-            // 레시피 이미지
-            SliverToBoxAdapter(
-              child: SizedBox(
-                width: double.infinity,
-                height: 402,
-                child: Image.network(
-                  'https://recipe1.ezmember.co.kr/cache/recipe/2024/01/01/fdf645182aa988e49cb5d525c3c16d791.jpg',
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      color: Colors.grey[300],
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[300],
-                      child: Icon(Icons.error, size: 50),
-                    );
-                  },
+        body: recipeAsync.when(
+          loading: () => Center(child: CircularProgressIndicator()),
+          error: (err, stack) => Center(child: Text('잘못된 접근입니다.(해당 레시피를 찾을 수 없음)')),
+          data: (recipe) => CustomScrollView(
+            controller: controller,
+            slivers: [
+              // 레시피 이미지
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 402,
+                  child: Image.network(
+                    'https://recipe1.ezmember.co.kr/cache/recipe/2024/01/01/fdf645182aa988e49cb5d525c3c16d791.jpg',
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: Colors.grey[300],
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[300],
+                        child: Icon(Icons.error, size: 50),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  SizedBox(height: componentGap),
-                  // 레시피 제목
-                  Text(
-                    '우거지감자탕',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-                  ),
-                  SizedBox(height: componentGap),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    SizedBox(height: componentGap),
+                    // 레시피 제목
+                    Text(
+                      '우거지감자탕',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(height: componentGap),
 
-                  // 레시피 설명(review, descriptions?)
-                  Text(
-                    '까다로운 남편의 입맛을 맞추기위해 여러번 시도끝에 만들어낸 최적의 레시피입니다. 한번 만들어먹어보시면 사먹는게 아까워요ㅠㅠ',
-                    style: TextStyle(fontSize: 16, color: Colors.black45),
-                  ),
-                  SizedBox(height: componentGap),
+                    // 레시피 설명(review, descriptions?)
+                    Text(
+                      '까다로운 남편의 입맛을 맞추기위해 여러번 시도끝에 만들어낸 최적의 레시피입니다. 한번 만들어먹어보시면 사먹는게 아까워요ㅠㅠ',
+                      style: TextStyle(fontSize: 16, color: Colors.black45),
+                    ),
+                    SizedBox(height: componentGap),
 
-                  // 레시피 정보
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      infoWidget(title: '분량', content: '4인분'),
-                      infoWidget(title: '시간', content: '2시간이내'),
-                      infoWidget(title: '난이도', content: '중급'),
-                    ],
-                  ),
-                  SizedBox(height: componentGap),
-                ]),
-              ),
-            ),
-
-            // 구분선
-            SliverToBoxAdapter(
-              child: Container(
-                width: double.infinity,
-                height: 5,
-                decoration: BoxDecoration(color: Colors.black12),
-              ),
-            ),
-
-            // 재료
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  SizedBox(height: componentGap),
-                  Text(
-                    '재료',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                  ),
-                  SizedBox(height: titleTextGap),
-
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      gradientWidget(context: context, ingredientId: 40813, name: '청양고추', quantity: '2 개'),
-                      Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                      gradientWidget(context: context, ingredientId: 55825, name: '감자', quantity: '1 개'),
-                      Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                      gradientWidget(context: context, ingredientId: 1234, name: '감자', quantity: '1 개'),
-                      Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                      gradientWidget(context: context, ingredientId: 2345, name: '감자', quantity: '1 개'),
-                      Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                      gradientWidget(context: context, ingredientId: 3333, name: '감자', quantity: '1 개'),
-                    ],
-                  ),
-                  SizedBox(height: componentGap),
-                ]),
-              ),
-            ),
-
-            // 구분선
-            SliverToBoxAdapter(
-              child: Container(
-                width: double.infinity,
-                height: 5,
-                decoration: BoxDecoration(color: Colors.black12),
-              ),
-            ),
-
-            // 조리순서
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  SizedBox(height: componentGap),
-                  Text(
-                    '조리순서',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                  ),
-                  SizedBox(height: componentGap),
-                  ...List.generate(instructions.length, (index) {
-                    return Column(
+                    // 레시피 정보
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          width: double.infinity,
-                          height: 60.0,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${index + 1}',
-                                style: TextStyle(
-                                  fontSize: 17.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              SizedBox(width: 15.0),
-                              Expanded(
-                                child: Text(
-                                  instructions[index],
-                                  style: TextStyle(
-                                    fontSize: 14
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        infoWidget(title: '분량', content: '4인분'),
+                        infoWidget(title: '시간', content: '2시간이내'),
+                        infoWidget(title: '난이도', content: '중급'),
                       ],
-                    );
-                  })
-                ]),
+                    ),
+                    SizedBox(height: componentGap),
+                  ]),
+                ),
               ),
-            ),
 
-            // 구분선 3
-            SliverToBoxAdapter(
-              child: Container(
-                width: double.infinity,
-                height: 5,
-                decoration: BoxDecoration(color: Colors.black12),
+              // 구분선
+              SliverToBoxAdapter(
+                child: Container(
+                  width: double.infinity,
+                  height: 5,
+                  decoration: BoxDecoration(color: Colors.black12),
+                ),
               ),
-            ),
 
-            // 후기
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  SizedBox(height: componentGap),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '레시피 후기',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                      ),
-                      TextButton(
-                          onPressed: (){
-                            // 커뮤니티 글 쓰는 페이지로 보내주기
-                          },
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            foregroundColor: Colors.white,
-                          ),
-                          child: Text('리뷰쓰기')
-                      )
-                    ],
-                  ),
-                  SizedBox(height: componentGap),
+              // 재료
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    SizedBox(height: componentGap),
+                    Text(
+                      '재료',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(height: titleTextGap),
 
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(3, (_) {
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        gradientWidget(context: context, ingredientId: 40813, name: '청양고추', quantity: '2 개'),
+                        Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
+                        gradientWidget(context: context, ingredientId: 55825, name: '감자', quantity: '1 개'),
+                        Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
+                        gradientWidget(context: context, ingredientId: 1234, name: '감자', quantity: '1 개'),
+                        Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
+                        gradientWidget(context: context, ingredientId: 2345, name: '감자', quantity: '1 개'),
+                        Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
+                        gradientWidget(context: context, ingredientId: 3333, name: '감자', quantity: '1 개'),
+                      ],
+                    ),
+                    SizedBox(height: componentGap),
+                  ]),
+                ),
+              ),
+
+              // 구분선
+              SliverToBoxAdapter(
+                child: Container(
+                  width: double.infinity,
+                  height: 5,
+                  decoration: BoxDecoration(color: Colors.black12),
+                ),
+              ),
+
+              // 조리순서
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    SizedBox(height: componentGap),
+                    Text(
+                      '조리순서',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(height: componentGap),
+                    ...List.generate(instructions.length, (index) {
                       return Column(
                         children: [
-                          Row(
-                            children: [
-                              Flexible(child: Container(height: 100.0, decoration: BoxDecoration(color: Colors.grey))),
-                              SizedBox(width: 15.0),
-                              Flexible(child: Container(height: 100.0, decoration: BoxDecoration(color: Colors.grey))),
-                              SizedBox(width: 15.0),
-                              Flexible(child: Container(height: 100.0, decoration: BoxDecoration(color: Colors.grey))),
-                            ],
+                          SizedBox(
+                            width: double.infinity,
+                            height: 60.0,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${index + 1}',
+                                  style: TextStyle(
+                                    fontSize: 17.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 15.0),
+                                Expanded(
+                                  child: Text(
+                                    instructions[index],
+                                    style: TextStyle(
+                                      fontSize: 14
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          SizedBox(height: 15.0),
                         ],
                       );
-                    }),
-                  ),
-                  SizedBox(height: titleTextGap),
-                  InkWell(
-                    onTap: (){},
-                    child: Container(
-                      width: double.infinity,
-                      height: 50,
-                      decoration: BoxDecoration(border: Border.all(color: Colors.black12, width: 1.0)),
-                      child: Center(child: Text('더보기')),
+                    })
+                  ]),
+                ),
+              ),
+
+              // 구분선 3
+              SliverToBoxAdapter(
+                child: Container(
+                  width: double.infinity,
+                  height: 5,
+                  decoration: BoxDecoration(color: Colors.black12),
+                ),
+              ),
+
+              // 후기
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    SizedBox(height: componentGap),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '레시피 후기',
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                        ),
+                        TextButton(
+                            onPressed: (){
+                              // 커뮤니티 글 쓰는 페이지로 보내주기
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: Text('리뷰쓰기')
+                        )
+                      ],
                     ),
-                  ),
-                  SizedBox(height: componentGap),
-                ]),
+                    SizedBox(height: componentGap),
+
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(3, (_) {
+                        return Column(
+                          children: [
+                            Row(
+                              children: [
+                                Flexible(child: Container(height: 100.0, decoration: BoxDecoration(color: Colors.grey))),
+                                SizedBox(width: 15.0),
+                                Flexible(child: Container(height: 100.0, decoration: BoxDecoration(color: Colors.grey))),
+                                SizedBox(width: 15.0),
+                                Flexible(child: Container(height: 100.0, decoration: BoxDecoration(color: Colors.grey))),
+                              ],
+                            ),
+                            SizedBox(height: 15.0),
+                          ],
+                        );
+                      }),
+                    ),
+                    SizedBox(height: titleTextGap),
+                    InkWell(
+                      onTap: (){},
+                      child: Container(
+                        width: double.infinity,
+                        height: 50,
+                        decoration: BoxDecoration(border: Border.all(color: Colors.black12, width: 1.0)),
+                        child: Center(child: Text('더보기')),
+                      ),
+                    ),
+                    SizedBox(height: componentGap),
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      persistentFooterButtons: [
-        Container(
-          width: double.infinity,
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 10.0),
-          child: ElevatedButton(
-            onPressed: (){
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => RecipeIngredientShoppingScreen()
-                )
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: Text(
-              '재료 구매하기/재료보기',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+      persistentFooterButtons: recipeAsync.when (
+        loading: () => [],
+        error: (err, stack) => [],
+        data: (recipe) => [
+          Container(
+              width: double.infinity,
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 10.0),
+              child: ElevatedButton(
+                onPressed: (){
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RecipeIngredientShoppingScreen()
+                      )
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: Text(
+                  '재료 구매하기/재료보기',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
           )
-        )
-      ],
+        ],
+      )
     );
   }
 }

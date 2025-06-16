@@ -19,7 +19,7 @@ class _RecipeListComponentState extends State<RecipeListComponent> {
       onTap: (){
         context.pushNamed(
           RecipeDetailScreen.routeName,
-          pathParameters: {'id': widget.recipeInfo.recipe_id.toString()},
+          pathParameters: {'id': widget.recipeInfo.id.toString()},
         );
       },
       child: Row(

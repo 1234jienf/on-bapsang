@@ -87,7 +87,6 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
   }) async {
     try {
       state = UserModelLoading();
-
       await authRepository.signup(userInfo: userInfo);
 
       state = null;

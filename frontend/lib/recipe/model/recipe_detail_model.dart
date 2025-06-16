@@ -1,5 +1,6 @@
-class RecipeDetailModel {
-  final int recipe_id;
+import 'package:frontend/common/model/int/model_with_id.dart';
+
+class RecipeDetailModel extends IModelWithIntId {
   final String name;
   final List<String> ingredients;
   final String descriptions;
@@ -12,7 +13,7 @@ class RecipeDetailModel {
   final String image_url;
 
   RecipeDetailModel({
-    required this.recipe_id,
+    required int id,
     required this.name,
     required this.ingredients,
     required this.descriptions,
@@ -23,11 +24,11 @@ class RecipeDetailModel {
     required this.method,
     required this.material_type,
     required this.image_url
-  });
+  }) : super(id: id);
 
   factory RecipeDetailModel.fromJson(Map<String, dynamic> json) {
     return RecipeDetailModel(
-      recipe_id: int.parse(json['recipe_id'].toString()),
+      id: int.parse(json['recipe_id'].toString()),
       name: json['name'],
       ingredients: List<String>.from(json['ingredients']),
       descriptions: json['descriptions'],
