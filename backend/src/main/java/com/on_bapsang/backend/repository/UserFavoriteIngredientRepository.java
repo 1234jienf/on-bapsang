@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface UserFavoriteIngredientRepository extends JpaRepository<UserFavoriteIngredient, Long> {
 
     @Modifying
@@ -18,4 +20,7 @@ public interface UserFavoriteIngredientRepository extends JpaRepository<UserFavo
 
     // 중복 저장 방지용 exists 메서드 추가
     boolean existsByUserAndIngredient(User user, Ingredient ingredient);
+    @Query("SELECT i.ingredientId FROM UserFavoriteIngredient ufi JOIN ufi.ingredient i WHERE ufi.user = :user")
+    List<Long> findIngredientIdsByUser(@Param("user") User user);
+
 }

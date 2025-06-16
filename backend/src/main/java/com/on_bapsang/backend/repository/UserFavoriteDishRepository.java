@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface UserFavoriteDishRepository extends JpaRepository<UserFavoriteDish, Long> {
 
     @Modifying
@@ -18,4 +20,8 @@ public interface UserFavoriteDishRepository extends JpaRepository<UserFavoriteDi
 
     // 중복 저장 방지용
     boolean existsByUserAndDish(User user, Dish dish);
+
+    @Query("SELECT d.name FROM UserFavoriteDish ufd JOIN ufd.dish d WHERE ufd.user = :user")
+    List<String> findDishNamesByUser(@Param("user") User user);
+
 }
