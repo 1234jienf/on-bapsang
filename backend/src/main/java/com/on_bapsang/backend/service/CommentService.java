@@ -10,6 +10,7 @@ import com.on_bapsang.backend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.on_bapsang.backend.util.ImageUploader;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final ImageUploader imageUploader;
 
     // 댓글 작성 (대댓글 포함)
     @Transactional
@@ -74,8 +76,19 @@ public class CommentService {
         List<Comment> topLevelComments = commentRepository.findByPostAndParentIsNullWithUserAndReplies(post);
 
         return topLevelComments.stream()
-                .map(CommentResponse::new)
+                .map(this::buildCommentResponseWithChildren)
                 .collect(Collectors.toList());
     }
 
+    private CommentResponse buildCommentResponseWithChildren(Comment comment) {
+        String profileImageUrl = comment.getUser().getProfileImage() != null
+                ? imageUploader.generatePresignedUrl(comment.getUser().getProfileImage(), 120)
+                : null;
+
+        List<CommentResponse> children = comment.getChildren().stream()
+                .map(this::buildCommentResponseWithChildren) // 재귀 호출
+                .collect(Collectors.toList());
+
+        return new CommentResponse(comment, profileImageUrl, children);
+    }
 }

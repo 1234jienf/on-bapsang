@@ -7,18 +7,19 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @AllArgsConstructor
 public class MyPost {
     private Long postId;
+    private String nickname;
+    private String profileImage;
     private String title;
     private String content;
-
-    @Setter
     private String imageUrl;
-
     private int scrapCount;
     private int commentCount;
     private LocalDateTime createdAt;
     private Double x;
     private Double y;
 }
+

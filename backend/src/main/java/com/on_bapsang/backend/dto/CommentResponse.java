@@ -17,14 +17,12 @@ public class CommentResponse {
     private final LocalDateTime createdAt;
     private final List<CommentResponse> children;
 
-    public CommentResponse(Comment comment) {
+    public CommentResponse(Comment comment, String profileImageUrl, List<CommentResponse> childResponses) {
         this.id = comment.getId();
         this.content = comment.getContent();
         this.nickname = comment.getUser().getNickname();
-        this.profileImage = comment.getUser().getProfileImage();
+        this.profileImage = profileImageUrl;
         this.createdAt = comment.getCreatedAt();
-        this.children = comment.getChildren().stream()
-                .map(CommentResponse::new)
-                .collect(Collectors.toList());
+        this.children = childResponses;
     }
 }
