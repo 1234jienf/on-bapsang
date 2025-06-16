@@ -1,10 +1,15 @@
 package com.on_bapsang.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.*;
+
 import java.util.List;
 
+@Getter
+@Setter
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class DishDto {
     @JsonProperty("recipe_id")
     private String recipeId;
@@ -32,4 +37,9 @@ public class DishDto {
     private String imageUrl;
 
     private double score;
+    private boolean isScrapped;
+
+    public void setIsScrapped(boolean scrapped) {
+        this.isScrapped = scrapped;
+    }
 }

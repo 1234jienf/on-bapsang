@@ -4,22 +4,29 @@ package com.on_bapsang.backend.service;
 import com.on_bapsang.backend.dto.DishDto;
 import com.on_bapsang.backend.dto.RecommendRequest;
 import com.on_bapsang.backend.dto.RecommendResponse;
+import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.exception.CustomException;
+import java.util.Set;
 import org.springframework.http.HttpStatus;
+import com.on_bapsang.backend.repository.RecipeScrapRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import java.util.List;
 
+import java.util.stream.Collectors;
+
 @Service
 public class RecommendationService {
     private final WebClient aiWebClient;
+    private final RecipeScrapRepository recipeScrapRepository;
 
-    public RecommendationService(WebClient aiWebClient) {
+    public RecommendationService(WebClient aiWebClient, RecipeScrapRepository recipeScrapRepository) {
         this.aiWebClient = aiWebClient;
+        this.recipeScrapRepository = recipeScrapRepository;
     }
 
-    public RecommendResponse getRecommendations(RecommendRequest req, int page, int size) {
+    public RecommendResponse getRecommendations(User user,RecommendRequest req, int page, int size) {
 
         RecommendResponse raw = aiWebClient.post()
                 .uri(uriBuilder -> uriBuilder
@@ -41,6 +48,12 @@ public class RecommendationService {
             raw.setMeta(meta);
             return raw; // 200 OK, recommended_dishes = [], meta 포함
         }
+        Set<String> scrappedIds = recipeScrapRepository.findAllByUser(user).stream()
+                .map(scrap -> scrap.getRecipe().getRecipeId())
+                .collect(Collectors.toSet());
+        raw.getRecommendedDishes().forEach(dish ->
+                dish.setIsScrapped(scrappedIds.contains(dish.getRecipeId()))
+        );
 
         // --- 원래 슬라이싱 로직 ---
         int totalSize = raw.getRecommendedDishes().size();
