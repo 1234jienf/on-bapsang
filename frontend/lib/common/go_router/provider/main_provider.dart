@@ -26,7 +26,6 @@ import '../../../search/search_detail/view/search_detail_root_screen.dart';
 import '../../../search/view/search_main_screen.dart';
 import '../../../shopping/view/shopping_cart_screen.dart';
 import '../../../shopping/view/shopping_detail/view/shopping_detail_screen.dart';
-import '../../../signup/view/sign_up_food_prefer_list_screen.dart';
 import '../../../user/model/user_model.dart';
 import '../../../user/provider/user_provider.dart';
 import '../../view/root_tab.dart';

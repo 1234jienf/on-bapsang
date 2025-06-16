@@ -9,10 +9,12 @@ class ShoppingRecipeAddComponent extends StatefulWidget {
   const ShoppingRecipeAddComponent({super.key, this.function});
 
   @override
-  State<ShoppingRecipeAddComponent> createState() => _ShoppingRecipeAddComponentState();
+  State<ShoppingRecipeAddComponent> createState() =>
+      _ShoppingRecipeAddComponentState();
 }
 
-class _ShoppingRecipeAddComponentState extends State<ShoppingRecipeAddComponent> {
+class _ShoppingRecipeAddComponentState
+    extends State<ShoppingRecipeAddComponent> {
   int count = 1;
 
   @override
@@ -178,35 +180,41 @@ class _ShoppingRecipeAddComponentState extends State<ShoppingRecipeAddComponent>
                     ),
                     const SizedBox(height: 16.0),
                     GestureDetector(
-                        onTap: () async {
-                          await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              Future.delayed(Duration(seconds: 1), () {
-                                if (context.mounted) Navigator.of(context).pop();
-                              });
+                      onTap: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            Future.delayed(Duration(seconds: 1), () {
+                              if (context.mounted) Navigator.of(context).pop();
+                            });
 
-                              return AlertDialog(
-                                backgroundColor: gray000,
+                            return AlertDialog(
+                              backgroundColor: gray000,
+                              alignment: Alignment.center,
+                              contentPadding: const EdgeInsets.all(16.0),
+                              content: Container(
+                                width: 300,
+                                height: 80,
                                 alignment: Alignment.center,
-                                contentPadding: const EdgeInsets.all(16.0),
-                                content: Container(
-                                  width: 300,
-                                  height: 80,
-                                  alignment: Alignment.center,
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                  child: Text(
-                                    '장바구니에 상품이 추가되었습니다',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                ),
+                                child: Text(
+                                  '장바구니에 상품이 추가되었습니다',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                              );
-                            },
-                          );
-
+                              ),
+                            );
+                          },
+                        );
+                        if (context.mounted) {
                           context.pop();
-                        },
+                        }
+                      },
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         height: 50,

@@ -88,30 +88,24 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                 ),
                 SizedBox(height: componentGap),
 
-                // TODO : AI 배너
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: sideGap),
-                  child: Container(
-                    width: 360,
-                    height: 90,
-                    decoration: BoxDecoration(color: Colors.grey),
-                  ),
-                ),
+                Image.asset('asset/img/home_AI_recipe_banner.png'),
+
                 SizedBox(height: componentGap),
 
                 // Recipe Icon
                 RecipeIcon(),
-                SizedBox(height: componentGap),
+
+                SizedBox(height: 50.0,),
 
                 // 인기 레시피
                 titleWidget(
-                  title: '인기 레시피',
-                  fontSize: 16,
+                  title: '요즘 핫한 인기 레시피',
+                  fontSize: 20,
                   sidePadding: sideGap,
                 ),
                 SizedBox(height: titleTextGap),
                 RecipeCard(count: 10),
-                SizedBox(height: componentGap),
+                SizedBox(height: 50.0,),
 
                 // 제철재료 레시피
                 titleWidget(
@@ -130,7 +124,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                SizedBox(height: componentGap),
+                SizedBox(height: 50.0,),
 
                 // 추천 레시피
                 titleWidget(
@@ -140,7 +134,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                 ),
                 SizedBox(height: titleTextGap),
                 RecipeCard(count: 10),
-                SizedBox(height: componentGap),
+                SizedBox(height: 50.0,),
 
                 // 커뮤니티
                 titleWidget(title: '커뮤니티', fontSize: 16, sidePadding: sideGap),
@@ -183,7 +177,7 @@ Widget titleWidget({
       children: [
         Text(
           title,
-          style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w700),
+          style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w800),
         ),
         Text('더보기 >'),
       ],

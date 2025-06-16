@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/common/go_router/provider/main_provider.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';

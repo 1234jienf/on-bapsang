@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:frontend/recipe/component/recipe_ingredient_market_chart.dart';
 import 'package:frontend/recipe/model/recipe_price_model.dart';
 
