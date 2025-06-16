@@ -45,7 +45,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "WHERE s.user.userId = :userId")
     Page<ScrappedPost> findScrappedPostsByUser(@Param("userId") Long userId, Pageable pageable);
 
-
+    // 인기 레시피 ID 조회
+    @Query("SELECT p.recipeId, COUNT(p) as cnt " +
+            "FROM Post p " +
+            "WHERE p.recipeId IS NOT NULL " +
+            "GROUP BY p.recipeId " +
+            "ORDER BY cnt DESC")
+    List<Object[]> findTopRecipeIdsByPostCount(Pageable pageable);
 
 
 }
