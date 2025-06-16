@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class RecipeComponent extends StatefulWidget {
+class ShoppingRecipeComponent extends StatefulWidget {
   final int price;
   final int percentage;
-  const RecipeComponent({super.key, required this.price, required this.percentage});
+  const ShoppingRecipeComponent({super.key, required this.price, required this.percentage});
 
   @override
-  State<RecipeComponent> createState() => _RecipeComponentState();
+  State<ShoppingRecipeComponent> createState() => _ShoppingRecipeComponentState();
 }
 
-class _RecipeComponentState extends State<RecipeComponent> {
+class _ShoppingRecipeComponentState extends State<ShoppingRecipeComponent> {
   final items = List.generate(12, (index) => index);
   int selectedIndex = 0;
   final title_ = ['김치 두루치기', '감자탕'];

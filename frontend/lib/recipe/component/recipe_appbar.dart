@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/home/view/home_alarm_screen.dart';
-import 'package:frontend/home/view/home_cart_screen.dart';
 import 'package:frontend/home/view/home_menu_screen.dart';
 import 'package:frontend/mypage/view/mypage_root_screen.dart';
 import 'package:frontend/search/view/search_main_screen.dart';
+import 'package:frontend/shopping/view/shopping_cart_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class RecipeAppbar extends StatelessWidget implements PreferredSizeWidget {
@@ -61,7 +60,7 @@ class RecipeAppbar extends StatelessWidget implements PreferredSizeWidget {
         const SizedBox(width: 7),
         GestureDetector(
             onTap: () {
-              context.pushNamed(HomeCartScreen.routeName);
+              context.pushNamed(ShoppingCartScreen.routeName);
             },
             child: Icon(Icons.shopping_cart_outlined, size: 29)
         ),

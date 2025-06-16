@@ -7,16 +7,15 @@ import 'package:frontend/community/view/community_create_upload_screen.dart';
 import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/community/view/community_root_screen.dart';
 import 'package:frontend/home/view/home_alarm_screen.dart';
-import 'package:frontend/home/view/home_cart_screen.dart';
 import 'package:frontend/home/view/home_menu_screen.dart';
 import 'package:frontend/maps/view/maps_root_screen.dart';
 import 'package:frontend/mypage/view/mypage_root_screen.dart';
 import 'package:frontend/recipe/view/recipe_category_list_screen.dart';
 import 'package:frontend/recipe/view/recipe_root_screen.dart';
 import 'package:frontend/recipe/view/recipe_detail_screen.dart';
-import 'package:frontend/recipe/view/recipe_season_detail_screen.dart';
 import 'package:frontend/recipe/view/recipe_season_list_screen.dart';
 import 'package:frontend/search/view/search_root_screen.dart';
+import 'package:frontend/shopping/view/shopping_detail/view/shopping_payment.dart';
 import 'package:frontend/shopping/view/shopping_root_screen.dart';
 import 'package:frontend/signup/view/sign_up_root_screen.dart';
 import 'package:frontend/user/view/login_screen.dart';
@@ -25,6 +24,7 @@ import 'package:go_router/go_router.dart';
 import '../../../home/view/home_page_screen.dart';
 import '../../../search/search_detail/view/search_detail_root_screen.dart';
 import '../../../search/view/search_main_screen.dart';
+import '../../../shopping/view/shopping_cart_screen.dart';
 import '../../../shopping/view/shopping_detail/view/shopping_detail_screen.dart';
 import '../../../signup/view/sign_up_food_prefer_list_screen.dart';
 import '../../../user/model/user_model.dart';
@@ -90,11 +90,6 @@ class MainProvider extends ChangeNotifier {
               builder: (_, state) => const HomeAlarmScreen(),
             ),
             GoRoute(
-              path: 'cart',
-              name: 'HomeCartScreen',
-              builder: (_, state) => const HomeCartScreen(),
-            ),
-            GoRoute(
               path: 'recipe',
               name: 'RecipeRootScreen',
               builder: (_, state) => const RecipeRootScreen(),
@@ -117,13 +112,6 @@ class MainProvider extends ChangeNotifier {
               path: 'shopping',
               name: 'shopping',
               builder: (_, state) => const ShoppingRootScreen(),
-              routes: [
-                GoRoute(
-                  path: 'detail',
-                  name: 'ShoppingDetailScreen',
-                  builder: (_, state) => const ShoppingDetailScreen(),
-                ),
-              ],
             ),
             GoRoute(
               path: 'community',
@@ -194,6 +182,15 @@ class MainProvider extends ChangeNotifier {
       builder:
           (_, state) => RecipeDetailScreen(id: state.pathParameters['id']!),
     ),
+    GoRoute(
+      path: '/shopping/detail',
+      name: 'ShoppingDetailScreen',
+      builder: (_, state) => const ShoppingDetailScreen(),
+      routes: [
+        GoRoute(path: 'payment', name: 'ShoppingPayment', builder: (_, state) => const ShoppingPayment())
+      ]
+    ),
+    GoRoute(path: '/cart', name: 'ShoppingCartScreen', builder: (_, state) => const ShoppingCartScreen()),
   ];
 
   void logout() {

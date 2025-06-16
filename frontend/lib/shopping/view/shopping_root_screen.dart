@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/common/appbar/home_appbar.dart';
 import 'package:frontend/common/layout/default_layout.dart';
-import 'package:frontend/shopping/component/recipe_category.dart';
+import 'package:frontend/shopping/component/shopping_recipe_category.dart';
 import 'package:frontend/shopping/view/shopping_detail/view/shopping_detail_screen.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../common/const/colors.dart';
 import '../../home/component/recipe_icon.dart';
-import '../component/recipe_component.dart';
+import '../component/shopping_recipe_component.dart';
 
 class ShoppingRootScreen extends StatefulWidget {
   const ShoppingRootScreen({super.key});
@@ -60,9 +61,9 @@ class _ShoppingRootScreenState extends State<ShoppingRootScreen> {
           ),
           _shoppingComponent(count: 10, title: '온밥 마켓 특가'),
           _shoppingComponent(count: 10, title: 'ㅇㅇㅇ 님에게 추천하는 상품'),
-          RecipeComponent(price: 9900, percentage: 36),
+          ShoppingRecipeComponent(price: 9900, percentage: 36),
           SliverToBoxAdapter(child: const SizedBox(height: 26)),
-          RecipeCategory(percentage: 9900, price: 9900),
+          ShoppingRecipeCategory(percentage: 9900, price: 9900),
         ],
       ),
     );
@@ -120,7 +121,25 @@ class _ShoppingRootScreenState extends State<ShoppingRootScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset("asset/img/shopping_img.png"),
+                            Stack(
+                              children: [
+                                Image.asset("asset/img/shopping_img.png"),
+
+                                Positioned(
+                                  bottom: 8,
+                                  right: 8,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _showAddComponent(context);
+                                    },
+                                    child: Icon(
+                                      Icons.add_circle_outline_outlined,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
                             const SizedBox(height: 7),
                             Text('상품 타이틀', style: TextStyle(fontSize: 14)),
                             Row(
@@ -154,6 +173,197 @@ class _ShoppingRootScreenState extends State<ShoppingRootScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showAddComponent(BuildContext context) {
+    int count = 1;
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return Container(
+              height: MediaQuery.of(context).size.height * 2 / 5,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(right: 26.0, left: 26.0, top: 40.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '제품 구매',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            context.pop();
+                          },
+                          child: Text(
+                            '취소',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(color: gray200),
+                              height: 80,
+                              width: 80,
+                            ),
+                            const SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [Text('상품명'), Text('상품 설명')],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Divider(color: gray400),
+                        const SizedBox(height: 8),
+                        Text(
+                          '[상품명] 130g * 12개입',
+                          style: TextStyle(fontSize: 14.0),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  '26%',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  '9,900원',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setModalState(() {
+                                      if (count > 1) {
+                                        count--;
+                                      }
+                                    });
+                                  },
+                                  child: Icon(Icons.remove),
+                                ),
+                                const SizedBox(width: 16),
+                                Text(
+                                  count.toString(),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                GestureDetector(
+                                  onTap: () {
+                                    setModalState(() {
+                                      if (count < 98) {
+                                        count++;
+                                      }
+                                    });
+                                  },
+                                  child: Icon(Icons.add),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16.0),
+                    GestureDetector(
+                      onTap: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            Future.delayed(Duration(seconds: 1), () {
+                              if (context.mounted) Navigator.of(context).pop();
+                            });
+
+                            return AlertDialog(
+                              backgroundColor: gray000,
+                              alignment: Alignment.center,
+                              contentPadding: const EdgeInsets.all(16.0),
+                              content: Container(
+                                width: 300,
+                                height: 80,
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text(
+                                  '장바구니에 상품이 추가되었습니다',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                        context.pop();
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                          color: gray900,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          '장바구니 담기',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.w600,
+                            color: gray000,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
