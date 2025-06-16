@@ -14,5 +14,4 @@ final communityProvider = StateNotifierProvider.family<CommunityStateNotifier, C
 class CommunityStateNotifier
     extends PaginationIntProvider<CommunityModel, CommunityRepository> {
   CommunityStateNotifier({required super.repository, super.keyword});
-
 }

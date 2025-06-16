@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // 추가 필요
 import 'package:frontend/common/layout/default_layout.dart';
@@ -6,6 +8,7 @@ import 'package:frontend/signup/view/sign_up_food_prefer_list_screen.dart';
 import 'package:frontend/signup/view/sign_up_info_screen.dart';
 
 import 'package:frontend/signup/model/sign_up_request_model.dart';
+import 'package:frontend/signup/view/sign_up_profile_image_screen.dart';
 import 'package:frontend/signup/view/sign_up_taste_dish_prefer_list_screen.dart';
 import 'package:frontend/user/provider/user_provider.dart';
 
@@ -28,7 +31,7 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
 
   void nextStep() {
     setState(() {
-      if (currentStep < 3) {
+      if (currentStep < 4) {
         currentStep++;
       }
     });
@@ -63,15 +66,23 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
   void updateStep3Data({
     required List<int> favoriteDishIds,
     required List<int> favoriteIngredientIds,
-  }) async { // async 키워드를 메소드에 직접 추가
+  }) async {
     setState(() {
       signupData.favoriteDishIds = favoriteDishIds;
       signupData.favoriteIngredientIds = favoriteIngredientIds;
     });
+    nextStep();
+  }
 
-    // 익명 함수 대신 직접 호출
+  void updateStep4Data(File profileImage) async {
+    setState(() {
+      signupData.profileImage = profileImage;
+    });
+
+    // 회원가입
     await ref.read(userProvider.notifier).signup(userInfo: signupData);
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -89,8 +100,13 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
               onComplete: updateStep2Data,
               initialData: signupData
           )
-              : SignUpTasteDishPreferListScreen(
+              : currentStep == 3
+              ? SignUpTasteDishPreferListScreen(
               onComplete: updateStep3Data,
+              initialData: signupData
+          )
+              : SignUpProfileImageScreen(
+              onComplete: updateStep4Data,
               initialData: signupData
           )
       ),

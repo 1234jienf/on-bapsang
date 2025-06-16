@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class SignupRequest {
   String username;
   String password;
@@ -8,6 +10,7 @@ class SignupRequest {
   List<int> favoriteTasteIds;
   List<int> favoriteDishIds;
   List<int> favoriteIngredientIds;
+  File? profileImage;
 
   SignupRequest({
     required this.username,
@@ -19,6 +22,7 @@ class SignupRequest {
     this.favoriteTasteIds = const [],
     this.favoriteDishIds = const [],
     this.favoriteIngredientIds = const [],
+    this.profileImage
   });
 
   Map<String, dynamic> toJson() {

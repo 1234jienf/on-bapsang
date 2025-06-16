@@ -29,7 +29,7 @@ class _RecipeCardState extends State<RecipeCard> {
                   onTap: () {
                     context.pushNamed(
                       RecipeDetailScreen.routeName,
-                      pathParameters: {'id': '1'},
+                      pathParameters: {'id': '7016813'},
                     );
                   },
                   child: Column(

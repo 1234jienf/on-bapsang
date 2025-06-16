@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/const/securetoken.dart';
 import 'package:frontend/common/dio/dio.dart';
 import 'package:frontend/user/model/login_response_model.dart';
+import 'dart:io';
 
 import 'package:frontend/signup/model/sign_up_request_model.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 
 // Provider
 final authRepositoryProvider = Provider((ref) {
@@ -42,20 +47,51 @@ class AuthRepository {
   Future<void> signup({
     required SignupRequest userInfo
   }) async {
-    await dio.post(
-      '$ip/api/users/signup',
-      data: {
-        'username' : userInfo.username,
-        'password' : userInfo.password,
-        'nickname' : userInfo.nickname,
-        'country' : userInfo.country,
-        'age' : userInfo.age,
-        'location': userInfo.location,
-        'favoriteTasteIds' : userInfo.favoriteTasteIds,
-        'favoriteDishIds' : userInfo.favoriteDishIds,
-        'favoriteIngredientIds': userInfo.favoriteIngredientIds
-      },
-      options: Options(headers: {'Content-Type': 'application/json'})
-    );
+    try {
+      final String jsonData = jsonEncode(userInfo.toJson());
+      print('[회원가입 요청 데이터]');
+      print(jsonData);
+      print(userInfo.profileImage!.path);
+      final file = userInfo.profileImage!;
+      final int fileSizeInBytes = await file.length();
+      final double fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+      print('이미지 파일 크기: ${fileSizeInMB.toStringAsFixed(2)} MB');
+      File compressedImage = await compressImage(userInfo.profileImage!);
+
+      // FormData 구성
+      final formData = FormData.fromMap({
+        'data': jsonData,
+        'profileImage': await MultipartFile.fromFile(compressedImage.path),
+      });
+
+      // 요청 전송
+      await dio.post(
+        '$ip/api/users/signup',
+        data: formData,
+        options: Options(
+          contentType: 'multipart/form-data', // 생략해도 되지만 명시해도 무방
+        ),
+      );
+    } catch (e) {
+      throw Exception('회원가입에 실패했습니다: ${e.toString()}');
+    }
   }
 }
+
+Future<File> compressImage(File file) async {
+  final raw = await file.readAsBytes();
+  final originalImage = img.decodeImage(raw);
+
+  if (originalImage == null) throw Exception('이미지 디코딩 실패');
+
+  final resized = img.copyResize(originalImage, width: 600); // 리사이즈
+  final jpg = img.encodeJpg(resized, quality: 85); // 압축률 조절
+
+  final dir = await getTemporaryDirectory();
+  final compressed = File('${dir.path}/compressed.jpg');
+  await compressed.writeAsBytes(jpg);
+
+  return compressed;
+}
+
