@@ -72,7 +72,12 @@ public class PostService {
                     String url = post.getImageUrl() != null
                             ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
                             : null;
-                    return new PostSummaryWithScrap(post, isScrapped, url);
+                    String profileImageUrl = post.getUser().getProfileImage() != null
+                            ? imageUploader.generatePresignedUrl(post.getUser().getProfileImage(), 120)
+                            : null;
+
+                    return new PostSummaryWithScrap(post, isScrapped, url, profileImageUrl);
+
                 }).toList();
 
         return new PageImpl<>(summaries, pageable, postIdPage.getTotalElements());
@@ -102,8 +107,12 @@ public class PostService {
                 recipeImageUrl = recipe.getImageUrl();
             }
         }
+        String profileImageUrl = post.getUser().getProfileImage() != null
+                ? imageUploader.generatePresignedUrl(post.getUser().getProfileImage(), 120)
+                : null;
 
-        return new PostDetail(post, postImageUrl, recipeImageUrl);
+        return new PostDetail(post, postImageUrl, recipeImageUrl, profileImageUrl);
+
     }
 
 
@@ -135,8 +144,12 @@ public class PostService {
             System.out.println("DEBUG - recipeId is null in Post");
         }
 
+        String profileImageUrl = post.getUser().getProfileImage() != null
+                ? imageUploader.generatePresignedUrl(post.getUser().getProfileImage(), 120)
+                : null;
 
-        return new PostDetailWithScrap(post, isScrapped, presignedUrl, recipeImageUrl);
+        return new PostDetailWithScrap(post, isScrapped, presignedUrl, recipeImageUrl, profileImageUrl);
+
     }
 
 

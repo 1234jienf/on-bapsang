@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ScrappedPost {
     private Long postId;
+    private String nickname;
+    private String profileImage;
     private String title;
     private String content;
     private String imageUrl;

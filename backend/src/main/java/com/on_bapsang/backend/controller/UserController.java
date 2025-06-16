@@ -1,5 +1,7 @@
 package com.on_bapsang.backend.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.on_bapsang.backend.dto.*;
 import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.exception.CustomException;
@@ -10,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import com.on_bapsang.backend.util.ImageUploader;
 
 @RestController
 @RequestMapping("/api/users")
@@ -17,13 +21,27 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final ImageUploader imageUploader;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<Void>> registerUser(@RequestBody SignupRequest request) {
-        userService.registerUser(request);
+    public ResponseEntity<ApiResponse<Void>> registerUser(
+            @RequestPart("data") String data,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
+    ) {
+        SignupRequest request;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            request = mapper.readValue(data, SignupRequest.class);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(400, "잘못된 데이터 형식입니다."));
+        }
+
+        userService.registerUser(request, profileImage);
         return ResponseEntity.ok(ApiResponse.success("회원가입이 완료되었습니다."));
     }
 
+
+    // UserController.java
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserInfoResponse>> getMyInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) {
@@ -31,9 +49,17 @@ public class UserController {
         }
 
         User user = userDetails.getUser();
-        UserInfoResponse response = new UserInfoResponse(user);
+
+        // 프로필 presigned URL 생성
+        String profileUrl = user.getProfileImage() != null
+                ? imageUploader.generatePresignedUrl(user.getProfileImage(), 120)
+                : null;
+
+        // response 객체 직접 생성
+        UserInfoResponse response = new UserInfoResponse(user, profileUrl);
         return ResponseEntity.ok(ApiResponse.success("내 정보 조회 성공", response));
     }
+
 
     @DeleteMapping("/withdraw")
     public ResponseEntity<ApiResponse<Void>> withdraw(@AuthenticationPrincipal UserDetailsImpl userDetails) {

@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import com.on_bapsang.backend.util.ImageUploader;
 
 import java.util.List;
 
@@ -26,9 +28,10 @@ public class UserService {
     private final UserFavoriteDishRepository userFavoriteDishRepository;
     private final UserFavoriteIngredientRepository userFavoriteIngredientRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final ImageUploader imageUploader;
 
     @Transactional
-    public void registerUser(SignupRequest request) {
+    public void registerUser(SignupRequest request, MultipartFile profileImage) {
         // 아이디 중복 검사
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new CustomException("이미 존재하는 아이디입니다.", HttpStatus.CONFLICT);
@@ -42,6 +45,11 @@ public class UserService {
         // 비밀번호 암호화
         String encryptedPassword = passwordEncoder.encode(request.getPassword());
 
+        String profileImageUrl = null;
+        if (profileImage != null && !profileImage.isEmpty()) {
+            profileImageUrl = imageUploader.upload(profileImage); // fileName만 저장
+        }
+
         // User 저장
         User user = User.builder()
                 .username(request.getUsername())
@@ -50,6 +58,7 @@ public class UserService {
                 .country(request.getCountry())
                 .age(request.getAge())
                 .location(request.getLocation())
+                .profileImage(profileImageUrl)
                 .build();
         userRepository.save(user);
 

@@ -31,14 +31,17 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     // 마이페이지 내가 쓴 글
     @Query("SELECT new com.on_bapsang.backend.dto.mypage.MyPost(" +
-            "p.id, p.title, p.content, p.imageUrl, p.scrapCount, p.commentCount, p.createdAt, p.x, p.y) " +
-            "FROM Post p WHERE p.user.userId = :userId")
+            "p.id, u.nickname, u.profileImage, p.title, p.content, p.imageUrl, " +
+            "p.scrapCount, p.commentCount, p.createdAt, p.x, p.y) " +
+            "FROM Post p JOIN p.user u WHERE p.user.userId = :userId")
     Page<MyPost> findMyPostsByUser(@Param("userId") Long userId, Pageable pageable);
+
 
     // 마이페이지 스크랩한 글
     @Query("SELECT new com.on_bapsang.backend.dto.mypage.ScrappedPost(" +
-            "p.id, p.title, p.content, p.imageUrl, p.scrapCount, p.commentCount, p.createdAt, p.x, p.y) " +
-            "FROM Post p JOIN Scrap s ON s.post = p " +
+            "p.id, u.nickname, u.profileImage, p.title, p.content, p.imageUrl, " +
+            "p.scrapCount, p.commentCount, p.createdAt, p.x, p.y) " +
+            "FROM Post p JOIN p.user u JOIN Scrap s ON s.post = p " +
             "WHERE s.user.userId = :userId")
     Page<ScrappedPost> findScrappedPostsByUser(@Param("userId") Long userId, Pageable pageable);
 
