@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-class RecipeCategory extends StatefulWidget {
+class ShoppingRecipeCategory extends StatefulWidget {
   final int price;
   final int percentage;
 
-  const RecipeCategory({
+  const ShoppingRecipeCategory({
     super.key,
     required this.percentage,
     required this.price,
   });
 
   @override
-  State<RecipeCategory> createState() => _RecipeCategoryState();
+  State<ShoppingRecipeCategory> createState() => _ShoppingRecipeCategoryState();
 }
 
-class _RecipeCategoryState extends State<RecipeCategory> {
+class _ShoppingRecipeCategoryState extends State<ShoppingRecipeCategory> {
   int selectedIndex = 0;
   final List<String> categoryList = ['쌀/곡류', '채소류', '가공식품류', '달걀/유제품', '고기류'];
 

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/mypage/view/mypage_root_screen.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../shopping/view/shopping_cart_screen.dart';
+
 class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
   final bool isImply;
 
@@ -22,7 +24,8 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
         Icon(Icons.notifications_none_outlined, size: 26),
         const SizedBox(width: 10),
         GestureDetector(
-          onTap: () async {
+          onTap: () {
+            context.pushNamed(ShoppingCartScreen.routeName);
           },
           child: Icon(Icons.shopping_cart_outlined, size: 26),
         ),

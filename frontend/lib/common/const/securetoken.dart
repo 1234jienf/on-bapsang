@@ -4,4 +4,4 @@ const ACCESS_TOKEN = 'ACCESS_TOKEN';
 const REFRESH_TOKEN = 'REFRESH_TOKEN';
 
 // localhost backend
-final ip = 'http://172.30.1.95:8081';
+final ip = 'http://192.168.0.16:8081';
