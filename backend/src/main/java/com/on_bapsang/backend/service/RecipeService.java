@@ -1,12 +1,14 @@
 package com.on_bapsang.backend.service;
 
 import com.on_bapsang.backend.dto.IngredientDetailDto;
+import com.on_bapsang.backend.dto.PostSummary;
 import com.on_bapsang.backend.dto.RecipeDetailDto;
 import com.on_bapsang.backend.dto.RecipeSummaryDto;
 import com.on_bapsang.backend.entity.Recipe;
 import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.entity.RecipeScrap;
 import com.on_bapsang.backend.exception.CustomException;
+import com.on_bapsang.backend.repository.PostRepository;
 import com.on_bapsang.backend.repository.RecipeIngredientRepository;
 import com.on_bapsang.backend.repository.RecipeRepository;
 import com.on_bapsang.backend.repository.RecipeScrapRepository;
@@ -31,6 +33,7 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final RecipeScrapRepository recipeScrapRepository;
+    private final PostRepository postRepository;
 
 
     @Getter
@@ -78,6 +81,10 @@ public class RecipeService {
                     .collect(Collectors.toList());
         }
         boolean isScrapped = recipeScrapRepository.existsByUserAndRecipe(user, recipe);
+        List<PostSummary> allReviews = postRepository.findPostSummariesByRecipeId(recipeId);
+        int reviewCount = allReviews.size();
+        List<PostSummary> reviews = allReviews.stream().limit(9).toList();
+
 
         // ③ DTO 조립
         return new RecipeDetailDto(
@@ -93,10 +100,17 @@ public class RecipeService {
                 steps,
                 recipe.getReview(),
                 recipe.getDescription(),
-                isScrapped
+                isScrapped,
+                reviews,
+                reviewCount
         );
 
     }
+
+    public List<PostSummary> getAllReviewsForRecipe(String recipeId) {
+        return postRepository.findPostSummariesByRecipeId(recipeId);
+    }
+
 
     public void addScrap(User user, String recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId)
