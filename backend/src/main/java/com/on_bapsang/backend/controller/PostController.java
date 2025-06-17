@@ -55,7 +55,6 @@ public class PostController {
         return ResponseEntity.ok(ApiResponse.success("레시피 태그 조회 성공", suggestions));
     }
 
-    // 글 목록 조회
     @GetMapping
     public ResponseEntity<?> getPosts(
             @RequestParam(required = false) String keyword,

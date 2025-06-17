@@ -51,24 +51,17 @@ public class PostService {
         List<Post> posts;
 
     public Page<PostSummaryWithScrap> getPosts(String keyword, Pageable pageable, User user) {
-        Page<Long> postIdPage;
-        List<Post> posts;
-
+        // 검색어 저장 및 점수 증가
         if (keyword != null && !keyword.isBlank()) {
             searchKeywordService.saveRecentKeyword(user.getUserId(), keyword);
             searchKeywordService.increaseKeywordScore(keyword);
-
-            // 검색어 기반 ID 페이징
-            postIdPage = postRepository.findPostIdsByTitleKeyword(keyword, pageable);
-        } else {
-            // 전체 글 ID 페이징
-            postIdPage = postRepository.findAllPostIds(pageable);
         }
 
-        // ID 리스트로 Post + User fetch join 조회
-        posts = postRepository.findAllWithUserByIds(postIdPage.getContent());
+        // keyword와 pageable로 Post + User 조회 (정렬 포함됨)
+        Page<Post> postPage = postRepository.findPostsByKeywordWithUser(keyword, pageable);
 
-        List<PostSummaryWithScrap> summaries = posts.stream()
+        // DTO 변환
+        List<PostSummaryWithScrap> summaries = postPage.stream()
                 .map(post -> {
                     boolean isScrapped = scrapService.isScrapped(post, user);
                     String url = post.getImageUrl() != null
@@ -79,19 +72,19 @@ public class PostService {
                             : null;
 
                     return new PostSummaryWithScrap(post, isScrapped, url, profileImageUrl);
-
                 }).toList();
 
-        return new PageImpl<>(summaries, pageable, postIdPage.getTotalElements());
+        return new PageImpl<>(summaries, pageable, postPage.getTotalElements());
     }
 
-    private String getRecipeImageUrl(String recipeId) {
-        if (recipeId == null)
-            return null;
-        return recipeRepository.findById(recipeId)
-                .map(Recipe::getImageUrl)
-                .orElse(null);
-    }
+
+//    private String getRecipeImageUrl(String recipeId) {
+//        if (recipeId == null) return null;
+//        return recipeRepository.findById(recipeId)
+//                .map(Recipe::getImageUrl)
+//                .orElse(null);
+//    }
+
 
     @Transactional(readOnly = true)
     public PostDetail getPostById(Long id) {

@@ -60,6 +60,12 @@ public class RecipeController {
         return ResponseEntity.status(HttpStatus.CREATED).body(resp);
     }
 
+    @GetMapping("/review/{recipeId}")
+    public ResponseEntity<List<PostSummary>> getAllReviewsForRecipe(@PathVariable String recipeId) {
+        List<PostSummary> reviews = recipeService.getAllReviewsForRecipe(recipeId);
+        return ResponseEntity.ok(reviews);
+    }
+
     @PostMapping("/scrap/{recipeId}")
     public ResponseEntity<?> scrapRecipe(@PathVariable String recipeId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -79,7 +85,10 @@ public class RecipeController {
     public ResponseEntity<RecipeDetailDto> getRecipeDetail(
             @PathVariable String recipeId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
+        if (userDetails == null) {
+            System.out.println("❌ userDetails is null");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         RecipeDetailDto detail = recipeService.getRecipeDetail(recipeId, userDetails.getUser());
         return ResponseEntity.ok(detail);
     }
