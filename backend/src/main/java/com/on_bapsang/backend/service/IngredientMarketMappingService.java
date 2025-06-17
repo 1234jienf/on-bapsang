@@ -3,19 +3,14 @@ package com.on_bapsang.backend.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.on_bapsang.backend.dto.IngredientMarketMappingDto;
-import com.on_bapsang.backend.dto.MarketRegionPriceResponse;
-import com.on_bapsang.backend.dto.MarketTimeseriesResponse;
 import com.on_bapsang.backend.repository.IngredientMasterRepository;
-import com.on_bapsang.backend.repository.MarketPriceRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +18,8 @@ public class IngredientMarketMappingService {
 
     private final IngredientMasterRepository ingredientMasterRepository;
 
-    private Map<Long, Integer> ingredientToMarketItemMap = new HashMap<>();
+    // ✅ 여러 개의 market_item_id를 저장할 수 있도록 List<Integer>로 변경
+    private Map<Long, List<Integer>> ingredientToMarketItemMap = new HashMap<>();
     private Map<Long, String> ingredientIdToNameMap = new HashMap<>();
 
     @PostConstruct
@@ -37,23 +33,33 @@ public class IngredientMarketMappingService {
         );
 
         for (IngredientMarketMappingDto dto : list) {
-            ingredientToMarketItemMap.put(dto.getIngredient_id(), dto.getMarket_item_id());
-            ingredientIdToNameMap.put(dto.getIngredient_id(), dto.getIngredient_name());
+            Long ingredientId = dto.getIngredient_id();
+            Integer marketItemId = dto.getMarket_item_id();
+
+            // ✅ 중복 매핑 지원을 위해 리스트에 추가
+            ingredientToMarketItemMap
+                    .computeIfAbsent(ingredientId, k -> new ArrayList<>())
+                    .add(marketItemId);
+
+            ingredientIdToNameMap.put(ingredientId, dto.getIngredient_name());
         }
     }
 
+    // ✅ 가장 첫 번째 market_item_id만 반환
     public Integer getMarketItemId(Long ingredientId) {
-        return ingredientToMarketItemMap.get(ingredientId);
+        List<Integer> ids = ingredientToMarketItemMap.get(ingredientId);
+        if (ids == null || ids.isEmpty()) {
+            return null;
+        }
+        return ids.get(0);
     }
 
     public String getIngredientName(Long ingredientId) {
-        // 1️⃣ 먼저 json → map 조회 시도
         String name = ingredientIdToNameMap.get(ingredientId);
         if (name != null) {
             return name;
         }
 
-        // 2️⃣ fallback: IngredientMaster 에서 조회
         return ingredientMasterRepository.findNameByIngredientId(ingredientId)
                 .orElse("Unknown Ingredient (" + ingredientId + ")");
     }

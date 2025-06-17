@@ -33,4 +33,6 @@ public class RecipeDetailDto {
     private String review;
     private String descriptions;
     private boolean isScrapped;
+    private List<PostSummary> reviews;
+    private int reviewCount;
 }
