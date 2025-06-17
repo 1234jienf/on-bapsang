@@ -59,7 +59,6 @@ public class PostController {
 
 
 
-    // 글 목록 조회
     @GetMapping
     public ResponseEntity<?> getPosts(
             @RequestParam(required = false) String keyword,

@@ -28,6 +28,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p JOIN FETCH p.user WHERE p.id IN :ids")
     List<Post> findAllWithUserByIds(@Param("ids") List<Long> ids);
 
+    @Query("SELECT p FROM Post p JOIN FETCH p.user " +
+            "WHERE (:keyword IS NULL OR LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')))")
+    Page<Post> findPostsByKeywordWithUser(@Param("keyword") String keyword, Pageable pageable);
+
+
 
     // 마이페이지 내가 쓴 글
     @Query("SELECT new com.on_bapsang.backend.dto.mypage.MyPost(" +
