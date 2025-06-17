@@ -7,7 +7,6 @@ part 'community_detail_model.g.dart';
 
 @JsonSerializable()
 class CommunityDetailModel extends CommunityModel implements IModelWithIntId {
-  final String content;
   final bool scrapped;
   final String? profileImage;
   final int scrapCount;
@@ -18,7 +17,6 @@ class CommunityDetailModel extends CommunityModel implements IModelWithIntId {
   final DateTime createdAt;
 
   CommunityDetailModel({
-    required this.content,
     required this.scrapped,
     required this.profileImage,
     required this.x,
@@ -30,6 +28,7 @@ class CommunityDetailModel extends CommunityModel implements IModelWithIntId {
     required super.title,
     required super.imageUrl,
     required super.nickname,
+    required super.content
   });
 
   factory CommunityDetailModel.fromJson(Map<String, dynamic> json) =>

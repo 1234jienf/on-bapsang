@@ -76,7 +76,7 @@ class _CommunityCommentListViewFamilyState<T>
   Widget _buildGrid(List<T> items) {
     if (items.isEmpty) {
       return SliverToBoxAdapter(child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 26.0, horizontal: 16.0),
+        padding: EdgeInsets.symmetric(vertical: 80.0, horizontal: 16.0),
         child: Center(child: Text('아직 댓글이 없습니다')),
       ));
     }

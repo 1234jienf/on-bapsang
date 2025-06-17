@@ -9,7 +9,6 @@ part of 'community_detail_model.dart';
 CommunityDetailModel _$CommunityDetailModelFromJson(
   Map<String, dynamic> json,
 ) => CommunityDetailModel(
-  content: json['content'] as String,
   scrapped: json['scrapped'] as bool,
   profileImage: json['profileImage'] as String?,
   x: (json['x'] as num).toDouble(),
@@ -21,6 +20,7 @@ CommunityDetailModel _$CommunityDetailModelFromJson(
   title: json['title'] as String,
   imageUrl: json['imageUrl'] as String,
   nickname: json['nickname'] as String,
+  content: json['content'] as String,
 );
 
 Map<String, dynamic> _$CommunityDetailModelToJson(
