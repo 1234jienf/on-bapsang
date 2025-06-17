@@ -116,8 +116,12 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new CustomException("레시피가 존재하지 않습니다.", HttpStatus.NOT_FOUND));
 
-        recipeScrapRepository.deleteByUserAndRecipe(user, recipe);
+        RecipeScrap scrap = recipeScrapRepository.findByUserAndRecipe(user, recipe)
+                .orElseThrow(() -> new CustomException("스크랩하지 않은 레시피입니다.", HttpStatus.BAD_REQUEST));
+
+        recipeScrapRepository.delete(scrap);
     }
+
     /**
      * 이름으로 검색 (페이징)
      */
