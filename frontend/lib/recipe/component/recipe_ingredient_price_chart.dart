@@ -17,8 +17,12 @@ class RecipeIngredientPriceChart extends StatefulWidget {
 class _RecipeIngredientPriceChartState extends State<RecipeIngredientPriceChart> {
   @override
   Widget build(BuildContext context) {
-    final minIngriendPrice = widget.ingredientPriceDataList.map((data) => data.price).reduce((a, b) => a < b ? a : b);
-    final maxIngriendPrice = widget.ingredientPriceDataList.map((data) => data.price).reduce((a, b) => a > b ? a : b);
+    if (widget.ingredientPriceDataList.isEmpty) {
+      return Center(child: Text('해당 재료는 시세 데이터를 제공하지 않습니다.'));
+    }
+
+    final minIngredientPrice = widget.ingredientPriceDataList.map((data) => data.price).reduce((a, b) => a < b ? a : b);
+    final maxIngredientPrice = widget.ingredientPriceDataList.map((data) => data.price).reduce((a, b) => a > b ? a : b);
 
     // 날짜 포맷 변환 함수
     String formatDate(String dateStr) {
@@ -84,8 +88,8 @@ class _RecipeIngredientPriceChartState extends State<RecipeIngredientPriceChart>
           borderData: FlBorderData(show: true),
           minX: 0,
           maxX:(widget.ingredientPriceDataList.length - 1).toDouble(),
-          minY: minIngriendPrice - 500,
-          maxY: maxIngriendPrice + 500,
+          minY: minIngredientPrice - 500,
+          maxY: maxIngredientPrice + 500,
           lineBarsData: [
             LineChartBarData(
               spots: widget.ingredientPriceDataList.asMap().entries.map((entry) {

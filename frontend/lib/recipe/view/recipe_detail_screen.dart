@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/recipe/repository/recipe_repository.dart';
 import 'package:frontend/recipe/view/recipe_ingredient_price_screen.dart';
 import 'package:frontend/recipe/data/data_loader.dart';
 import 'package:frontend/recipe/view/recipe_ingredient_shopping_screen.dart';
@@ -18,6 +19,7 @@ class RecipeDetailScreen extends ConsumerStatefulWidget {
 
 class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
   final ScrollController controller = ScrollController();
+  bool? isScrapped;
 
   @override
   void initState() {
@@ -42,28 +44,46 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
     // 컴포넌트 사이 갭
     final double componentGap = 20.0;
 
-    // 임시용
-    final instructions = [ "우거지와 감자를 깨끗이 씻어 적당한 크기로 썰어 준비합니다.", "돼지뼈를 끓는 물에 담가 핏물을 제거한 후, 새로운 물에 넣고 한 시간 가량 불순물을 제거하며 삶습니다.", "삶은 돼지뼈를 건져내고, 같은 냄비에 양파, 대파, 마늘, 생강 등을 넣고 볶아 향을 냅니다.", "향이 나면 준비한 우거지, 감자, 토마토, 고추장, 된장, 간장, 소금 등을 넣고 물을 부어 끓입니다.", "끓어오르면 약한 불로 줄이고, 한 시간 가량 더 끓여 향과 맛을 우려냅니다.", "마지막으로 다진 파와 후추를 넣어 간을 맞추고, 불을 끕니다.", "완성된 우거지감자탕을 그릇에 담아, 기호에 따라 통깨를 뿌려 내어줍니다." ];
-
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           actions: [
-            IconButton(
-              icon: const Icon(Icons.bookmark_border),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: const Icon(Icons.share),
-              onPressed: () {},
-            ),
+            recipeAsync.when(
+              loading: () => IconButton(icon: Icon(Icons.bookmark_border), onPressed: (){},),
+              error: (err, stack) => IconButton(icon: Icon(Icons.bookmark_border), onPressed: (){},),
+              data: (recipe) {
+
+                isScrapped ??= recipe.scrapped;
+
+                return IconButton(
+                  icon: isScrapped! ? Icon(Icons.bookmark) : Icon(Icons.bookmark_border),
+                  onPressed: () async {
+                    try {
+                      if (isScrapped!) {
+                        await ref.read(recipeRepositoryProvider).cancelRecipeScrap(recipe.id);
+                        setState(() {
+                          isScrapped = false;
+                        });
+                      } else {
+                        await ref.read(recipeRepositoryProvider).recipeScrap(recipe.id);
+                        setState(() {
+                          isScrapped = true;
+                        });
+                      }
+                    } catch (e) {
+                      print('스크랩 실패: $e');
+                    }
+                  },
+                );
+              }
+            )
           ],
         ),
         body: recipeAsync.when(
           loading: () => Center(child: CircularProgressIndicator()),
-          error: (err, stack) => Center(child: Text('잘못된 접근입니다.(해당 레시피를 찾을 수 없음)')),
+          error: (err, stack) => Center(child: Text('$err')),
           data: (recipe) => CustomScrollView(
             controller: controller,
             slivers: [
@@ -73,7 +93,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                   width: double.infinity,
                   height: 402,
                   child: Image.network(
-                    'https://recipe1.ezmember.co.kr/cache/recipe/2024/01/01/fdf645182aa988e49cb5d525c3c16d791.jpg',
+                    recipe.image_url,
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
@@ -100,14 +120,14 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                     SizedBox(height: componentGap),
                     // 레시피 제목
                     Text(
-                      '우거지감자탕',
+                      recipe.name,
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
                     ),
                     SizedBox(height: componentGap),
 
                     // 레시피 설명(review, descriptions?)
                     Text(
-                      '까다로운 남편의 입맛을 맞추기위해 여러번 시도끝에 만들어낸 최적의 레시피입니다. 한번 만들어먹어보시면 사먹는게 아까워요ㅠㅠ',
+                      recipe.review,
                       style: TextStyle(fontSize: 16, color: Colors.black45),
                     ),
                     SizedBox(height: componentGap),
@@ -116,9 +136,9 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        infoWidget(title: '분량', content: '4인분'),
-                        infoWidget(title: '시간', content: '2시간이내'),
-                        infoWidget(title: '난이도', content: '중급'),
+                        infoWidget(title: '분량', content: recipe.portion),
+                        infoWidget(title: '시간', content: recipe.time == 'nan' ? '-' : recipe.time),
+                        infoWidget(title: '난이도', content: recipe.difficulty),
                       ],
                     ),
                     SizedBox(height: componentGap),
@@ -141,26 +161,31 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     SizedBox(height: componentGap),
-                    Text(
+                    const Text(
                       '재료',
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     SizedBox(height: titleTextGap),
 
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        gradientWidget(context: context, ingredientId: 40813, name: '청양고추', quantity: '2 개'),
-                        Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                        gradientWidget(context: context, ingredientId: 55825, name: '감자', quantity: '1 개'),
-                        Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                        gradientWidget(context: context, ingredientId: 1234, name: '감자', quantity: '1 개'),
-                        Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                        gradientWidget(context: context, ingredientId: 2345, name: '감자', quantity: '1 개'),
-                        Container(height: 1.0, decoration: BoxDecoration(color: Colors.black12),),
-                        gradientWidget(context: context, ingredientId: 3333, name: '감자', quantity: '1 개'),
-                      ],
-                    ),
+                    ...List.generate(recipe.ingredients.length * 2 - 1, (index) {
+                      if (index.isEven) {
+                        final i = index ~/ 2;
+                        final ingredient = recipe.ingredients[i];
+                        return gradientWidget(
+                          context: context,
+                          ingredientId: ingredient.ingredientId,
+                          name: ingredient.name,
+                          quantity: ingredient.amount,
+                        );
+                      } else {
+                        // 구분선
+                        return Container(
+                          height: 1.0,
+                          decoration: const BoxDecoration(color: Colors.black12),
+                        );
+                      }
+                    }),
+
                     SizedBox(height: componentGap),
                   ]),
                 ),
@@ -186,7 +211,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     SizedBox(height: componentGap),
-                    ...List.generate(instructions.length, (index) {
+                    ...List.generate(recipe.instruction.length, (index) {
                       return Column(
                         children: [
                           SizedBox(
@@ -205,7 +230,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                                 SizedBox(width: 15.0),
                                 Expanded(
                                   child: Text(
-                                    instructions[index],
+                                    recipe.instruction[index],
                                     style: TextStyle(
                                       fontSize: 14
                                     ),
@@ -344,12 +369,12 @@ Widget infoWidget({
         title,
         style: TextStyle(fontSize: 16, color: Colors.black45),
       ),
-      SizedBox(width: 12.0,),
+      SizedBox(width: 6.0,),
       Text(
         content,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
       ),
-      SizedBox(width: 20.0,)
+      SizedBox(width: 12.0,),
     ],
   );
 }
@@ -371,7 +396,7 @@ Widget gradientWidget({
 
       if (marketItemId == null) {
         return SizedBox(
-          height: 60.0,
+          height: 50.0,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -405,7 +430,7 @@ Widget gradientWidget({
             });
         },
         child: SizedBox(
-          height: 60.0,
+          height: 50.0,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,

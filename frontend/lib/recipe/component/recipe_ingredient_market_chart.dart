@@ -17,9 +17,19 @@ class RecipeIngredientMarketChart extends StatefulWidget {
 class _RecipeIngredientMarketChartState extends State<RecipeIngredientMarketChart> {
   @override
   Widget build(BuildContext context) {
+    if (widget.marketDataList.isEmpty) {
+      return Center(child: Text('해당 재료는 시장별 데이터를 제공하지 않습니다.'));
+    }
 
     final minMarketPrice = widget.marketDataList.map((data) => data.averagePrice).reduce((a, b) => a < b ? a : b);
     final maxMarketPrice = widget.marketDataList.map((data) => data.averagePrice).reduce((a, b) => a > b ? a : b);
+
+    final padding = 500;
+    final minY = minMarketPrice - padding;
+    final maxY = maxMarketPrice + padding;
+    final range = maxY - minY;
+    final interval = (range / 6).ceilToDouble();
+
     return SizedBox(
       height: 300,
       child: BarChart(
@@ -49,7 +59,7 @@ class _RecipeIngredientMarketChartState extends State<RecipeIngredientMarketChar
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                interval: 100,
+                interval: interval,
                 reservedSize: 50,
                 getTitlesWidget: (value, meta) {
                   return Text(
