@@ -23,7 +23,8 @@ public class PostDetailWithScrap {
     private final LocalDateTime createdAt;
     private final boolean isScrapped;
 
-    public PostDetailWithScrap(Post post, boolean isScrapped, String imageUrl, String recipeImageUrl, String profileImageUrl) {
+    public PostDetailWithScrap(Post post, boolean isScrapped, String imageUrl, String recipeImageUrl,
+            String profileImageUrl) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();

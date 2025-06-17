@@ -21,7 +21,7 @@ public class PostSummaryWithScrap {
     private final Double y;
 
     public PostSummaryWithScrap(Post post, boolean isScrapped,
-                                String imageUrl, String profileImageUrl) {
+            String imageUrl, String profileImageUrl) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();

@@ -31,7 +31,7 @@ public class PostDetail {
         this.recipeImageUrl = recipeImageUrl;
         this.imageUrl = imageUrl;
         this.nickname = post.getUser().getNickname();
-        this.profileImage =  profileImageUrl;
+        this.profileImage = profileImageUrl;
         this.scrapCount = post.getScrapCount();
         this.commentCount = post.getCommentCount();
         this.x = post.getX();

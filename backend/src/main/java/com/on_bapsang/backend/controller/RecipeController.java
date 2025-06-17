@@ -42,14 +42,10 @@ public class RecipeController {
         }
     }
 
-
-
     @GetMapping("/popular")
     public ResponseEntity<List<PopularRecipeDto>> getPopularRecipes() {
         return ResponseEntity.ok(popularRecipeService.getPopularRecipes());
     }
-
-
 
     /** 외부 AI 추천 */
     /** 외부 AI 추천 + 페이지네이션 */
@@ -60,7 +56,7 @@ public class RecipeController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        RecommendResponse resp = recommendationService.getRecommendations(userDetails.getUser(),request, page, size);
+        RecommendResponse resp = recommendationService.getRecommendations(userDetails.getUser(), request, page, size);
         return ResponseEntity.status(HttpStatus.CREATED).body(resp);
     }
 
@@ -71,13 +67,15 @@ public class RecipeController {
     }
 
     @PostMapping("/scrap/{recipeId}")
-    public ResponseEntity<?> scrapRecipe(@PathVariable String recipeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<?> scrapRecipe(@PathVariable String recipeId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         recipeService.addScrap(userDetails.getUser(), recipeId);
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "스크랩 완료"));
     }
 
     @DeleteMapping("/scrap/{recipeId}")
-    public ResponseEntity<?> unscrapRecipe(@PathVariable String recipeId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<?> unscrapRecipe(@PathVariable String recipeId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         recipeService.removeScrap(userDetails.getUser(), recipeId);
         return ResponseEntity.ok(Map.of("message", "스크랩 취소 완료"));
     }
@@ -95,14 +93,13 @@ public class RecipeController {
         return ResponseEntity.ok(detail);
     }
 
-
     @GetMapping("/search")
     public ResponseEntity<RecipeService.PagedResponse<RecipeSummaryDto>> searchByName(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam("name") String name,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        return ResponseEntity.ok(recipeService.getRecipesByName(userDetails.getUser(),name, page, size));
+        return ResponseEntity.ok(recipeService.getRecipesByName(userDetails.getUser(), name, page, size));
     }
 
     @GetMapping
@@ -111,7 +108,7 @@ public class RecipeController {
             @RequestParam("category") String category,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        return ResponseEntity.ok(recipeService.getRecipesByCategory(userDetails.getUser(),category, page, size));
+        return ResponseEntity.ok(recipeService.getRecipesByCategory(userDetails.getUser(), category, page, size));
     }
 
 }

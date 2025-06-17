@@ -26,7 +26,6 @@ public class PostService {
     private final SearchKeywordService searchKeywordService;
     private final ImageUploader imageUploader;
 
-
     public Post create(PostRequest request, User user, String imageUrl) {
         Post post = new Post();
         post.setTitle(request.getTitle());
@@ -47,6 +46,9 @@ public class PostService {
                 .toList();
     }
 
+    public Page<PostSummaryWithScrap> getPosts(String keyword, Pageable pageable, User user) {
+        Page<Long> postIdPage;
+        List<Post> posts;
 
     public Page<PostSummaryWithScrap> getPosts(String keyword, Pageable pageable, User user) {
         // 검색어 저장 및 점수 증가
@@ -83,6 +85,7 @@ public class PostService {
 //                .orElse(null);
 //    }
 
+
     @Transactional(readOnly = true)
     public PostDetail getPostById(Long id) {
         Post post = postRepository.findById(id)
@@ -108,12 +111,10 @@ public class PostService {
 
     }
 
-
     @Transactional(readOnly = true)
     public PostDetailWithScrap getPostById(Long id, User user) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-
         boolean isScrapped = scrapService.isScrapped(post, user);
 
         String presignedUrl = post.getImageUrl() != null
@@ -144,7 +145,6 @@ public class PostService {
         return new PostDetailWithScrap(post, isScrapped, presignedUrl, recipeImageUrl, profileImageUrl);
 
     }
-
 
     public Post update(Long id, PostRequest request, User user, String imageUrl) {
         Post post = postRepository.findById(id)

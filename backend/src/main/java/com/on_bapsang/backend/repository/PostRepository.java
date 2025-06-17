@@ -59,6 +59,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Object[]> findTopRecipeIdsByPostCount(Pageable pageable);
 
 
+
     @Query("SELECT new com.on_bapsang.backend.dto.PostSummary(" +
             "p.id, p.title, p.imageUrl, p.scrapCount, p.commentCount, p.createdAt, u.nickname, p.x, p.y) " +
             "FROM Post p JOIN p.user u " +

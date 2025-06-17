@@ -26,7 +26,7 @@ public class RecommendationService {
         this.recipeScrapRepository = recipeScrapRepository;
     }
 
-    public RecommendResponse getRecommendations(User user,RecommendRequest req, int page, int size) {
+    public RecommendResponse getRecommendations(User user, RecommendRequest req, int page, int size) {
 
         RecommendResponse raw = aiWebClient.post()
                 .uri(uriBuilder -> uriBuilder
@@ -51,9 +51,7 @@ public class RecommendationService {
         Set<String> scrappedIds = recipeScrapRepository.findAllByUser(user).stream()
                 .map(scrap -> scrap.getRecipe().getRecipeId())
                 .collect(Collectors.toSet());
-        raw.getRecommendedDishes().forEach(dish ->
-                dish.setIsScrapped(scrappedIds.contains(dish.getRecipeId()))
-        );
+        raw.getRecommendedDishes().forEach(dish -> dish.setIsScrapped(scrappedIds.contains(dish.getRecipeId())));
 
         // --- 원래 슬라이싱 로직 ---
         int totalSize = raw.getRecommendedDishes().size();
@@ -73,4 +71,5 @@ public class RecommendationService {
 
         return raw;
     }
+
 }
