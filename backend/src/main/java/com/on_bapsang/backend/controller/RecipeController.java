@@ -47,6 +47,22 @@ public class RecipeController {
         return ResponseEntity.ok(popularRecipeService.getPopularRecipes());
     }
 
+    @GetMapping("/ingredient")
+    public ResponseEntity<PagedResponse<RecipeSummaryDto>> getRecipesByIngredientPartialName(
+            @RequestParam("name") String ingredientName,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        PagedResponse<RecipeSummaryDto> result = recipeService
+                .getRecipesByPartialIngredientName(ingredientName, userDetails.getUser(), page, size);
+
+        return ResponseEntity.ok(result);
+    }
+
+
+
+
     /** 외부 AI 추천 */
     /** 외부 AI 추천 + 페이지네이션 */
     @PostMapping("/foreign")
