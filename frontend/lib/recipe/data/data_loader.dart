@@ -7,7 +7,7 @@ Future<int?> getMarketItemIdFromIngredient(int ingredientId) async {
 
   for (final item in data) {
     if (item['ingredient_id'] == ingredientId) {
-      return item['market_item_id'] as int;
+      return item['ingredient_id'] as int;
     }
   }
 
