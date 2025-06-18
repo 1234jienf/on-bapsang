@@ -83,18 +83,6 @@ services:
     networks:
       - onbapsang-net
 
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    container_name: bapsang-frontend
-    ports:
-      - "80:80"
-    networks:
-      - onbapsang-net
-    depends_on:
-      - backend
-
 volumes:
   db_data:
 
