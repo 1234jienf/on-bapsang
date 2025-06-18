@@ -8,6 +8,7 @@ import 'package:frontend/community/component/community_app_bar.dart';
 import 'package:frontend/community/model/community_upload_recipe_final_list_model.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import '../../common/const/colors.dart';
 import '../component/community_show_dialog.dart';
 import '../model/community_upload_data_model.dart';
 import '../provider/community_upload_provider.dart';
@@ -51,6 +52,16 @@ class _ConsumerCommunityCreateUploadScreenState
             isFirst: false,
             isLast: true,
             function: () async {
+              if (titleController.text.isEmpty || contentController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('모든 항목을 작성해주세요.', style: TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.w600),),
+                    backgroundColor: gray400,
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+                return;
+              }
               setState(() {
                 isLoading = true;
               });
@@ -70,7 +81,14 @@ class _ConsumerCommunityCreateUploadScreenState
 
               if (response.statusCode == 200) {
                 if (context.mounted) {
-                  communityShowDialog(context, true);
+                  communityShowDialog(context, ref ,true, '작성 성공!');
+                }
+              } else {
+                if (context.mounted) {
+                  setState(() {
+                    isLoading = false;
+                    communityShowDialog(context, ref ,true, '오류가 발생했습니다. 다시 시도해주세요');
+                  });
                 }
               }
             },

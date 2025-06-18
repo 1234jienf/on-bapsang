@@ -72,7 +72,7 @@ class _PaginationIntGridViewState<T extends IModelWithIntId> extends ConsumerSta
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: RefreshIndicator(
         onRefresh: () async {
-          ref.read(widget.provider.notifier).paginate();
+          ref.read(widget.provider.notifier).paginate(forceRefetch: true);
         },
         child: GridView.builder(
           controller: controller,

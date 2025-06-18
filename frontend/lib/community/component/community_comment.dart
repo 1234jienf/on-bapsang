@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/community/model/community_comment_model.dart';
 import 'package:intl/intl.dart';
 
+import '../../common/const/colors.dart';
+
 class CommunityComment extends StatelessWidget {
   final int id;
   final String content;
@@ -34,18 +36,23 @@ class CommunityComment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Row(
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: Column(
+        children: [
+          Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               profileImage == null
                   ? Icon(Icons.account_circle_outlined, size: 32)
-                  : Image.network(
-                    profileImage!,
-                    width: 32,
-                    height: 32,
-                    fit: BoxFit.cover,
-                  ),
+                  :  ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  profileImage!,
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.cover,
+                ),
+              ),
 
               const SizedBox(width: 10),
 
@@ -55,7 +62,7 @@ class CommunityComment extends StatelessWidget {
                   Text(nickname, style: TextStyle(fontSize: 12)),
                   Text(
                     DateFormat('yy년 M월 d일').format(createdAt),
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                    style: TextStyle(fontSize: 10, color: Colors.grey),
                   ),
                 ],
               ),
@@ -87,6 +94,74 @@ class CommunityComment extends StatelessWidget {
               ),
             ],
           ),
-        );
+          if (children.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            ...children.map((reply) => _childrenComments(reply)),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _childrenComments(CommunityCommentModel reply) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10 ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.subdirectory_arrow_right_outlined),
+          const SizedBox(width: 10.0,),
+
+          // 대댓글 프로필
+          reply.profileImage == null
+              ? Icon(
+                Icons.account_circle_outlined,
+                size: 32,
+                color: Colors.grey[400],
+              )
+              : ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  reply.profileImage!,
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+          const SizedBox(width: 8),
+
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(nickname, style: TextStyle(fontSize: 12, overflow: TextOverflow.ellipsis)),
+                    Text(
+                      DateFormat('yy년 M월 d일').format(createdAt),
+                      style: TextStyle(fontSize: 10, color: Colors.grey),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(width: 16.0,),
+
+                Expanded(
+                  child: Text(
+                    reply.content,
+                    style: TextStyle(fontSize: 12, color: gray900),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+        ],
+      ),
+    );
   }
 }

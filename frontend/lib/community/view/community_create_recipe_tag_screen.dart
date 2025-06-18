@@ -8,6 +8,7 @@ import 'package:frontend/community/model/community_upload_recipe_final_list_mode
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import '../../common/const/colors.dart';
 import '../component/community_app_bar.dart';
 import '../component/community_upload_recipe_component.dart';
 import '../provider/community_upload_recipe_list_provider.dart';
@@ -57,6 +58,19 @@ class _ConsumerCommunityCreateRecipeTagScreenState
         title: '레시피 태그',
         isFirst: false,
         function: () async {
+          if (tags.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('레시피 태그를 추가해주세요.', style: TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.w600),),
+                backgroundColor: gray400,
+                duration: Duration(seconds: 1),
+              ),
+            );
+            return;
+          }
+          ref
+              .read(tagSearchKeywordProvider.notifier)
+              .state = '';
           context.pushNamed(
             CommunityCreateUploadScreen.routeName,
             extra: CommunityUploadRecipeFinalListModel(
@@ -84,49 +98,50 @@ class _ConsumerCommunityCreateRecipeTagScreenState
               _imageWithTags(),
               if (isTag)
                 ...tags.map(
-                  (tag) => Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 16.0,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.network(
-                          tag.imageUrl,
-                          fit: BoxFit.cover,
-                          width: 85,
-                          height: 85,
+                      (tag) =>
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 16.0,
                         ),
-                        SizedBox(
-                          width: 230,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                tag.name,
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Image.network(
+                              tag.imageUrl,
+                              fit: BoxFit.cover,
+                              width: 85,
+                              height: 85,
+                            ),
+                            SizedBox(
+                              width: 230,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    tag.name,
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  tags.remove(tag);
+                                  isTag = false;
+                                });
+                              },
+                              child: Icon(Icons.close_outlined, size: 25),
+                            ),
+                          ],
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              tags.remove(tag);
-                              isTag = false;
-                            });
-                          },
-                          child: Icon(Icons.close_outlined, size: 25),
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
                 )
               else
                 Padding(
@@ -186,8 +201,10 @@ class _ConsumerCommunityCreateRecipeTagScreenState
           await showDialog(
             context: context,
             builder: (context) {
-              Future.delayed(Duration(seconds: 1), () {
-                if (context.mounted) context.pop();
+              Timer(Duration(milliseconds: 1000), () {
+                if (context.mounted) {
+                  context.pop();
+                }
               });
               return _isTagshowTagDialog();
             },
@@ -202,8 +219,14 @@ class _ConsumerCommunityCreateRecipeTagScreenState
         child: Stack(
           children: [
             _imageCreate(
-              MediaQuery.of(context).size.width,
-              MediaQuery.of(context).size.width,
+              MediaQuery
+                  .of(context)
+                  .size
+                  .width,
+              MediaQuery
+                  .of(context)
+                  .size
+                  .width,
             ),
             ...tags.map((tag) => _buildTag(tag)),
           ],
@@ -213,7 +236,10 @@ class _ConsumerCommunityCreateRecipeTagScreenState
   }
 
   Widget _buildTag(TagPosition tag) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
     final tagWidth = 210.0;
 
     double adjustedX = tag.x - 12;
@@ -304,7 +330,10 @@ class _ConsumerCommunityCreateRecipeTagScreenState
               communityUploadRecipeListProvider(keyword),
             );
             return Container(
-              height: MediaQuery.of(context).size.height * 3 / 4,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 3 / 4,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -361,12 +390,15 @@ class _ConsumerCommunityCreateRecipeTagScreenState
                       ),
                       onSubmitted: (value) {
                         if (value.isNotEmpty) {
-                          ref.read(tagSearchKeywordProvider.notifier).state =
+                          ref
+                              .read(tagSearchKeywordProvider.notifier)
+                              .state =
                               value;
-                          ref.invalidate(
-                            communityUploadRecipeListProvider(value),
-                          );
                           ref.watch(communityUploadRecipeListProvider(value));
+                        } else {
+                          ref
+                              .read(tagSearchKeywordProvider.notifier)
+                              .state = '';
                         }
                       },
                     ),
@@ -389,11 +421,11 @@ class _ConsumerCommunityCreateRecipeTagScreenState
                                     setState(() {
                                       tags.add(
                                         TagPosition(
-                                          x: position.dx,
-                                          y: position.dy,
-                                          name: recipe.name,
-                                          imageUrl: recipe.imageUrl,
-                                          recipeId: recipe.recipeId
+                                            x: position.dx,
+                                            y: position.dy,
+                                            name: recipe.name,
+                                            imageUrl: recipe.imageUrl,
+                                            recipeId: recipe.recipeId
                                         ),
                                       );
                                       isTag = true;
@@ -401,9 +433,9 @@ class _ConsumerCommunityCreateRecipeTagScreenState
                                     context.pop();
                                   },
                                   child:
-                                      CommunityUploadRecipeComponent.fromModel(
-                                        model: recipe,
-                                      ),
+                                  CommunityUploadRecipeComponent.fromModel(
+                                    model: recipe,
+                                  ),
                                 );
                               },
                             );

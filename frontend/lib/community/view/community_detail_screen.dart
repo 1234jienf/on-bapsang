@@ -123,8 +123,8 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
             Padding(
               padding: EdgeInsets.only(
                 bottom:
-                    MediaQuery.of(context).viewInsets.bottom > 0
-                        ? 8
+                    MediaQuery.of(context).viewInsets.bottom > 100
+                        ? MediaQuery.of(context).viewInsets.bottom
                         : 0,
                 left: 16,
                 right: 16,
