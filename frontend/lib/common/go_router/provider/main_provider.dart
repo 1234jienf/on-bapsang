@@ -114,16 +114,6 @@ class MainProvider extends ChangeNotifier {
               path: 'community',
               name: 'community',
               builder: (_, state) => const CommunityRootScreen(),
-              routes: [
-                GoRoute(
-                  path: 'detail/:id',
-                  name: 'CommunityDetailScreen',
-                  builder:
-                      (_, state) => CommunityDetailScreen(
-                        id: state.pathParameters['id']!,
-                      ),
-                ),
-              ],
             ),
             GoRoute(
               path: 'maps',
@@ -180,6 +170,14 @@ class MainProvider extends ChangeNotifier {
       path: '/cart',
       name: 'ShoppingCartScreen',
       builder: (_, state) => const ShoppingCartScreen(),
+    ),
+    GoRoute(
+      path: '/community/detail/:id',
+      name: 'CommunityDetailScreen',
+      builder:
+          (_, state) => CommunityDetailScreen(
+        id: state.pathParameters['id']!,
+      ),
     ),
     GoRoute(
       path: '/community/create',

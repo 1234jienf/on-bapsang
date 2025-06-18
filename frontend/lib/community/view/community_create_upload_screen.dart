@@ -70,7 +70,7 @@ class _ConsumerCommunityCreateUploadScreenState
 
               if (response.statusCode == 200) {
                 if (context.mounted) {
-                  communityShowDialog(context);
+                  communityShowDialog(context, true);
                 }
               }
             },

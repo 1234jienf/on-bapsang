@@ -34,9 +34,9 @@ class CommunityComment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               profileImage == null
                   ? Icon(Icons.account_circle_outlined, size: 32)
@@ -52,7 +52,7 @@ class CommunityComment extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(nickname, style: TextStyle(fontSize: 14)),
+                  Text(nickname, style: TextStyle(fontSize: 12)),
                   Text(
                     DateFormat('yy년 M월 d일').format(createdAt),
                     style: TextStyle(fontSize: 12, color: Colors.grey),
@@ -60,10 +60,11 @@ class CommunityComment extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(width: 10),
+              const SizedBox(width: 16),
 
               Expanded(
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: SizedBox(

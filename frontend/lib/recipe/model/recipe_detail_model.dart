@@ -13,7 +13,7 @@ class RecipeDetailModel extends IModelWithIntId {
   final String image_url;
 
   RecipeDetailModel({
-    required int id,
+    required super.id,
     required this.name,
     required this.ingredients,
     required this.descriptions,
@@ -24,7 +24,7 @@ class RecipeDetailModel extends IModelWithIntId {
     required this.method,
     required this.material_type,
     required this.image_url
-  }) : super(id: id);
+  });
 
   factory RecipeDetailModel.fromJson(Map<String, dynamic> json) {
     return RecipeDetailModel(

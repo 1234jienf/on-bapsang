@@ -13,10 +13,14 @@ class CommunityDetailModel extends CommunityModel implements IModelWithIntId {
   final int commentCount;
   final double x;
   final double y;
+  final String recipeImageUrl;
+  final String recipeTag;
   @JsonKey(fromJson: DataUtils.dateTimeFromJson)
   final DateTime createdAt;
 
   CommunityDetailModel({
+    required this.recipeTag,
+    required this.recipeImageUrl,
     required this.scrapped,
     required this.profileImage,
     required this.x,

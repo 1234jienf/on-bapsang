@@ -26,7 +26,6 @@ class CommunityUpload {
     required CommunityUploadDataModel data,
   }) async {
     try {
-
       final compressedFile = await _compressImage(imagefile);
 
       final jsonData = {
@@ -38,21 +37,12 @@ class CommunityUpload {
         'y': data.y,
       };
 
-      print(jsonEncode(jsonData));
-
       final formData = FormData.fromMap({
-        'image': await MultipartFile.fromFile(compressedFile.path, filename: 'image.jpg'),
+        'image': await MultipartFile.fromFile(
+          compressedFile.path,
+          filename: 'image.jpg',
+        ),
         'data': jsonEncode(jsonData),
-      });
-
-      print('=== FormData 필드 ===');
-      formData.fields.forEach((field) {
-        print('${field.key}: ${field.value}');
-      });
-
-      print('=== FormData 파일 ===');
-      formData.files.forEach((file) {
-        print('${file.key}: filename=${file.value.filename}, length=${file.value.length}');
       });
 
       final response = await dio.post(
@@ -62,8 +52,8 @@ class CommunityUpload {
       );
 
       return response;
-
-    } on DioException catch () {
+    } on DioException catch (e) {
+      print(e);
       rethrow;
     }
   }
@@ -75,7 +65,6 @@ Future<File> _compressImage(File file) async {
 
     final image = img.decodeImage(bytes);
     if (image == null) return file;
-
 
     const maxSize = 1920;
     img.Image resized = image;
@@ -94,7 +83,6 @@ Future<File> _compressImage(File file) async {
     await compressedFile.writeAsBytes(compressedBytes);
 
     return compressedFile;
-
   } catch (e) {
     print('Image compression error: $e');
     return file; // 압축 실패 시 원본 반환

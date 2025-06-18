@@ -2,6 +2,7 @@ import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/model/int/cursor_pagination_int_model.dart';
 import 'package:frontend/common/repository/base_pagination_int_repository.dart';
+import 'package:frontend/community/model/community_paginate_with_sort_model.dart';
 import '../../community/model/community_search_pagination_params.dart';
 import '../model/int/model_with_id.dart';
 
@@ -18,20 +19,20 @@ class _PaginationInfo {
 }
 
 class PaginationIntProvider<
-  T extends IModelWithIntId,
-  U extends IBasePaginationIntRepository<T>
->
-    extends StateNotifier<CursorIntPaginationBase> {
+T extends IModelWithIntId,
+U extends IBasePaginationIntRepository<T>
+> extends StateNotifier<CursorIntPaginationBase> {
   final U repository;
   final String? keyword;
+  final String? sort;
   final paginationThrottle = Throttle<_PaginationInfo>(
     Duration(seconds: 3),
     initialValue: _PaginationInfo(),
     checkEquality: false,
   );
 
-  PaginationIntProvider({required this.repository, this.keyword})
-    : super(CursorIntPaginationLoading()) {
+  PaginationIntProvider({required this.repository, this.keyword, this.sort})
+      : super(CursorIntPaginationLoading()) {
     paginate();
 
     // 3초의 시간이 지난 뒤 실행되는 함수
@@ -94,8 +95,26 @@ class PaginationIntProvider<
 
       dynamic paginationParams;
 
-      if (keyword != null) {
-        paginationParams = CommunitySearchPaginationParams(keyword: keyword!, page: 0, size: fetchCount);
+      if (keyword != null && sort == null) {
+        paginationParams = CommunitySearchPaginationParams(
+          keyword: keyword!,
+          page: 0,
+          size: fetchCount,
+        );
+      } else {
+        if (keyword != null && sort != null) {
+          paginationParams = CommunitySearchPaginationParams(
+            keyword: keyword!,
+            page: 0,
+            size: fetchCount,
+            sort: sort!,
+          );
+        }
+      }
+
+      if (keyword == null && sort != null) {
+        paginationParams = CommunityPaginateWithSortModel(
+            sort: sort!, page: 0, size: fetchCount);
       }
 
       // fetchMore
@@ -105,7 +124,7 @@ class PaginationIntProvider<
         state = CursorIntPaginationFetchingMore(
           data: pState.data,
           message: pState.message,
-          status: pState.status
+          status: pState.status,
         );
 
         if (pState.data.last!) {
@@ -114,17 +133,21 @@ class PaginationIntProvider<
 
         if (!pState.data.last!) {
           if (keyword != null) {
-            paginationParams = CommunitySearchPaginationParams(keyword: keyword!, page: pState.data.pageable!.pageNumber + 1);
+            paginationParams = CommunitySearchPaginationParams(
+              keyword: keyword!,
+              page: pState.data.pageable!.pageNumber + 1,
+            );
           } else {
-            paginationParams = CommunitySearchPaginationParams(page : pState.data.pageable!.pageNumber + 1);
+            paginationParams = CommunitySearchPaginationParams(
+              page: pState.data.pageable!.pageNumber + 1,
+            );
           }
         }
 
         paginationParams = paginationParams.copyWith(
           page: pState.data.pageable!.pageNumber + 1,
-          size : 10
+          size: fetchCount,
         );
-
       } else {
         if (state is CursorIntPagination && !forceRefetch) {
           final pState = state as CursorIntPagination<T>;
@@ -140,16 +163,18 @@ class PaginationIntProvider<
         }
       }
 
-      final resp = await repository.paginate(paginationIntParams: paginationParams);
+      final resp = await repository.paginate(
+        paginationIntParams: paginationParams,
+      );
 
       if (state is CursorIntPaginationFetchingMore<T>) {
         final pState = state as CursorIntPaginationFetchingMore<T>;
 
         // 기존 데이터 + 새로운 데이터 추가.
         state = resp.copyWith(
-            data: resp.data.copyWith(
-                content: [...pState.data.content, ...resp.data.content]
-            )
+          data: resp.data.copyWith(
+            content: [...pState.data.content, ...resp.data.content],
+          ),
         );
       } else {
         state = resp;

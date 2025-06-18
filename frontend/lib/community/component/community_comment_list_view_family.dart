@@ -82,7 +82,7 @@ class _CommunityCommentListViewFamilyState<T>
     }
 
     return SliverPadding(
-      padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(childCount: items.length, (
           _,
