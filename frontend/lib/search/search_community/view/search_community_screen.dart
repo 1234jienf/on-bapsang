@@ -11,7 +11,7 @@ class SearchCommunityScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PaginationIntGridView(childAspectRatio : 175 / 275 , provider: communityProvider(name),
+    return PaginationIntGridView(childAspectRatio : 175 / 275 , provider: communityProvider(CommunityParams(keyword: name, sort: 'desc')),
         itemBuilder: <CommunityModel>(_, index, model) {
           return GestureDetector(
             onTap: () {}, child: CommunityCard.fromModel(model: model),);

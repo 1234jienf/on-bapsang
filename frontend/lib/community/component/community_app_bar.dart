@@ -1,7 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'package:frontend/community/view/community_create_recipe_tag_screen.dart';
 import 'package:frontend/community/view/community_create_upload_screen.dart';
 import 'package:go_router/go_router.dart';
+
 
 class CommunityAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isFirst;
@@ -13,6 +15,8 @@ class CommunityAppBar extends StatelessWidget implements PreferredSizeWidget {
   ];
   final String next;
   final bool isLast;
+  final Function? function;
+
 
   CommunityAppBar({
     super.key,
@@ -21,6 +25,7 @@ class CommunityAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.next,
     required this.isFirst,
     this.isLast = false,
+    this.function
   });
 
   @override
@@ -46,11 +51,7 @@ class CommunityAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: GestureDetector(
             onTap: () {
-              isLast
-                  ? context.pushNamed(routeNames[index])
-                  :
-                  //TODO : submit 로직
-                  context.pushNamed(routeNames[index]);
+              function!();
             },
             child: Text(
               next,

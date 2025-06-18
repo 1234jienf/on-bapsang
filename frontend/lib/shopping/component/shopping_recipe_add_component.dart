@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -184,8 +186,10 @@ class _ShoppingRecipeAddComponentState
                         await showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            Future.delayed(Duration(seconds: 1), () {
-                              if (context.mounted) Navigator.of(context).pop();
+
+                            Timer(Duration(milliseconds: 1000), () {
+                              if (context.mounted) context.pop();
+
                             });
 
                             return AlertDialog(

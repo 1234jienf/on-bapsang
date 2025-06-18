@@ -32,6 +32,4 @@ abstract class CommunityRepository
     @Queries() PaginationIntParams paginationIntParams = const PaginationIntParams()
   });
 
-
-
 }

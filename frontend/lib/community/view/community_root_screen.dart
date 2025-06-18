@@ -47,7 +47,7 @@ class _CommunityRootScreenState extends State<CommunityRootScreen> {
         child: const Icon(Icons.add, size: 24, color: Colors.white),
       ),
       child: PaginationIntGridView(
-        provider: communityProvider(''),
+        provider: communityProvider(CommunityParams(keyword : null, sort :'desc')),
         itemBuilder: <CommunityModel>(_, index, model) {
           return GestureDetector(
             onTap: () {context.pushNamed(CommunityDetailScreen.routeName, pathParameters: {'id' : model.id.toString()});},

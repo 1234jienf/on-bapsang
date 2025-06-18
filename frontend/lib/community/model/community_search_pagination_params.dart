@@ -6,8 +6,9 @@ part 'community_search_pagination_params.g.dart';
 @JsonSerializable()
 class CommunitySearchPaginationParams extends PaginationIntParams {
   final String? keyword;
+  final String? sort;
 
-  CommunitySearchPaginationParams({this.keyword, super.page, super.size});
+  CommunitySearchPaginationParams({this.keyword, super.page, super.size, this.sort});
 
   @override
   CommunitySearchPaginationParams copyWith({

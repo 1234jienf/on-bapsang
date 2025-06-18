@@ -10,6 +10,7 @@ class CommunityModel implements IModelWithIntId {
   final String imageUrl;
   final String title;
   final String nickname;
+  final String content;
 
 
   CommunityModel({
@@ -18,7 +19,7 @@ class CommunityModel implements IModelWithIntId {
     required this.id,
     required this.imageUrl,
     required this.nickname,
-
+    required this.content
   });
 
   factory CommunityModel.fromJson(Map<String, dynamic> json) => _$CommunityModelFromJson(json);
