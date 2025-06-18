@@ -31,4 +31,7 @@ public interface RecipeIngredientRepository
     @Query("SELECT ri.id.ingredientId FROM RecipeIngredient ri WHERE ri.recipe.recipeId = :recipeId")
     List<Long> findIngredientIdsByRecipe(@Param("recipeId") String recipeId);
 
+
+    @Query("SELECT ri.recipe.recipeId FROM RecipeIngredient ri WHERE ri.ingredientMaster.ingredientId = :ingredientId")
+    List<String> findRecipeIdsByIngredientId(@Param("ingredientId") Long ingredientId);
 }

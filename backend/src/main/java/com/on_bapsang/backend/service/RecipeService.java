@@ -4,14 +4,12 @@ import com.on_bapsang.backend.dto.IngredientDetailDto;
 import com.on_bapsang.backend.dto.PostSummary;
 import com.on_bapsang.backend.dto.RecipeDetailDto;
 import com.on_bapsang.backend.dto.RecipeSummaryDto;
+import com.on_bapsang.backend.entity.IngredientMaster;
 import com.on_bapsang.backend.entity.Recipe;
 import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.entity.RecipeScrap;
 import com.on_bapsang.backend.exception.CustomException;
-import com.on_bapsang.backend.repository.PostRepository;
-import com.on_bapsang.backend.repository.RecipeIngredientRepository;
-import com.on_bapsang.backend.repository.RecipeRepository;
-import com.on_bapsang.backend.repository.RecipeScrapRepository;
+import com.on_bapsang.backend.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +32,7 @@ public class RecipeService {
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final RecipeScrapRepository recipeScrapRepository;
     private final PostRepository postRepository;
+    private final IngredientMasterRepository ingredientMasterRepository;
 
 
     @Getter
@@ -106,6 +105,95 @@ public class RecipeService {
         );
 
     }
+
+    public PagedResponse<RecipeSummaryDto> getRecipesByPartialIngredientName(String partialName, User user, int page, int size) {
+        List<IngredientMaster> ingredients = ingredientMasterRepository.findAllByNameContaining(partialName);
+
+        if (ingredients.isEmpty()) {
+            return new PagedResponse<>(new Meta(page, false), List.of());
+        }
+
+        // 재료 ID 추출
+        List<Long> ingredientIds = ingredients.stream()
+                .map(IngredientMaster::getIngredientId)
+                .toList();
+
+        // 모든 재료에 대한 recipeId 조회 후 중복 제거
+        Set<String> recipeIds = ingredientIds.stream()
+                .flatMap(id -> recipeIngredientRepository.findRecipeIdsByIngredientId(id).stream())
+                .collect(Collectors.toSet());
+
+        if (recipeIds.isEmpty()) {
+            return new PagedResponse<>(new Meta(page, false), List.of());
+        }
+
+        // 페이징 수동 처리
+        List<String> recipeIdList = recipeIds.stream().toList();
+        int from = page * size;
+        if (from >= recipeIdList.size()) return new PagedResponse<>(new Meta(page, false), List.of());
+
+        int to = Math.min(from + size, recipeIdList.size());
+        List<Recipe> recipes = recipeRepository.findAllById(recipeIdList.subList(from, to));
+        List<RecipeSummaryDto> summaries = convertToSummaryDtos(user, recipes);
+
+        boolean hasMore = to < recipeIdList.size();
+        return new PagedResponse<>(new Meta(page, hasMore), summaries);
+    }
+
+
+
+
+    private List<RecipeSummaryDto> convertToSummaryDtos(User user, List<Recipe> recipes) {
+        Set<String> scrappedIds = recipeScrapRepository
+                .findAllByUser(user)
+                .stream()
+                .map(scrap -> scrap.getRecipe().getRecipeId())
+                .collect(Collectors.toSet());
+
+        return recipes.stream().map(r -> {
+            List<String> ingrNames = recipeIngredientRepository.findIngredientNamesByRecipeId(r.getRecipeId());
+            boolean isScrapped = scrappedIds.contains(r.getRecipeId());
+
+            return new RecipeSummaryDto(
+                    r.getRecipeId(),
+                    r.getName(),
+                    ingrNames,
+                    r.getDescription(),
+                    r.getReview(),
+                    r.getTime(),
+                    r.getDifficulty(),
+                    r.getPortion(),
+                    r.getMethod(),
+                    r.getMaterialType(),
+                    r.getImageUrl(),
+                    isScrapped
+            );
+        }).collect(Collectors.toList());
+    }
+
+    public List<Recipe> getRecipesByIngredientName(String prdlstNm) {
+        IngredientMaster ingredient = ingredientMasterRepository
+                .findByNameContaining(prdlstNm)
+                .orElse(null);
+
+        if (ingredient == null) {
+            return List.of();  // 🔥 재료가 없으면 빈 리스트
+        }
+
+        List<String> recipeIds = recipeIngredientRepository.findRecipeIdsByIngredientId(ingredient.getIngredientId());
+        if (recipeIds.isEmpty()) {
+            return List.of();  // 🔥 연결된 레시피도 없으면 빈 리스트
+        }
+
+        return recipeRepository.findAllById(recipeIds);
+    }
+
+
+    public List<RecipeSummaryDto> getRecipeDtosByIngredient(String prdlstNm, User user) {
+        List<Recipe> recipes = getRecipesByIngredientName(prdlstNm);
+        return convertToSummaryDtos(user, recipes);  // 기존 로직 재사용
+    }
+
 
     public List<PostSummary> getAllReviewsForRecipe(String recipeId) {
         return postRepository.findPostSummariesByRecipeId(recipeId);
