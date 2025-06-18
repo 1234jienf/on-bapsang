@@ -4,6 +4,7 @@ import com.on_bapsang.backend.dto.ApiResponse;
 import com.on_bapsang.backend.dto.mypage.MyPost;
 import com.on_bapsang.backend.dto.mypage.MyPostResponse;
 import com.on_bapsang.backend.dto.mypage.ScrappedPost;
+import com.on_bapsang.backend.dto.mypage.ScrappedRecipeResponse;
 import com.on_bapsang.backend.security.UserDetailsImpl;
 import com.on_bapsang.backend.service.MyPageService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,16 @@ public class MyPageController {
     ) {
         Page<ScrappedPost> posts = myPageService.getScrappedPosts(userDetails.getUser(), pageable);
         return ResponseEntity.ok(new ApiResponse<>(200, "스크랩한 글 조회 성공", posts));
+    }
+
+    @GetMapping("/scrap-recipes")
+    public ResponseEntity<ApiResponse<ScrappedRecipeResponse>> getScrappedRecipes(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        ScrappedRecipeResponse response = myPageService.getScrappedRecipes(userDetails.getUser(), page, size);
+        return ResponseEntity.ok(new ApiResponse<>(200, "스크랩한 레시피 조회 성공", response));
     }
 
 }
