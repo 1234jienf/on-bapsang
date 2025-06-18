@@ -47,10 +47,6 @@ public class PostService {
     }
 
     public Page<PostSummaryWithScrap> getPosts(String keyword, Pageable pageable, User user) {
-        Page<Long> postIdPage;
-        List<Post> posts;
-
-    public Page<PostSummaryWithScrap> getPosts(String keyword, Pageable pageable, User user) {
         // 검색어 저장 및 점수 증가
         if (keyword != null && !keyword.isBlank()) {
             searchKeywordService.saveRecentKeyword(user.getUserId(), keyword);
