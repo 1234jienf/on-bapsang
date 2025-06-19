@@ -9,7 +9,7 @@ part of 'search_recipe_pagination_params.dart';
 SearchRecipePaginationParams _$SearchRecipePaginationParamsFromJson(
   Map<String, dynamic> json,
 ) => SearchRecipePaginationParams(
-  name: json['name'] as String,
+  food_name: json['food_name'] as String,
   page: (json['page'] as num?)?.toInt(),
   size: (json['size'] as num?)?.toInt(),
 );
@@ -19,5 +19,5 @@ Map<String, dynamic> _$SearchRecipePaginationParamsToJson(
 ) => <String, dynamic>{
   'page': instance.page,
   'size': instance.size,
-  'name': instance.name,
+  'food_name': instance.food_name,
 };

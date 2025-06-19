@@ -27,12 +27,13 @@ class _SearchRepository implements SearchRepository {
     queryParameters.addAll(paginationStringParams.toJson());
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
-    const Map<String, dynamic>? _data = null;
+    final _data = <String, dynamic>{};
+    _data.addAll(paginationStringParams.toJson());
     final _options = _setStreamType<CursorStringPagination<SearchRecipeModel>>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
+      Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/search',
+            '/foreign',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -50,27 +51,6 @@ class _SearchRepository implements SearchRepository {
       rethrow;
     }
     return _value;
-  }
-
-  @override
-  Future<void> postRecipe({required Map<String, dynamic> body}) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
-    final _options = _setStreamType<void>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/foreign',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    await _dio.fetch<void>(_options);
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

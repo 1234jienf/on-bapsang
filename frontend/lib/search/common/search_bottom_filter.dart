@@ -12,12 +12,12 @@ class SearchBottomFilter extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {},
-            child: Text('최신순', style: TextStyle(fontSize: 13.0)),
-          ),
-          const SizedBox(width: 14.0),
-          GestureDetector(
-            onTap: () {},
-            child: Text('추천순', style: TextStyle(fontSize: 13.0)),
+            child: Row(
+              children: [
+                Text('최신순', style: TextStyle(fontSize: 13.0)),
+                Icon(Icons.swap_vert_outlined, size: 20,)
+              ],
+            ),
           ),
         ],
       ),
