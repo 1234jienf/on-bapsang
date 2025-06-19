@@ -33,6 +33,8 @@ public class RecipeService {
     private final RecipeScrapRepository recipeScrapRepository;
     private final PostRepository postRepository;
     private final IngredientMasterRepository ingredientMasterRepository;
+    private final SearchKeywordService searchKeywordService;
+
 
 
     @Getter
@@ -231,6 +233,11 @@ public class RecipeService {
         if (name == null || name.isBlank() || page < 0 || size <= 0) {
             throw new CustomException("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
+
+        // redis저장
+        searchKeywordService.saveRecentKeyword(user.getUserId(), name);
+        searchKeywordService.increaseKeywordScore(name);
+
         Pageable pg = PageRequest.of(page, size);
         Page<Recipe> recipePage = recipeRepository.findByNameContaining(name.trim(), pg);
 
