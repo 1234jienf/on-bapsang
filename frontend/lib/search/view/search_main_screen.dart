@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 
 import '../component/search_app_bar.dart';
+import '../provider/search_keyword_provider.dart';
 
-class SearchMainScreen extends StatelessWidget {
+class SearchMainScreen extends ConsumerWidget {
   static String get routeName => 'SearchMainScreen';
 
   const SearchMainScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(searchKeywordProvider);
+
     final items = [
       '김치찌개',
       '된장찌개',
@@ -23,16 +27,23 @@ class SearchMainScreen extends StatelessWidget {
       '갈비탕',
     ];
 
+    if (state.popular == null || state.recent == null) {
+      return DefaultLayout(
+        appBar: SearchAppBar(hintText: '레시피를 검색해주세요'),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return DefaultLayout(
       appBar: SearchAppBar(hintText: '레시피를 검색해주세요'),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 23.0, vertical: 16.0),
         child: Column(
           children: [
-            _searchTitle(title: '최근 검색어', subtitle: '모두 지우기'),
-            _recentSearch(items: items),
+            _searchTitle(title: '최근 검색어'),
+            _recentSearch(items: state.recent!),
             _searchTitle(title: '인기 검색어'),
-            _famousSearch(items: items),
+            _famousSearch(items: state.popular!),
             _searchTitle(
               title: '온밥 추천 검색어',
               icon: Icon(Icons.info_outline_rounded, size: 18.0),
@@ -121,7 +132,7 @@ Padding _famousSearch({required List<String> items}) {
   return Padding(
     padding: const EdgeInsets.only(top: 6.0, bottom: 26.0),
     child: Column(
-      children: List.generate(5, (index) {
+      children: List.generate((items.length / 2).ceil(), (index) { // ✅ 수정!
         final leftIndex = index * 2;
         final rightIndex = leftIndex + 1;
 
@@ -130,17 +141,18 @@ Padding _famousSearch({required List<String> items}) {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 왼쪽 항목
               Expanded(
                 child: Text(
+                  overflow: TextOverflow.ellipsis,
                   '${leftIndex + 1}. ${items[leftIndex]}',
                   style: TextStyle(fontSize: 14.0),
                 ),
               ),
-              // 오른쪽 항목
               Expanded(
                 child: Text(
-                  '${rightIndex + 1}. ${items[rightIndex]}',
+                  rightIndex < items.length
+                      ? '${rightIndex + 1}. ${items[rightIndex]}'
+                      : '',
                   style: TextStyle(fontSize: 14.0),
                 ),
               ),
