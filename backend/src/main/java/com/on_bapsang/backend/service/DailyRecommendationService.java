@@ -32,27 +32,26 @@ public class DailyRecommendationService {
     public List<Recipe> getDailyRecommendedRecipes(User user) {
         LocalDate today = LocalDate.now();
 
-        // 1. 이미 저장된 추천이 있으면 반환
+        // 1. 이미 저장된 추천 있으면 반환
         Optional<UserDailyRecipe> saved = userDailyRecipeRepository.findByUserAndDate(user, today);
         if (saved.isPresent()) {
             List<String> recipeIds = saved.get().getRecipeIds();
             return recipeRepository.findAllById(recipeIds);
         }
 
-        // 2. 오늘의 시작 ID 구간 확인
+        // 2. 시작 ID 범위
         DailyIndex index = dailyIndexRepository.findById(1L).orElseGet(DailyIndex::new);
         Long startId = index.getStartRecipeId() == null ? 7016813L : index.getStartRecipeId();
         Long endId = startId + 100;
 
-        // 3. 유저 선호 정보 조회
+        // 3. 유저 선호 정보
         List<Long> ingredientIds = userFavoriteIngredientRepository.findIngredientIdsByUser(user);
         List<String> dishNames = userFavoriteDishRepository.findDishNamesByUser(user);
 
-        // 4. 후보 레시피 추출
+        // 4. 후보 레시피
         List<Recipe> candidates = recipeRepository.findByRecipeIdBetween(startId, endId);
-
-        // 5. 점수 계산
         List<RecipeScore> scored = new ArrayList<>();
+
         for (Recipe recipe : candidates) {
             int score = 0;
 
@@ -68,13 +67,13 @@ public class DailyRecommendationService {
             if (!recipeIngreIds.isEmpty()) {
                 long matchCount = recipeIngreIds.stream().filter(ingredientIds::contains).count();
                 double similarity = (double) matchCount / recipeIngreIds.size();
-                score += (int) (similarity * 10); // 최대 10점
+                score += (int) (similarity * 10);
             }
 
             scored.add(new RecipeScore(recipe, score));
         }
 
-        // 6. 점수 높은 순으로 정렬
+        // 5. 점수 높은 순
         List<Recipe> topRecipes = scored.stream()
                 .filter(rs -> rs.score > 0)
                 .sorted((a, b) -> Integer.compare(b.score, a.score))
@@ -82,29 +81,44 @@ public class DailyRecommendationService {
                 .map(rs -> rs.recipe)
                 .collect(Collectors.toList());
 
-        // 7. fallback: 점수 0이면 랜덤 6개
-        if (topRecipes.isEmpty()) {
-            Collections.shuffle(candidates);
-            topRecipes = candidates.stream().limit(6).collect(Collectors.toList());
+        // 6. 부족하면 후보군에서 추가
+        Set<String> selectedIds = topRecipes.stream().map(Recipe::getRecipeId).collect(Collectors.toSet());
+        Collections.shuffle(candidates);
+        for (Recipe r : candidates) {
+            if (topRecipes.size() >= 6) break;
+            if (!selectedIds.contains(r.getRecipeId())) {
+                topRecipes.add(r);
+                selectedIds.add(r.getRecipeId());
+            }
         }
 
-        // 8. 추천 결과 저장 (존재하는 ID만 저장)
+        // 7. 그래도 부족하면 전체 DB에서 채움
+        if (topRecipes.size() < 6) {
+            List<Recipe> all = recipeRepository.findAll();  // 성능 주의
+            Collections.shuffle(all);
+            for (Recipe r : all) {
+                if (topRecipes.size() >= 6) break;
+                if (!selectedIds.contains(r.getRecipeId())) {
+                    topRecipes.add(r);
+                    selectedIds.add(r.getRecipeId());
+                }
+            }
+        }
+
+        // 8. 저장
         List<String> topRecipeIds = topRecipes.stream()
                 .map(Recipe::getRecipeId)
-                .filter(id -> recipeRepository.existsById(id))  // 필수 안전장치
                 .collect(Collectors.toList());
 
-        // 저장 전 유효성 체크
-        if (!topRecipeIds.isEmpty()) {
-            UserDailyRecipe newEntry = new UserDailyRecipe();
-            newEntry.setUser(user);
-            newEntry.setDate(today);
-            newEntry.setRecipeIds(topRecipeIds);
-            userDailyRecipeRepository.save(newEntry);
-        }
+        UserDailyRecipe entry = new UserDailyRecipe();
+        entry.setUser(user);
+        entry.setDate(today);
+        entry.setRecipeIds(topRecipeIds);
+        userDailyRecipeRepository.save(entry);
 
         return topRecipes;
     }
+
 
     // 하루마다 시작 레시피 ID 갱신
     @Scheduled(cron = "0 0 0 * * ?")

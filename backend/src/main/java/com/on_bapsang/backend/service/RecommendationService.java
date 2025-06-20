@@ -1,4 +1,3 @@
-
 package com.on_bapsang.backend.service;
 
 import com.on_bapsang.backend.dto.DishDto;
@@ -20,13 +19,21 @@ import java.util.stream.Collectors;
 public class RecommendationService {
     private final WebClient aiWebClient;
     private final RecipeScrapRepository recipeScrapRepository;
+    private final SearchKeywordService searchKeywordService;
 
-    public RecommendationService(WebClient aiWebClient, RecipeScrapRepository recipeScrapRepository) {
+
+    public RecommendationService(WebClient aiWebClient, RecipeScrapRepository recipeScrapRepository, SearchKeywordService searchKeywordService) {
         this.aiWebClient = aiWebClient;
         this.recipeScrapRepository = recipeScrapRepository;
+        this.searchKeywordService = searchKeywordService;
     }
 
     public RecommendResponse getRecommendations(User user, RecommendRequest req, int page, int size) {
+
+        if (req.getFoodName() != null && !req.getFoodName().isBlank()) {
+            searchKeywordService.saveRecentKeyword(user.getUserId(), req.getFoodName());
+            searchKeywordService.increaseKeywordScore(req.getFoodName());
+        }
 
         RecommendResponse raw = aiWebClient.post()
                 .uri(uriBuilder -> uriBuilder
@@ -73,3 +80,5 @@ public class RecommendationService {
     }
 
 }
+
+

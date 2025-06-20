@@ -10,8 +10,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import com.on_bapsang.backend.dto.RecipeSummaryDto;
+import com.on_bapsang.backend.dto.mypage.ScrappedRecipeResponse;
+import com.on_bapsang.backend.entity.RecipeScrap;
+import com.on_bapsang.backend.repository.RecipeIngredientRepository;
+import com.on_bapsang.backend.repository.RecipeScrapRepository;
+import org.springframework.data.domain.PageRequest;
+
+
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +28,8 @@ public class MyPageService {
 
         private final PostRepository postRepository;
         private final ImageUploader imageUploader;
+        private final RecipeScrapRepository recipeScrapRepository;
+        private final RecipeIngredientRepository recipeIngredientRepository;
 
         public Page<MyPost> getMyPosts(User user, Pageable pageable) {
                 Page<MyPost> page = postRepository.findMyPostsByUser(user.getUserId(), pageable);
@@ -61,6 +72,34 @@ public class MyPageService {
                 }).toList();
 
                 return new PageImpl<>(modified, pageable, page.getTotalElements());
+        }
+
+        public ScrappedRecipeResponse getScrappedRecipes(User user, int page, int size) {
+                Pageable pageable = PageRequest.of(page, size);
+                Page<RecipeScrap> scrapsPage = recipeScrapRepository.findAllWithRecipeByUser(user, pageable);
+
+                List<RecipeSummaryDto> dtos = scrapsPage.stream().map(scrap -> {
+                        var recipe = scrap.getRecipe();
+                        List<String> ingredientNames = recipeIngredientRepository
+                                .findIngredientNamesByRecipeId(recipe.getRecipeId());
+
+                        return new RecipeSummaryDto(
+                                recipe.getRecipeId(),
+                                recipe.getName(),
+                                ingredientNames,
+                                recipe.getDescription(),
+                                recipe.getReview(),
+                                recipe.getTime(),
+                                recipe.getDifficulty(),
+                                recipe.getPortion(),
+                                recipe.getMethod(),
+                                recipe.getMaterialType(),
+                                recipe.getImageUrl(),
+                                true
+                        );
+                }).toList();
+
+                return new ScrappedRecipeResponse(scrapsPage.getNumber(), scrapsPage.hasNext(), dtos);
         }
 
 }
