@@ -10,11 +10,11 @@ class SearchRecipeFilterHeader extends StatelessWidget {
     return Container(
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+        padding: const EdgeInsets.symmetric(horizontal: 6.0),
         child: Column(
           children: [
             if (topFilter != null && bottomFilter != null)
-              Column(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // left

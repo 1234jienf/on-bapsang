@@ -25,15 +25,13 @@ abstract class SearchRepository
   factory SearchRepository(Dio dio, {String baseUrl}) = _SearchRepository;
 
   @override
-  @GET('/search')
+  @POST('/foreign')
   @Headers({'accessToken': 'true'})
   Future<CursorStringPagination<SearchRecipeModel>> paginate({
+    @Body()
     @Queries()
     PaginationStringParams paginationStringParams =
         const PaginationStringParams(),
   });
 
-  @POST('/foreign')
-  @Headers({'accessToken': 'true'})
-  Future<void> postRecipe({@Body() required Map<String, dynamic> body});
 }

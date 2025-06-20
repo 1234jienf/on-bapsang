@@ -48,59 +48,62 @@ class SearchRecipeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100.0,
-      child: Row(
-        children: [
-          ClipRRect(
-            child: Image.network(
-              image_url,
-              fit: BoxFit.cover,
-              width: 90,
-              height: 90,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0, left: 16.0, top: 6.0),
-            child: SizedBox(
-              width: 210.0,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    name,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 6.0),
-                  Row(
-                    children: [
-                      Text(portion, style: TextStyle(fontSize: 12)),
-                      const SizedBox(width: 8.0),
-                      Text(method, style: TextStyle(fontSize: 12)),
-                      const SizedBox(width: 8.0),
-                      Text(time, style: TextStyle(fontSize: 12)),
-                      const SizedBox(width: 8.0),
-                      Text(difficulty, style: TextStyle(fontSize: 12)),
-                    ],
-                  ),
-                  const SizedBox(height: 6.0),
-                  Row(
-                    children: [
-                      Image.asset('asset/img/kid_star.png'),
-                      const SizedBox(width: 6.0),
-                      Text('4.5', style: TextStyle(fontSize: 12.0)),
-                    ],
-                  ),
-                ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: SizedBox(
+        height: 100.0,
+        child: Row(
+          children: [
+            ClipRRect(
+              child: Image.network(
+                image_url,
+                fit: BoxFit.cover,
+                width: 90,
+                height: 90,
               ),
             ),
-          ),
-          const Spacer(),
-          Icon(Icons.bookmark_border_outlined, size: 22.0),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(right: 16.0, left: 16.0),
+              child: SizedBox(
+                width: 210.0,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      name,
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 6.0),
+                    Row(
+                      children: [
+                        Text(portion, style: TextStyle(fontSize: 12)),
+                        const SizedBox(width: 8.0),
+                        Text(method, style: TextStyle(fontSize: 12)),
+                        const SizedBox(width: 8.0),
+                        Text(time, style: TextStyle(fontSize: 12)),
+                        const SizedBox(width: 8.0),
+                        Text(difficulty, style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                    const SizedBox(height: 6.0),
+                    Row(
+                      children: [
+                        Image.asset('asset/img/kid_star.png'),
+                        const SizedBox(width: 6.0),
+                        Text('4.5', style: TextStyle(fontSize: 12.0)),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Spacer(),
+            Icon(Icons.bookmark_border_outlined, size: 22.0),
+          ],
+        ),
       ),
     );
   }

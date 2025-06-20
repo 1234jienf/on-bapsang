@@ -54,19 +54,21 @@ class _PaginationIntGridViewState<T extends IModelWithIntId> extends ConsumerSta
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(state.message, textAlign: TextAlign.center),
-          const SizedBox(height: 16.0),
-          ElevatedButton(
-            onPressed: () {
-              ref.read(widget.provider.notifier).paginate(forceRefetch: true);
-            },
-            child: Text('다시 시도'),
+          Text(
+            '관련된 커뮤니티가 없습니다.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
           ),
         ],
       );
     }
 
     final cp = state as CursorIntPagination<T>;
+
+    // 빈 데이터 처리
+    if (cp.data.content.isEmpty) {
+      return Center(child : Text("검색된 커뮤니티가 없습니다."));
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
