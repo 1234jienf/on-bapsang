@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/component/single_int_grid_view.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/home/provider/home_screen_community_provider.dart';
+import 'package:frontend/recipe/component/recipe_popular_list.dart';
+import 'package:frontend/recipe/component/recipe_recommend_list.dart';
 import 'package:frontend/search/view/search_main_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -104,10 +106,10 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                   sidePadding: sideGap,
                 ),
                 SizedBox(height: titleTextGap),
-                RecipeCard(count: 10),
+                RecipePopularList(),
                 SizedBox(height: 50.0,),
 
-                // 제철재료 레시피
+                // 제철재료 레시피 -> 연결된 레시피 api 나오면
                 titleWidget(
                   title: '제철재료 레시피',
                   fontSize: 16,
@@ -133,7 +135,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                   sidePadding: sideGap,
                 ),
                 SizedBox(height: titleTextGap),
-                RecipeCard(count: 10),
+                RecipeRecommendList(),
                 SizedBox(height: 50.0,),
 
                 // 커뮤니티
