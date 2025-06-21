@@ -24,7 +24,7 @@ class _RecipeCardState extends State<RecipeCard> {
 
   Column _renderComponent() {
     return Column(
-      children: List.generate(widget.recipes.length ~/ 2, (i) {
+      children: List.generate((widget.recipes.length + 1) ~/ 2, (i) {
         return Column(
           children: [
             Row(

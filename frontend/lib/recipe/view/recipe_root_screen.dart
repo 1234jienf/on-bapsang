@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/recipe/component/recipe_appbar.dart';
-import 'package:frontend/common/layout/default_layout.dart';
 import 'package:go_router/go_router.dart';
-
-import 'package:frontend/recipe/component/recipe_card.dart';
-import 'package:frontend/recipe/model/recipe_model.dart';
-import 'package:frontend/recipe/view/recipe_season_list_screen.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/recipe/provider/recipe_provider.dart';
+
+import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/recipe/component/recipe_appbar.dart';
+import 'package:frontend/recipe/component/recipe_popular_list.dart';
+import 'package:frontend/recipe/component/recipe_recommend_list.dart';
+import 'package:frontend/recipe/view/recipe_season_list_screen.dart';
 
 class RecipeRootScreen extends ConsumerStatefulWidget {
   static String get routeName => 'RecipeRootScreen';
@@ -44,9 +42,6 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
     final double componentGap = 20.0;
     // 화면 전체 양 사이드 갭
     final double sideGap = 5.0;
-
-    final popularRecipeAsync = ref.watch(popularRecipesProvider);
-    final recommendRecipeAsync = ref.watch(recommendRecipesProvider);
 
     return DefaultLayout(
         appBar: RecipeAppbar(isImply: false),
@@ -85,25 +80,7 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
                     sidePadding: sideGap,
                   ),
                   SizedBox(height: titleTextGap),
-                  popularRecipeAsync.when(
-                    loading: () => Container(
-                      height: 50.0,
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                    error: (err, stack) => Container(
-                      height: 50.0,
-                      child: Center(child: Text('$err')),
-                    ),
-                    data: (List<RecipeModel> recipes) {
-                      if (recipes.isEmpty) {
-                        return Container(
-                          height: 200.0,
-                          child: Center(child: Text('인기 레시피가 아직 없습니다.')),
-                        );
-                      }
-                      return RecipeCard(recipes: recipes);
-                    },
-                  ),
+                  RecipePopularList(),
                   SizedBox(height: componentGap),
 
                   // AI 추천 레시피
@@ -113,25 +90,7 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
                     sidePadding: sideGap,
                   ),
                   SizedBox(height: titleTextGap),
-                  recommendRecipeAsync.when(
-                    loading: () => SizedBox(
-                      height: 50.0,
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                    error: (err, stack) => SizedBox(
-                      height: 50.0,
-                      child: Center(child: Text('$err')),
-                    ),
-                    data: (List<RecipeModel> recipes) {
-                      if (recipes.isEmpty) {
-                        return SizedBox(
-                          height: 200.0,
-                          child: Center(child: Text('추천레시피가 없습니다.')),
-                        );
-                      }
-                      return RecipeCard(recipes: recipes);
-                    },
-                  ),
+                  RecipeRecommendList(),
                   SizedBox(height: componentGap),
 
                   // 컨텐츠 추가 예정

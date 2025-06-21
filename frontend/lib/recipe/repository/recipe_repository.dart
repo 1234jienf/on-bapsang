@@ -2,6 +2,9 @@ import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/const/securetoken.dart';
 import 'package:frontend/common/dio/dio.dart';
+import 'package:frontend/common/model/int/cursor_pagination_int_model.dart';
+import 'package:frontend/common/model/string/cursor_pagination_string_model.dart';
+import 'package:frontend/recipe/model/recipe_category_pagination_params_model.dart';
 import 'package:frontend/recipe/model/recipe_detail_model.dart';
 import 'package:frontend/recipe/model/recipe_model.dart';
 import 'package:retrofit/error_logger.dart';
@@ -37,4 +40,36 @@ abstract class RecipeRepository {
   @DELETE('/scrap/{id}')
   @Headers({'accessToken': 'true'})
   Future<void> cancelRecipeScrap(@Path('id') int id);
+}
+
+Future<CursorStringPagination<RecipeModel>> getCategoryRecipesWithRawDio({
+  required Dio dio,
+  required String category,
+  required int page,
+  required int size,
+}) async {
+  try {
+    print('getCategoryRecipesWithRawDio 진입');
+    final response = await dio.get(
+      '$ip/api/recipe?category=$category&page=$page&size=$size',
+      options: Options(headers: {'accessToken': 'true'}),
+    );
+
+    print(response.data);
+
+    return CursorStringPagination<RecipeModel>.fromJson(
+      response.data,
+          (json) {
+        try {
+          return RecipeModel.fromJson(json as Map<String, dynamic>);
+        } catch (e) {
+          print('❌ RecipeModel 파싱 실패: $e\n⛳️ 데이터: $json');
+          rethrow;
+        }
+      },
+    );
+  } catch (e, stack) {
+    print('API Error: $e');
+    rethrow;
+  }
 }

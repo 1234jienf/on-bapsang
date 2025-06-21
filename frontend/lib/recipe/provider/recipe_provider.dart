@@ -1,7 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/common/dio/dio.dart';
+import 'package:frontend/common/model/int/cursor_pagination_int_model.dart';
+import 'package:frontend/common/model/string/cursor_pagination_string_model.dart';
+import 'package:frontend/recipe/model/recipe_category_pagination_params_model.dart';
 import 'package:frontend/recipe/model/recipe_detail_model.dart';
 import 'package:frontend/recipe/model/recipe_model.dart';
 import 'package:frontend/recipe/repository/recipe_repository.dart';
+
+import '../notifier/category_pagination_notifier.dart';
 
 
 /// 인기 레시피 가져오기
@@ -22,3 +28,15 @@ final recipeDetailProvider = FutureProvider.family<RecipeDetailModel, int>((ref,
 
   return await repository.getRecipeDetail(id);
 });
+
+final categoryPaginationProvider = StateNotifierProvider.family<CategoryPaginationNotifier, CursorStringPaginationBase, String>((ref, category) {
+  final repository = ref.read(recipeRepositoryProvider);
+  final dio = ref.read(dioProvider);
+
+  return CategoryPaginationNotifier(
+    repository: repository,
+    dio: dio,
+    category: category,
+  );
+});
+
