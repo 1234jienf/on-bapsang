@@ -12,6 +12,7 @@ CommunitySearchPaginationParams _$CommunitySearchPaginationParamsFromJson(
   keyword: json['keyword'] as String?,
   page: (json['page'] as num?)?.toInt(),
   size: (json['size'] as num?)?.toInt(),
+  sort: json['sort'] as String?,
 );
 
 Map<String, dynamic> _$CommunitySearchPaginationParamsToJson(
@@ -20,4 +21,5 @@ Map<String, dynamic> _$CommunitySearchPaginationParamsToJson(
   'page': instance.page,
   'size': instance.size,
   'keyword': instance.keyword,
+  'sort': instance.sort,
 };

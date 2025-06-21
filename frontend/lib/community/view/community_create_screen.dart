@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/community/component/community_app_bar.dart';
+import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-class CommunityCreateScreen extends StatefulWidget {
+import 'community_create_recipe_tag_screen.dart';
+
+class CommunityCreateScreen extends ConsumerStatefulWidget {
   static String get routeName => 'CommunityCreateScreen';
 
   const CommunityCreateScreen({super.key});
 
   @override
-  State<CommunityCreateScreen> createState() => _CommunityCreateScreenState();
+  ConsumerState<CommunityCreateScreen> createState() =>
+      _ConsumerCommunityCreateScreenState();
 }
 
-class _CommunityCreateScreenState extends State<CommunityCreateScreen> {
+class _ConsumerCommunityCreateScreenState
+    extends ConsumerState<CommunityCreateScreen> {
   List<AssetPathEntity> albums = <AssetPathEntity>[];
   List<AssetEntity> imageList = <AssetEntity>[];
   AssetEntity? selectedImage;
@@ -59,7 +65,15 @@ class _CommunityCreateScreenState extends State<CommunityCreateScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      appBar: CommunityAppBar(index: 0, title: '사진 올리기', next: '다음', isFirst: true,),
+      appBar: CommunityAppBar(
+        index: 0,
+        title: '사진 올리기',
+        next: '다음',
+        isFirst: true,
+        function: () async {
+          context.pushNamed(CommunityCreateRecipeTagScreen.routeName, extra: selectedImage);
+        },
+      ),
       child: Column(
         children: [
           _content(context),

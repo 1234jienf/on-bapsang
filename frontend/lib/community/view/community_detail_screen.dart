@@ -5,7 +5,9 @@ import 'package:frontend/community/component/community_comment_list_view_family.
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../common/const/colors.dart';
 import '../component/community_comment.dart';
+import '../component/community_comment_inputbox.dart';
 import '../model/community_detail_model.dart';
 import '../provider/community_comment_provider.dart';
 import '../provider/community_detail_provider.dart';
@@ -25,17 +27,43 @@ class CommunityDetailScreen extends ConsumerStatefulWidget {
 class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
   final ScrollController controller = ScrollController();
   final double horizontal = 16.0;
-  late final DateTime dt;
-  late final String formattedDate;
+  final FocusNode replyFocusNode = FocusNode();
+
+  int? _parentCommentId;
+  String _nickname = '';
 
   @override
   void initState() {
     super.initState();
-    dt = DateTime.now();
-    formattedDate = DateFormat('yy년 M월 d일').format(dt);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(communityDetailProvider(widget.id).notifier).fetchData();
     });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    replyFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _activateReplyMode(int parentCommentId, String nickname) {
+    setState(() {
+      _parentCommentId = parentCommentId;
+      _nickname = nickname;
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      replyFocusNode.requestFocus();
+    });
+  }
+
+  void _deactivateReplyMode() {
+    setState(() {
+      _parentCommentId = null;
+      _nickname = '';
+    });
+    replyFocusNode.unfocus();
   }
 
   @override
@@ -61,7 +89,70 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
       ),
+      resizeToAvoidBottomInset: true,
+      bottomNavigationBar: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (_parentCommentId != null)
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  border: Border(
+                    bottom: BorderSide(color: gray300, width: 0.5),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.reply, size: 16, color: gray600),
+                    SizedBox(width: 8),
+                    Text(
+                      '$_nickname님에게 답글',
+                      style: TextStyle(fontSize: 14, color: gray600),
+                    ),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: _deactivateReplyMode,
+                      child: Icon(Icons.close, size: 18, color: gray600),
+                    ),
+                  ],
+                ),
+              ),
+            Padding(
+              padding: EdgeInsets.only(
+                bottom:
+                    MediaQuery.of(context).viewInsets.bottom > 100
+                        ? MediaQuery.of(context).viewInsets.bottom
+                        : 0,
+                left: 16,
+                right: 16,
+              ),
+              child: _commentInput(context, widget.id),
+            ),
+          ],
+        ),
+      ),
       child: _content(state),
+    );
+  }
+
+  Widget _commentInput(BuildContext context, String id) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 60,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
+      alignment: Alignment.center,
+      child: CommunityCommentInputbox(
+        contentWord: _parentCommentId != null  // 🆕 수정
+            ? '대댓글을 입력하세요'
+            : '댓글을 달아주세요',
+        commentId: _parentCommentId,
+        replyFocusNode: _parentCommentId != null ? replyFocusNode : null,
+        id: id,
+        onCommentSubmit: _deactivateReplyMode,
+      ),
     );
   }
 
@@ -140,12 +231,26 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
               horizontal: horizontal,
               vertical: 6.0,
             ),
-            child: const Divider(thickness: 0.5, color: Colors.grey),
+            child: Column(
+              children: [
+                const Divider(thickness: 0.5, color: Colors.grey),
+              ],
+            ),
           ),
         ),
         CommunityCommentListViewFamily(
           itemBuilder: <CommunityCommentModel>(_, index, model) {
-            return CommunityComment.fromModel(model: model);
+            return GestureDetector(
+              onLongPress: () {
+                _activateReplyMode(model.id, model.nickname);
+              },
+              child: Container(
+                color: _parentCommentId == model.id
+                    ? Colors.blue.withOpacity(0.1)
+                    : Colors.transparent,
+                child: CommunityComment.fromModel(model: model),
+              ),
+            );
           },
           provider: communityCommentProvider,
           childAspectRatio: 175 / 250,
@@ -169,27 +274,31 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                 onTap: () {},
                 child: Row(
                   children: [
-                    Container(width: 85, height: 85, color: Colors.grey),
+                    Image.network(
+                      state.recipeImageUrl,
+                      width: 85,
+                      height: 85,
+                      fit: BoxFit.cover,
+                    ),
                     SizedBox(
                       width: 210,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '간단하게 만드는 밥도둑, 팽이버섯 두부 조림',
+                                state.recipeTag,
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.w600,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 2,
                               ),
-                              const SizedBox(height: 4.0),
-                              Text('설명 내역입니다', style: TextStyle(fontSize: 14)),
                             ],
                           ),
                         ),

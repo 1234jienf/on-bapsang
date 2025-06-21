@@ -11,7 +11,7 @@ class CommunityCommentModel {
   final String? profileImage;
   @JsonKey(fromJson: DataUtils.dateTimeFromJson)
   final DateTime createdAt;
-  final List<dynamic> children;
+  final List<CommunityCommentModel> children;
 
   CommunityCommentModel({
     required this.id,

@@ -7,6 +7,7 @@ class CommunityCard extends StatelessWidget {
   final String title;
   final String imageUrl;
   final int id;
+  final String content;
 
   const CommunityCard({
     super.key,
@@ -14,6 +15,7 @@ class CommunityCard extends StatelessWidget {
     required this.title,
     required this.imageUrl,
     required this.id,
+    required this.content
   });
 
   factory CommunityCard.fromModel({required CommunityModel model}) {
@@ -22,6 +24,7 @@ class CommunityCard extends StatelessWidget {
       id: model.id,
       imageUrl: model.imageUrl,
       nickname: model.nickname,
+      content: model.content,
     );
   }
 
@@ -85,7 +88,7 @@ class CommunityCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          title,
+                          content,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

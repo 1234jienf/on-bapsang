@@ -12,6 +12,7 @@ CommunityModel _$CommunityModelFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num).toInt(),
       imageUrl: json['imageUrl'] as String,
       nickname: json['nickname'] as String,
+      content: json['content'] as String,
     );
 
 Map<String, dynamic> _$CommunityModelToJson(CommunityModel instance) =>
@@ -20,4 +21,5 @@ Map<String, dynamic> _$CommunityModelToJson(CommunityModel instance) =>
       'imageUrl': instance.imageUrl,
       'title': instance.title,
       'nickname': instance.nickname,
+      'content': instance.content,
     };

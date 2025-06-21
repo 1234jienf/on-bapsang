@@ -52,21 +52,21 @@ class RecipeDetailModel extends IModelWithIntId {
 
   factory RecipeDetailModel.fromJson(Map<String, dynamic> json) {
     return RecipeDetailModel(
-      id: int.parse(json['recipe_id'].toString()),
-      name: json['name'] ?? '',
-      ingredients: (json['ingredients'] as List<dynamic>)
-          .map((item) => IngredientModel.fromJson(item))
-          .toList(),
-      descriptions: json['descriptions'] ?? '',
-      review: json['review'] ?? '',
-      time: json['time']?.toString() ?? 'unknown',
-      difficulty: json['difficulty'] ?? '',
-      portion: json['portion'] ?? '',
-      method: json['method'] ?? '',
-      material_type: json['material_type'] ?? '',
-      image_url: json['image_url'] ?? '',
-      instruction: (json['instruction'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
-      scrapped: json['scrapped'] ?? false
-    );
+    id: int.parse(json['recipe_id'].toString()),
+    name: json['name'] ?? '',
+    ingredients: (json['ingredients'] as List<dynamic>)
+        .map((item) => IngredientModel.fromJson(item))
+        .toList(),
+    descriptions: json['descriptions'] ?? '',
+    review: json['review'] ?? '',
+    time: json['time']?.toString() ?? 'unknown',
+    difficulty: json['difficulty'] ?? '',
+    portion: json['portion'] ?? '',
+    method: json['method'] ?? '',
+    material_type: json['material_type'] ?? '',
+    image_url: json['image_url'] ?? '',
+    instruction: (json['instruction'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+    scrapped: json['scrapped'] ?? false,
+   );
   }
 }

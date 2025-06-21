@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/common/appbar/home_appbar.dart';
 import 'package:frontend/common/layout/default_layout.dart';
@@ -314,8 +316,10 @@ class _ShoppingRootScreenState extends State<ShoppingRootScreen> {
                         await showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            Future.delayed(Duration(seconds: 1), () {
-                              if (context.mounted) Navigator.of(context).pop();
+                            Timer(Duration(milliseconds: 1000), () {
+                              if (context.mounted) {
+                                context.pop();
+                              }
                             });
 
                             return AlertDialog(
