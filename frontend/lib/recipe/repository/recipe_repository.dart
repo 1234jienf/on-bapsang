@@ -2,11 +2,13 @@ import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/const/securetoken.dart';
 import 'package:frontend/common/dio/dio.dart';
-import 'package:frontend/common/model/int/cursor_pagination_int_model.dart';
+import 'package:frontend/common/model/int/pagination_int_params.dart';
+import 'package:frontend/common/model/int/simple_cursor_pagination_model.dart';
 import 'package:frontend/common/model/string/cursor_pagination_string_model.dart';
-import 'package:frontend/recipe/model/recipe_category_pagination_params_model.dart';
 import 'package:frontend/recipe/model/recipe_detail_model.dart';
 import 'package:frontend/recipe/model/recipe_model.dart';
+import 'package:frontend/recipe/model/recipe_pagination_params_model.dart';
+import 'package:retrofit/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 
@@ -40,7 +42,25 @@ abstract class RecipeRepository {
   @DELETE('/scrap/{id}')
   @Headers({'accessToken': 'true'})
   Future<void> cancelRecipeScrap(@Path('id') int id);
+
+  @GET('/ingredient')
+  @Headers({'accessToken': 'true'})
+  Future<CursorSimplePagination<RecipeModel>> paginate({
+    @Queries() PaginationIntParams paginationIntParams = const PaginationWithNameParams(),
+  });
+
+
+  // 메인화면에서 페이지네이션 빼고 앞에꺼만 가져오기
+  @GET('/ingredient')
+  @Headers({'accessToken': 'true'})
+  Future<HttpResponse<dynamic>> getSeasonRecipeMainRaw(
+      @Query('name') String ingredientName,
+      @Query('page') int page,
+      @Query('size') int size,
+  );
+
 }
+
 
 Future<CursorStringPagination<RecipeModel>> getCategoryRecipesWithRawDio({
   required Dio dio,
@@ -68,7 +88,7 @@ Future<CursorStringPagination<RecipeModel>> getCategoryRecipesWithRawDio({
         }
       },
     );
-  } catch (e, stack) {
+  } catch (e, _) {
     print('API Error: $e');
     rethrow;
   }

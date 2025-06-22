@@ -38,19 +38,39 @@ class _RecipeIngredientPriceScreenState extends ConsumerState<RecipeIngredientPr
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('${widget.ingredientName}의 시세'),
-                Text('디자인 추후 수정예정'),
+                Text(
+                  '${widget.ingredientName}의 시세',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                ),
+                // Text('디자인 추후 수정예정'),
                 SizedBox(height: 20),
 
                 // 재료 시세 차트
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '${widget.ingredientName}의 일자별 가격',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                SizedBox(height: 15),
                 ingredientTimeData.when(
                     data: (data) => RecipeIngredientPriceChart(ingredientPriceDataList: data.monthlyPrices),
                     error: (err, stack) => Center(child: Text('데이터를 가져오는 과정에서 문제가 발생하였습니다. $err')),
                     loading: () => Center(child: CircularProgressIndicator()),
                 ),
 
+                SizedBox(height: 20),
 
                 // 지역별 재료 가격
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '시장별 ${widget.ingredientName} 도매 가격',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                SizedBox(height: 15),
                 ingredientRegionData.when(
                   data: (data) => RecipeIngredientMarketChart(marketDataList: data.markets),
                   error: (err, stack) => Center(child: Text('데이터를 가져오는 과정에서 문제가 발생하였습니다.$err')),

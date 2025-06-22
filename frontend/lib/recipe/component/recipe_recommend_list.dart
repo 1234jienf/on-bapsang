@@ -28,7 +28,6 @@ class _RecipeRecommendListState extends ConsumerState<RecipeRecommendList> {
         child: Center(child: Text('$err')),
       ),
       data: (List<RecipeModel> recipes) {
-        print(recipes);
         if (recipes.isEmpty) {
           return SizedBox(
             height: 200.0,

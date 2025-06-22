@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/recipe/repository/recipe_repository.dart';
 import 'package:frontend/recipe/view/recipe_ingredient_price_screen.dart';
 import 'package:frontend/recipe/data/data_loader.dart';
@@ -6,6 +7,7 @@ import 'package:frontend/recipe/view/recipe_ingredient_shopping_screen.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/recipe/provider/recipe_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class RecipeDetailScreen extends ConsumerStatefulWidget {
   final String id;
@@ -46,6 +48,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
 
     return Scaffold(
         extendBodyBehindAppBar: true,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -265,7 +268,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '레시피 후기',
+                          '레시피 후기 ${recipe.reviewCount}',
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                         ),
                         TextButton(
@@ -282,35 +285,78 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                     ),
                     SizedBox(height: componentGap),
 
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(3, (_) {
-                        return Column(
-                          children: [
-                            Row(
-                              children: [
-                                Flexible(child: Container(height: 100.0, decoration: BoxDecoration(color: Colors.grey))),
-                                SizedBox(width: 15.0),
-                                Flexible(child: Container(height: 100.0, decoration: BoxDecoration(color: Colors.grey))),
-                                SizedBox(width: 15.0),
-                                Flexible(child: Container(height: 100.0, decoration: BoxDecoration(color: Colors.grey))),
-                              ],
-                            ),
-                            SizedBox(height: 15.0),
-                          ],
+                    recipe.reviews.isNotEmpty
+                        ? Column(
+                      children: List.generate((recipe.reviews.length + 2) ~/ 3, (i) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 15.0),
+                          child: Row(
+                            children: List.generate(3, (j) {
+                              int index = i * 3 + j;
+
+                              if (index >= recipe.reviews.length) {
+                                return Expanded(child: SizedBox());
+                              }
+
+                              final imageUrl = recipe.reviews[index].imageUrl;
+
+                              return Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context.pushNamed(
+                                        CommunityDetailScreen.routeName,
+                                        pathParameters: {'id': recipe.reviews[index].id.toString()},
+                                      );
+                                    },
+                                    child: Image.network(
+                                      imageUrl,
+                                      fit: BoxFit.cover,
+                                      loadingBuilder: (context, child, loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return Container(
+                                          height: 100,
+                                          color: Colors.grey[300],
+                                          child: Center(child: CircularProgressIndicator()),
+                                        );
+                                      },
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Container(
+                                          height: 100,
+                                          color: Colors.grey[300],
+                                          child: Icon(Icons.error, size: 50),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
                         );
                       }),
+                    )
+                        : Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                      child: Text('아직 작성된 리뷰가 없습니다.'),
                     ),
+
                     SizedBox(height: titleTextGap),
-                    InkWell(
-                      onTap: (){},
+
+                    recipe.reviewCount > 9
+                    ? InkWell(
+                      onTap: (){
+                        // 여기서 커뮤니티 페이지로 넘겨야 함.
+                      },
                       child: Container(
                         width: double.infinity,
                         height: 50,
                         decoration: BoxDecoration(border: Border.all(color: Colors.black12, width: 1.0)),
                         child: Center(child: Text('더보기')),
                       ),
-                    ),
+                    )
+                    : SizedBox(height: 10.0,),
                     SizedBox(height: componentGap),
                   ]),
                 ),
@@ -326,11 +372,19 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
               width: double.infinity,
               padding: EdgeInsetsGeometry.symmetric(horizontal: 10.0),
               child: ElevatedButton(
-                onPressed: (){
+                onPressed: () async {
+                  final discounted = await loadDiscountedIngredients(); // JSON 불러오기
+
+                  final recipeIngredientNames = recipe.ingredients.map((e) => e.name).toSet();
+
+                  final matched = discounted
+                      .where((item) => recipeIngredientNames.contains(item.ingredient))
+                      .toList();
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => RecipeIngredientShoppingScreen()
+                          builder: (context) => RecipeIngredientShoppingScreen(discountedItems: matched)
                       )
                   );
                 },
@@ -419,6 +473,7 @@ Widget gradientWidget({
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
+            backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))
             ),
