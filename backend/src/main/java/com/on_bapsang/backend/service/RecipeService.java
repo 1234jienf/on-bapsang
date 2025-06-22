@@ -10,6 +10,7 @@ import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.entity.RecipeScrap;
 import com.on_bapsang.backend.exception.CustomException;
 import com.on_bapsang.backend.repository.*;
+import com.on_bapsang.backend.util.ImageUploader;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class RecipeService {
     private final PostRepository postRepository;
     private final IngredientMasterRepository ingredientMasterRepository;
     private final SearchKeywordService searchKeywordService;
-
+    private final ImageUploader imageUploader;
 
 
     @Getter
@@ -83,10 +84,19 @@ public class RecipeService {
         }
         boolean isScrapped = recipeScrapRepository.existsByUserAndRecipe(user, recipe);
         List<PostSummary> allReviews = postRepository.findPostSummariesByRecipeId(recipeId);
+        for (PostSummary review : allReviews) {
+            if (review.getImageUrl() != null) {
+                review.setImageUrl(imageUploader.generatePresignedUrl(review.getImageUrl(), 120));
+            }
+        }
+
         int reviewCount = allReviews.size();
         List<PostSummary> reviews = allReviews.stream().limit(9).toList();
 
-
+        // ④ 레시피 이미지도 presigned 처리
+        String imageUrl = recipe.getImageUrl() != null
+                ? imageUploader.generatePresignedUrl(recipe.getImageUrl(), 120)
+                : null;
         // ③ DTO 조립
         return new RecipeDetailDto(
                 recipe.getRecipeId(),
@@ -198,8 +208,15 @@ public class RecipeService {
 
 
     public List<PostSummary> getAllReviewsForRecipe(String recipeId) {
-        return postRepository.findPostSummariesByRecipeId(recipeId);
+        List<PostSummary> reviews = postRepository.findPostSummariesByRecipeId(recipeId);
+        for (PostSummary review : reviews) {
+            if (review.getImageUrl() != null) {
+                review.setImageUrl(imageUploader.generatePresignedUrl(review.getImageUrl(), 120));
+            }
+        }
+        return reviews;
     }
+
 
 
     public void addScrap(User user, String recipeId) {
