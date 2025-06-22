@@ -49,7 +49,10 @@ class _RecipeCategoryListScreenState extends ConsumerState<RecipeCategoryListScr
     final state = ref.watch(categoryPaginationProvider(widget.categoryName));
 
     return DefaultLayout(
-      appBar: AppBar(title: Text(widget.categoryName)),
+      appBar: AppBar(
+        title: Text(widget.categoryName),
+        backgroundColor: Colors.white,
+      ),
       child: state is CursorStringPagination<RecipeModel>
           ? ListView.builder(
         controller: controller,

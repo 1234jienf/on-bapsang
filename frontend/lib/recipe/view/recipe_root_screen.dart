@@ -44,7 +44,7 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
     final double sideGap = 5.0;
 
     return DefaultLayout(
-        appBar: RecipeAppbar(isImply: false),
+        appBar: RecipeAppbar(isImply: false, searchMessage: '레시피를 검색해보세요!',),
         backgroundColor: Colors.white,
         child: CustomScrollView(
           controller: controller,
@@ -65,9 +65,13 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
                       padding: EdgeInsets.symmetric(horizontal: sideGap),
                       child: Container(
                         width: 360,
-                        height: 90,
+                        height: 140,
                         decoration: BoxDecoration(color: Colors.grey),
-                        child: Text('제철레시피(이미지 들어갈 예정)'),
+                        child: Image.asset(
+                          'asset/img/season_recipe_banner_image.png',
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

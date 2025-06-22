@@ -51,3 +51,11 @@ final seasonIngredientRecipeProvider = StateNotifierProvider.family<
     name: name,
   );
 });
+
+final topRecipesByIngredientProvider =
+FutureProvider.family<List<RecipeModel>, String>((ref, ingredientName) async {
+  final repository = ref.watch(recipeRepositoryProvider);
+  final response = await repository.getSeasonRecipeMainRaw(ingredientName, 0, 10);
+  final List<dynamic> data = response.data['data'];
+  return data.map((e) => RecipeModel.fromJson(e)).toList();
+});

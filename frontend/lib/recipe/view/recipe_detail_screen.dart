@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/recipe/repository/recipe_repository.dart';
 import 'package:frontend/recipe/view/recipe_ingredient_price_screen.dart';
 import 'package:frontend/recipe/data/data_loader.dart';
@@ -6,6 +7,7 @@ import 'package:frontend/recipe/view/recipe_ingredient_shopping_screen.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/recipe/provider/recipe_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class RecipeDetailScreen extends ConsumerStatefulWidget {
   final String id;
@@ -46,6 +48,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
 
     return Scaffold(
         extendBodyBehindAppBar: true,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -297,29 +300,35 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
 
                               final imageUrl = recipe.reviews[index].imageUrl;
 
-                              print(imageUrl);
-
                               return Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.all(4.0),
-                                  child: Image.network(
-                                    imageUrl,
-                                    fit: BoxFit.cover,
-                                    loadingBuilder: (context, child, loadingProgress) {
-                                      if (loadingProgress == null) return child;
-                                      return Container(
-                                        height: 100,
-                                        color: Colors.grey[300],
-                                        child: Center(child: CircularProgressIndicator()),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      context.pushNamed(
+                                        CommunityDetailScreen.routeName,
+                                        pathParameters: {'id': recipe.reviews[index].id.toString()},
                                       );
                                     },
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        height: 100,
-                                        color: Colors.grey[300],
-                                        child: Icon(Icons.error, size: 50),
-                                      );
-                                    },
+                                    child: Image.network(
+                                      imageUrl,
+                                      fit: BoxFit.cover,
+                                      loadingBuilder: (context, child, loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return Container(
+                                          height: 100,
+                                          color: Colors.grey[300],
+                                          child: Center(child: CircularProgressIndicator()),
+                                        );
+                                      },
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Container(
+                                          height: 100,
+                                          color: Colors.grey[300],
+                                          child: Icon(Icons.error, size: 50),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                               );
@@ -363,11 +372,19 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
               width: double.infinity,
               padding: EdgeInsetsGeometry.symmetric(horizontal: 10.0),
               child: ElevatedButton(
-                onPressed: (){
+                onPressed: () async {
+                  final discounted = await loadDiscountedIngredients(); // JSON 불러오기
+
+                  final recipeIngredientNames = recipe.ingredients.map((e) => e.name).toSet();
+
+                  final matched = discounted
+                      .where((item) => recipeIngredientNames.contains(item.ingredient))
+                      .toList();
+
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => RecipeIngredientShoppingScreen()
+                          builder: (context) => RecipeIngredientShoppingScreen(discountedItems: matched)
                       )
                   );
                 },
@@ -456,6 +473,7 @@ Widget gradientWidget({
           showModalBottomSheet(
             context: context,
             isScrollControlled: true,
+            backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))
             ),
