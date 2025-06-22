@@ -19,17 +19,17 @@ class _RecipePopularListState extends ConsumerState<RecipePopularList> {
     final popularRecipeAsync = ref.watch(popularRecipesProvider);
 
     return popularRecipeAsync.when(
-      loading: () => Container(
+      loading: () => SizedBox(
         height: 50.0,
         child: Center(child: CircularProgressIndicator()),
       ),
-      error: (err, stack) => Container(
-        height: 50.0,
+      error: (err, stack) => SizedBox(
+        height: 100.0,
         child: Center(child: Text('$err')),
       ),
       data: (List<RecipeModel> recipes) {
         if (recipes.isEmpty) {
-          return Container(
+          return SizedBox(
             height: 200.0,
             child: Center(child: Text('인기 레시피가 아직 없습니다.')),
           );

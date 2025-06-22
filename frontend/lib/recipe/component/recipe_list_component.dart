@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/recipe/model/recipe_model.dart';
+import 'package:frontend/recipe/repository/recipe_repository.dart';
 import 'package:frontend/recipe/view/recipe_detail_screen.dart';
 import 'package:go_router/go_router.dart';
 
-class RecipeListComponent extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/recipe/provider/recipe_provider.dart';
+
+class RecipeListComponent extends ConsumerStatefulWidget {
   final RecipeModel recipeInfo;
 
   const RecipeListComponent({super.key, required this.recipeInfo});
 
   @override
-  State<RecipeListComponent> createState() => _RecipeListComponentState();
+  ConsumerState<RecipeListComponent> createState() => _RecipeListComponentState();
 }
 
-class _RecipeListComponentState extends State<RecipeListComponent> {
+class _RecipeListComponentState extends ConsumerState<RecipeListComponent> {
+  bool isScrapped = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isScrapped = widget.recipeInfo.scrapped;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -66,7 +78,7 @@ class _RecipeListComponentState extends State<RecipeListComponent> {
                     children: [
                       Text(widget.recipeInfo.portion),
                       SizedBox(width: 7),
-                      Text(widget.recipeInfo.time),
+                      Text(widget.recipeInfo.time != 'nan' ? widget.recipeInfo.time : '-'),
                       SizedBox(width: 7),
                       Text(widget.recipeInfo.difficulty)
                     ],
@@ -78,8 +90,25 @@ class _RecipeListComponentState extends State<RecipeListComponent> {
             Expanded(
               flex: 1,
               child: IconButton(
-                onPressed: (){},
-                icon: Icon(Icons.bookmark_border)
+                icon: isScrapped
+                    ? Icon(Icons.bookmark)
+                    : Icon(Icons.bookmark_border),
+                onPressed: () async {
+                  try {
+                    final repo = ref.read(recipeRepositoryProvider);
+                    if (isScrapped) {
+                      await repo.cancelRecipeScrap(widget.recipeInfo.id);
+                    } else {
+                      await repo.recipeScrap(widget.recipeInfo.id);
+                    }
+
+                    setState(() {
+                      isScrapped = !isScrapped;
+                    });
+                  } catch (e) {
+                    print('스크랩 실패 $e');
+                  }
+                },
               )
             )
           ],

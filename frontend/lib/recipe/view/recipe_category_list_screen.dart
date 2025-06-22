@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/common/model/string/cursor_pagination_string_model.dart';
 import 'package:frontend/recipe/component/recipe_list_component.dart';
-import 'package:frontend/recipe/model/recipe_category_pagination_params_model.dart';
 import 'package:frontend/recipe/model/recipe_model.dart';
 import 'package:frontend/recipe/provider/recipe_provider.dart';
 
@@ -19,7 +18,6 @@ class RecipeCategoryListScreen extends ConsumerStatefulWidget {
 
 class _RecipeCategoryListScreenState extends ConsumerState<RecipeCategoryListScreen> {
   final ScrollController controller = ScrollController();
-  // late final CategoryPaginationIntParams param;
 
   @override
   void initState() {
@@ -34,11 +32,7 @@ class _RecipeCategoryListScreenState extends ConsumerState<RecipeCategoryListScr
   void _scrollListener() {
     if (controller.position.pixels >= controller.position.maxScrollExtent - 300) {
       final notifier = ref.read(categoryPaginationProvider(widget.categoryName).notifier);
-      final state = ref.read(categoryPaginationProvider(widget.categoryName));
-
-      if (state is CursorStringPagination && state.meta.hasMore) {
-        notifier.paginate(fetchMore: true);
-      }
+      notifier.paginate(fetchMore: true); // 내부에서 isLoading 처리됨
     }
   }
 
