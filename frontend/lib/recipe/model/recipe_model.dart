@@ -37,7 +37,7 @@ class RecipeModel extends IModelWithIntId {
           .toList(),
       description: json['description'] ?? '',
       review: json['review'] ?? '',
-      time: json['time']?.toString() ?? 'unknown',
+      time: json['time']?.toString() == 'NaN' ? '-' : json['time']?.toString() ?? '-',
       difficulty: json['difficulty'] ?? '',
       portion: json['portion'] ?? '',
       method: json['method'] ?? '',
