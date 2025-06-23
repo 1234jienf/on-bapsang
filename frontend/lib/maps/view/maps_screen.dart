@@ -154,7 +154,6 @@ class _MapScreenState extends State<MapScreen> {
                     },
                   ),
 
-                  // 중앙 마커 (핀)
                   const Center(
                     child: Icon(Icons.location_on, color: Colors.red, size: 40),
                   ),

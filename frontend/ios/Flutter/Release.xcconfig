@@ -1,3 +1,3 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
-GOOGLE_MAPS_API_KEY=AIzaSyCAbcOKEruj0JbedDbn3DZrvqMnfTb9hC0
+GOOGLE_MAPS_API_KEY=AIzaSyCC2Ch5fP9tEJsoOChkA0tjpbNXpzOggF0
