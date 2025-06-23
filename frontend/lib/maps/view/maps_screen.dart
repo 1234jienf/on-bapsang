@@ -81,6 +81,7 @@ class _MapScreenState extends State<MapScreen> {
     } else {
       setState(() {
         isLoading = false;
+
       });
     }
   }
