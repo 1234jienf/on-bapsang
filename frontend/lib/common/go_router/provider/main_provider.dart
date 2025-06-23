@@ -9,7 +9,6 @@ import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/community/view/community_root_screen.dart';
 import 'package:frontend/home/view/home_alarm_screen.dart';
 import 'package:frontend/home/view/home_menu_screen.dart';
-import 'package:frontend/maps/view/maps_root_screen.dart';
 import 'package:frontend/mypage/view/mypage_root_screen.dart';
 import 'package:frontend/recipe/view/recipe_category_list_screen.dart';
 import 'package:frontend/recipe/view/recipe_root_screen.dart';
@@ -24,6 +23,7 @@ import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../../home/view/home_page_screen.dart';
+import '../../../maps/view/maps_screen.dart';
 import '../../../search/search_detail/view/search_detail_root_screen.dart';
 import '../../../search/view/search_main_screen.dart';
 import '../../../shopping/view/shopping_cart_screen.dart';
@@ -118,7 +118,15 @@ class MainProvider extends ChangeNotifier {
             GoRoute(
               path: 'maps',
               name: 'maps',
-              builder: (_, state) => const MapsRootScreen(),
+              builder: (_, state) {
+                final locationData = state.extra as Map<String, dynamic>?;
+
+                return MapScreen(
+                  lat: locationData?['lat'] ?? 0.0,
+                  lng: locationData?['lng'] ?? 0.0,
+                  isFirstLoading: false,
+                );
+              },
             ),
             GoRoute(
               path: 'mypage',
