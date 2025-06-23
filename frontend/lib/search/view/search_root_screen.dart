@@ -48,7 +48,7 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
       appBar: SearchAppBar(),
       child: Padding(
         // 전체 패딩 갭
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Column(
           children: [
             _menuBar(state),
@@ -109,6 +109,6 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
   }
 
   Widget _selected(int selectedIndex) {
-    return selectedIndex == 0 ? SizedBox() : selectedIndex == 1 ? SearchRecipeFilterBar() : SearchRecipeFilterHeader(bottomFilter: SearchBottomFilter());
+    return selectedIndex == 0 ? SearchRecipeFilterBar() : selectedIndex == 1 ? SearchRecipeFilterBar() : SearchRecipeFilterHeader(bottomFilter: SearchBottomFilter());
   }
 }

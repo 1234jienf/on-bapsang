@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/search/view/search_root_screen.dart';
+import 'package:go_router/go_router.dart';
 
 import '../component/search_app_bar.dart';
 import '../provider/search_keyword_provider.dart';
@@ -41,14 +43,14 @@ class SearchMainScreen extends ConsumerWidget {
         child: Column(
           children: [
             _searchTitle(title: '최근 검색어'),
-            _recentSearch(items: state.recent!),
+            _recentSearch(items: state.recent!, context: context),
             _searchTitle(title: '인기 검색어'),
             _famousSearch(items: state.popular!),
             _searchTitle(
               title: '온밥 추천 검색어',
               icon: Icon(Icons.info_outline_rounded, size: 18.0),
             ),
-            _recommandSearch(items: items),
+            _recommandSearch(items: items, context: context),
             // 배너
             Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0),
@@ -61,7 +63,7 @@ class SearchMainScreen extends ConsumerWidget {
   }
 }
 
-Padding _recommandSearch({required List<String> items}) {
+Padding _recommandSearch({required List<String> items, required BuildContext context}) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 10.0),
     child: SizedBox(
@@ -74,17 +76,22 @@ Padding _recommandSearch({required List<String> items}) {
         children: List.generate(8, (index) {
           return ConstrainedBox(
             constraints: BoxConstraints(minWidth: 66, maxWidth: 80),
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              decoration: BoxDecoration(
-                border: Border.all(width: 1.0, color: Colors.grey),
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              child: Center(
-                child: Text(
-                  items[index],
-                  style: TextStyle(fontSize: 13.0),
-                  overflow: TextOverflow.ellipsis,
+            child: GestureDetector(
+              onTap: () {
+                context.pushNamed(SearchRootScreen.routeName, extra: items[index]);
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1.0, color: Colors.grey),
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                child: Center(
+                  child: Text(
+                    items[index],
+                    style: TextStyle(fontSize: 13.0),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ),
@@ -132,7 +139,7 @@ Padding _famousSearch({required List<String> items}) {
   return Padding(
     padding: const EdgeInsets.only(top: 6.0, bottom: 26.0),
     child: Column(
-      children: List.generate((items.length / 2).ceil(), (index) { // ✅ 수정!
+      children: List.generate((items.length / 2).ceil(), (index) {
         final leftIndex = index * 2;
         final rightIndex = leftIndex + 1;
 
@@ -164,7 +171,7 @@ Padding _famousSearch({required List<String> items}) {
   );
 }
 
-Padding _recentSearch({required List<String> items}) {
+Padding _recentSearch({required List<String> items, required BuildContext context}) {
   return Padding(
     padding: const EdgeInsets.only(top: 13.0, bottom: 26.0),
     child: SizedBox(
@@ -175,19 +182,24 @@ Padding _recentSearch({required List<String> items}) {
         itemBuilder: (_, index) {
           return Padding(
             padding: const EdgeInsets.only(right: 10.0),
-            child: Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              decoration: BoxDecoration(
-                border: Border.all(width: 1.0, color: Colors.grey),
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              child: Row(
-                children: [
-                  Text(items[index], style: TextStyle(fontSize: 13.0)),
-                  const SizedBox(width: 5.0),
-                  Icon(Icons.close_outlined, size: 16.0),
-                ],
+            child: GestureDetector(
+              onTap: () {
+                context.pushNamed(SearchRootScreen.routeName, extra: items[index]);
+              },
+              child: Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1.0, color: Colors.grey),
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                child: Row(
+                  children: [
+                    Text(items[index], style: TextStyle(fontSize: 13.0)),
+                    const SizedBox(width: 5.0),
+                    Icon(Icons.close_outlined, size: 16.0),
+                  ],
+                ),
               ),
             ),
           );
