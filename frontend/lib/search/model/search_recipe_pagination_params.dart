@@ -5,10 +5,10 @@ part 'search_recipe_pagination_params.g.dart';
 
 @JsonSerializable()
 class SearchRecipePaginationParams extends PaginationStringParams {
-  final String name;
+  final String food_name;
 
   SearchRecipePaginationParams({
-    required this.name,
+    required this.food_name,
     super.page,
     super.size,
   });
@@ -17,10 +17,10 @@ class SearchRecipePaginationParams extends PaginationStringParams {
   SearchRecipePaginationParams copyWith({
     int? page,
     int? size,
-    String? name,
+    String? food_name,
   }) {
     return SearchRecipePaginationParams(
-      name: name ?? this.name,
+      food_name: food_name ?? this.food_name,
       page: page ?? this.page,
       size: size ?? this.size,
     );

@@ -4,7 +4,6 @@ import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/search/search_community/view/search_community_screen.dart';
 import 'package:frontend/search/search_product/view/search_product_screen.dart';
 import 'package:frontend/search/search_recipe/view/search_recipe_screen.dart';
-import 'package:frontend/search/serach_merged/view/search_merged_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../common/search_recipe_filter_header.dart';
@@ -25,7 +24,7 @@ class SearchRootScreen extends ConsumerStatefulWidget {
 class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
   late PageController _pageController = PageController();
   final double menuGap = 10.0;
-  final List<String> tabs = ['통합','레시피', '상품', '커뮤니티'];
+  final List<String> tabs = ['레시피', '상품', '커뮤니티'];
 
   @override
   void initState() {
@@ -58,7 +57,6 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
                 controller: _pageController,
                 onPageChanged: (index) {ref.read(searchTabIndexProvider.notifier).setIndex(index);},
                 children: [
-                  const SearchMergedScreen(),
                   SearchRecipeScreen(name : name),
                   SearchProductScreen(),
                   SearchCommunityScreen(name : name),

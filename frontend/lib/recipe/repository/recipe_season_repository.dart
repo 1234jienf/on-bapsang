@@ -20,6 +20,6 @@ abstract class RecipeSeasonRepository {
   @GET('')
   @Headers({'accessToken': 'true'})
   Future<List<RecipeSeasonIngredientModel>> getSeasonIngredients(
-      @Query('month') int month,
-      );
+    @Query('month') int month,
+  );
 }

@@ -27,8 +27,18 @@ class CursorStringPagination<T> extends CursorStringPaginationBase {
     return CursorStringPagination<T>(
         meta: meta ?? this.meta, data: data ?? this.data);
   }
-  
-  factory CursorStringPagination.fromJson(Map<String, dynamic> json, T Function(Object? json) fromJsonT) => _$CursorStringPaginationFromJson(json, fromJsonT);
+
+  factory CursorStringPagination.fromJson(
+      Map<String, dynamic> json,
+      T Function(Object? json) fromJsonT,
+      ) {
+    final rawData = json['data'] ?? json['recommended_dishes'];
+
+    return CursorStringPagination<T>(
+      meta: CursorStringPaginationMeta.fromJson(json['meta'] as Map<String, dynamic>),
+      data: (rawData as List<dynamic>).map((e) => fromJsonT(e)).toList(),
+    );
+  }
 }
 
 @JsonSerializable()

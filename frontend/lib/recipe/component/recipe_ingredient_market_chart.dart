@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:frontend/common/const/colors.dart';
 import 'package:frontend/recipe/model/recipe_price_model.dart';
 
 class RecipeIngredientMarketChart extends StatefulWidget {
@@ -34,7 +35,8 @@ class _RecipeIngredientMarketChartState extends State<RecipeIngredientMarketChar
       height: 300,
       child: BarChart(
         BarChartData(
-          gridData: FlGridData(show: true),
+          gridData: FlGridData(show: false),
+          backgroundColor: Colors.white,
           titlesData: FlTitlesData(
             bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
@@ -86,8 +88,9 @@ class _RecipeIngredientMarketChartState extends State<RecipeIngredientMarketChar
               barRods: [
                 BarChartRodData(
                   toY: entry.value.averagePrice,
-                  color: Colors.blue,
+                  color: primaryColor,
                   width: 20,
+                  borderRadius: BorderRadius.zero
                 ),
               ],
             );

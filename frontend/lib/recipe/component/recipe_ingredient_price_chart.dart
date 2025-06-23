@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:frontend/common/const/colors.dart';
 import 'package:frontend/recipe/model/recipe_price_model.dart';
 
 class RecipeIngredientPriceChart extends StatefulWidget {
@@ -38,7 +39,8 @@ class _RecipeIngredientPriceChartState extends State<RecipeIngredientPriceChart>
       height: 300,
       child: LineChart(
         LineChartData(
-          gridData: FlGridData(show:true),
+          gridData: FlGridData(show:false),
+          backgroundColor: Colors.white,
           titlesData: FlTitlesData(
             bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
@@ -96,7 +98,7 @@ class _RecipeIngredientPriceChartState extends State<RecipeIngredientPriceChart>
                 return FlSpot(entry.key.toDouble(), entry.value.price);
               }).toList(),
               isCurved: false,
-              color: Colors.blue,
+              color: primaryColor,
               barWidth: 2,
               dotData: FlDotData(show: true),
             ),

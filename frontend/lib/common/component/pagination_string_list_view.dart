@@ -65,38 +65,23 @@ class _PaginationStringListViewState<T extends IModelWithStringId>
 
     // 에러 발생 상황
     if (state is CursorStringPaginationError) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              '검색된 레시피가 없습니다.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 40.0),
-            Text(
-              state.message,
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20.0),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10.0),
-            Text(
-              '비슷한 레시피를 추천해드릴까요?',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20.0),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            '검색된 레시피가 없습니다.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
+          ),
+        ],
       );
     }
 
     final cp = state as CursorStringPagination<T>;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: RefreshIndicator(
         onRefresh: () async {
           ref.read(widget.provider.notifier).paginate(fetchCount: widget.fetchCount);

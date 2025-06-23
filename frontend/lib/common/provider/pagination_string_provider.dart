@@ -44,7 +44,7 @@ class PaginationStringProvider<
   }
 
   Future<void> paginate({
-    int fetchCount = 10,
+    int fetchCount = 100,
     bool fetchMore = false,
     bool forceRefetch = false,
   }) async {
@@ -56,6 +56,7 @@ class PaginationStringProvider<
       ),
     );
   }
+
 
   _throttledPagination(_PaginationInfo info) async {
     final fetchCount = info.fetchCount;
@@ -84,7 +85,7 @@ class PaginationStringProvider<
       dynamic paginationParams;
 
       if (name != null) {
-        paginationParams = SearchRecipePaginationParams(name: name!, page: 0, size: fetchCount);
+        paginationParams = SearchRecipePaginationParams(food_name: name!, page: 0, size: fetchCount);
       }
 
       // fetchMore
@@ -101,7 +102,7 @@ class PaginationStringProvider<
           if (name != null) {
             paginationParams = SearchRecipePaginationParams(
               page: pState.meta.currentPage + 1,
-              name: name!,
+              food_name: name!,
             );
           } else {
             paginationParams = PaginationStringParams(

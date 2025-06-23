@@ -1,77 +1,126 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/search/component/search_recipe_filter_type.dart';
 
+import '../../common/const/colors.dart';
 import '../common/search_bottom_filter.dart';
 import '../common/search_recipe_filter_header.dart';
 import '../common/search_top_filter.dart';
 import '../search_recipe/component/search_recipe_icon.dart';
 import '../search_recipe/component/search_recipe_options.dart';
+import '../search_recipe/provider/search_filter_tab_index_provider.dart';
 
-class SearchRecipeFilterBar extends StatelessWidget {
+class SearchRecipeFilterBar extends ConsumerStatefulWidget {
   const SearchRecipeFilterBar({super.key});
 
   @override
+  ConsumerState<SearchRecipeFilterBar> createState() => _ConsumerSearchRecipeFilterBarState();
+}
+
+class _ConsumerSearchRecipeFilterBarState extends ConsumerState<SearchRecipeFilterBar> {
+  final List<String> tabs = ['종류', '조리법', '필수 식재료'];
+  late PageController _pageController = PageController();
+  final double menuGap = 10.0;
+
+  @override
+  void initState() {
+    super.initState();
+    final initialIndex = ref.read(searchFilterTabIndexProvider);
+    _pageController = PageController(initialPage: initialIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = ref.watch(searchFilterTabIndexProvider);
+
     return SearchRecipeFilterHeader(
       topFilter: SearchTopFilter(
-        recipeTypeIcon: SearchRecipeIcon(title: '종류'),
+        recipeTypeIcon: SearchRecipeIcon(title: '필터'),
         recipeTypeOptions: SearchRecipeOptions(
-          title: '종류',
-          options: _typeOptions(),
-        ),
-        recipeRecipeIcon: SearchRecipeIcon(title: '조리법'),
-        recipeRecipeOptions: SearchRecipeOptions(
-          title: '조리법',
-          options: _recipeOptions(),
-        ),
-        recipeIngredientsIcon: SearchRecipeIcon(title: '필수 식재료'),
-        recipeIngredientsOptions: SearchRecipeOptions(
-          title: '필수 식재료',
-          options: _ingredientOptions(),
+          title: '필터',
+          options: _typeOptions(state),
         ),
       ),
       bottomFilter: SearchBottomFilter(),
     );
   }
 
-  Widget _ingredientOptions() {
-    return Center(child: Text('식재료'));
-  }
-
-  Widget _typeOptions() {
-    return Center(child: Text('종류'));
-  }
-
-  Widget _recipeOptions() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: SizedBox(
-        height: 100,
-        child: Wrap(
-          direction: Axis.horizontal,
-          alignment: WrapAlignment.start,
-          spacing: 10.0,
-          runSpacing: 10.0,
-          children: List.generate(8, (index) {
-            return ConstrainedBox(
-              constraints: BoxConstraints(minWidth: 66, maxWidth: 80),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1.0, color: Colors.grey),
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                child: Center(
-                  child: Text(
-                    '끓이기',
-                    style: TextStyle(fontSize: 14.0),
-                    overflow: TextOverflow.ellipsis,
+  Widget _typeOptions(int state) {
+    return Center(
+      child: Column(
+        children: [
+          _menuBar(),
+          SizedBox(
+            height: 300,
+            child: PageView(
+              controller: _pageController,
+              onPageChanged: (index) {ref.read(searchFilterTabIndexProvider.notifier).setIndex(index);},
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: SizedBox(
+                    height: 300,
+                    child: SearchRecipeFilterType(),
                   ),
                 ),
-              ),
-            );
-          }),
-        ),
+                Center(child: Text('기능 추가 예정입니다'),),
+                Center(child: Text('기능 추가 예정입니다'),),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
+
+  Widget _menuBar() {
+    return Consumer(
+      builder: (context, ref, child) {
+        final selectedIndex = ref.watch(searchFilterTabIndexProvider);
+
+        return Padding(
+          padding: const EdgeInsets.only(top: 20.0, bottom: 6.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: List.generate(tabs.length, (index) {
+                  final bool isSelected = index == selectedIndex;
+
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: menuGap),
+                    child: GestureDetector(
+                      onTap: () {
+                        _pageController.animateToPage(
+                          index,
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      },
+                      child: Text(
+                        tabs[index],
+                        style: TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w600,
+                          color: isSelected ? Colors.black : Colors.grey,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+              const Divider(thickness: 0.5, color: gray600),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 }

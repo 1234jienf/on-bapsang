@@ -84,6 +84,7 @@ flutter:
     - asset/img/
     - asset/config/
     - lib/recipe/data/ingredient_market_mapping.json
+    - lib/recipe/data/dummy_ingredient_prices.json
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -9,7 +9,11 @@ import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/community/view/community_root_screen.dart';
 import 'package:frontend/home/view/home_alarm_screen.dart';
 import 'package:frontend/home/view/home_menu_screen.dart';
+import 'package:frontend/mypage/view/mypage_community_screen.dart';
+import 'package:frontend/mypage/view/mypage_fix_info_screen.dart';
 import 'package:frontend/mypage/view/mypage_root_screen.dart';
+import 'package:frontend/mypage/view/mypage_scrap_community_screen.dart';
+import 'package:frontend/mypage/view/mypage_scrap_recipe_screen.dart';
 import 'package:frontend/recipe/view/recipe_category_list_screen.dart';
 import 'package:frontend/recipe/view/recipe_root_screen.dart';
 import 'package:frontend/recipe/view/recipe_detail_screen.dart';
@@ -132,6 +136,28 @@ class MainProvider extends ChangeNotifier {
               path: 'mypage',
               name: 'MypageRootScreen',
               builder: (_, state) => const MypageRootScreen(),
+              routes: [
+                GoRoute(
+                  path: 'scrap/recipe',
+                  name: 'MypageScrapRecipeScreen',
+                  builder: (_, state) => const MypageScrapRecipeScreen()
+                ),
+                GoRoute(
+                  path: 'scrap/community',
+                  name: 'MypageScrapCommunityScreen',
+                  builder: (_, state) => const MypageScrapCommunityScreen()
+                ),
+                GoRoute(
+                  path: 'community',
+                  name: 'MypageCommunityScreen',
+                  builder: (_, state) => const MypageCommunityScreen()
+                ),
+                GoRoute(
+                  path: 'fix',
+                  name: 'MypageFixInfoScreen',
+                  builder: (_, state) => const MypageFixInfoScreen()
+                ),
+              ]
             ),
           ],
         ),

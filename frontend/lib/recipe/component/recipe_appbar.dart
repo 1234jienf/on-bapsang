@@ -7,7 +7,8 @@ import 'package:go_router/go_router.dart';
 
 class RecipeAppbar extends StatelessWidget implements PreferredSizeWidget {
   final bool isImply;
-  const RecipeAppbar({super.key, required this.isImply});
+  final String searchMessage;
+  const RecipeAppbar({super.key, required this.isImply, required this.searchMessage});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class RecipeAppbar extends StatelessWidget implements PreferredSizeWidget {
               SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  '레시피를 검색해보세요!',
+                  searchMessage,
                   style: TextStyle(color: Colors.grey, fontSize: 15),
                 ),
               ),

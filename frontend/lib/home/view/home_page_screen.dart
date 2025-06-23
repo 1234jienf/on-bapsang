@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/component/single_int_grid_view.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/home/component/category_icons.dart';
 import 'package:frontend/home/provider/home_screen_community_provider.dart';
-import 'package:frontend/search/view/search_main_screen.dart';
+import 'package:frontend/recipe/component/recipe_appbar.dart';
+import 'package:frontend/recipe/component/recipe_popular_list.dart';
+import 'package:frontend/recipe/component/recipe_recommend_list.dart';
+import 'package:frontend/recipe/component/recipe_season_ingredient_main_component.dart';
+import 'package:frontend/recipe/view/recipe_season_list_screen.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../common/appbar/home_appbar.dart';
 import '../../community/component/community_card.dart';
 import '../../community/view/community_detail_screen.dart';
-import '../component/recipe_card.dart';
-import '../component/recipe_icon.dart';
 
 class HomePageScreen extends ConsumerStatefulWidget {
   const HomePageScreen({super.key});
@@ -43,7 +45,8 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
     final double sideGap = 5.0;
 
     return DefaultLayout(
-      appBar: HomeAppbar(isImply: false),
+      appBar: RecipeAppbar(isImply: false, searchMessage: '온밥 통합검색',),
+      // appBar: HomeAppbar(isImply: false),
       backgroundColor: Colors.white,
       child: CustomScrollView(
         controller: controller,
@@ -53,47 +56,47 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 const SizedBox(height: 10.0),
-                GestureDetector(
-                  onTap: () {
-                    context.pushNamed(SearchMainScreen.routeName);
-                  },
-                  child: InkWell(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: sideGap),
-                      child: Container(
-                        width: 360,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFEEEEEE),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              Icon(Icons.search, size: 20.0),
-                              const SizedBox(width: 5.0),
-                              Text(
-                                '검색',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: componentGap),
+                // GestureDetector(
+                //   onTap: () {
+                //     context.pushNamed(SearchMainScreen.routeName);
+                //   },
+                //   child: InkWell(
+                //     child: Padding(
+                //       padding: EdgeInsets.symmetric(horizontal: sideGap),
+                //       child: Container(
+                //         width: 360,
+                //         height: 50,
+                //         decoration: BoxDecoration(
+                //           color: const Color(0xFFEEEEEE),
+                //         ),
+                //         child: Padding(
+                //           padding: const EdgeInsets.all(16.0),
+                //           child: Row(
+                //             children: [
+                //               Icon(Icons.search, size: 20.0),
+                //               const SizedBox(width: 5.0),
+                //               Text(
+                //                 '검색',
+                //                 style: TextStyle(
+                //                   fontWeight: FontWeight.w500,
+                //                   fontSize: 14.0,
+                //                 ),
+                //               ),
+                //             ],
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                // SizedBox(height: componentGap),
 
                 Image.asset('asset/img/home_AI_recipe_banner.png'),
 
                 SizedBox(height: componentGap),
 
                 // Recipe Icon
-                RecipeIcon(),
+                CategoryIcons(type: 'recipe'),
 
                 SizedBox(height: 50.0,),
 
@@ -104,21 +107,35 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                   sidePadding: sideGap,
                 ),
                 SizedBox(height: titleTextGap),
-                RecipeCard(count: 10),
+                RecipePopularList(),
                 SizedBox(height: 50.0,),
 
                 // 제철재료 레시피
-                titleWidget(
-                  title: '제철재료 레시피',
-                  fontSize: 16,
-                  sidePadding: sideGap,
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: sideGap),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '지금 꼭 먹어야 할 제철 레시피',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          context.pushNamed(
+                              RecipeSeasonListScreen.routeName
+                          );
+                        },
+                        child: Text('더보기 >')
+                      )
+                    ],
+                  ),
                 ),
+                RecipeSeasonIngredientMainComponent(),
                 SizedBox(height: titleTextGap),
               ]),
             ),
           ),
-
-          _seasonalRecipe(count: 10),
 
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -129,11 +146,11 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                 // 추천 레시피
                 titleWidget(
                   title: '추천 레시피',
-                  fontSize: 16,
+                  fontSize: 20,
                   sidePadding: sideGap,
                 ),
                 SizedBox(height: titleTextGap),
-                RecipeCard(count: 10),
+                RecipeRecommendList(),
                 SizedBox(height: 50.0,),
 
                 // 커뮤니티
@@ -179,7 +196,7 @@ Widget titleWidget({
           title,
           style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w800),
         ),
-        Text('더보기 >'),
+        // Text('더보기 >')
       ],
     ),
   );

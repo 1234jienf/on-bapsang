@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
-
+import 'package:frontend/common/model/int/simple_cursor_pagination_model.dart';
+import 'package:frontend/recipe/component/recipe_list_component.dart';
+import 'package:frontend/recipe/model/recipe_model.dart';
 import 'package:frontend/recipe/model/recipe_season_ingredient_model.dart';
+import 'package:frontend/recipe/provider/recipe_provider.dart';
 
-class RecipeSeasonDetailScreen extends StatefulWidget {
+class RecipeSeasonDetailScreen extends ConsumerStatefulWidget {
   final RecipeSeasonIngredientModel seasonIngredientInfo;
 
   const RecipeSeasonDetailScreen({super.key, required this.seasonIngredientInfo});
 
   @override
-  State<RecipeSeasonDetailScreen> createState() => _RecipeSeasonDetailScreenState();
+  ConsumerState<RecipeSeasonDetailScreen> createState() => _RecipeSeasonDetailScreenState();
 }
 
-class _RecipeSeasonDetailScreenState extends State<RecipeSeasonDetailScreen> {
+class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScreen> {
   final ScrollController controller = ScrollController();
 
   @override
@@ -27,10 +31,54 @@ class _RecipeSeasonDetailScreenState extends State<RecipeSeasonDetailScreen> {
     super.dispose();
   }
 
-  void listener() {}
+  void listener() {
+    final state = ref.read(
+      seasonIngredientRecipeProvider(widget.seasonIngredientInfo.prdlstNm),
+    );
+
+    if (controller.position.pixels >= controller.position.maxScrollExtent - 300) {
+      if (state is CursorSimplePagination<RecipeModel>) {
+        ref
+            .read(seasonIngredientRecipeProvider(widget.seasonIngredientInfo.prdlstNm).notifier)
+            .fetchMore();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    final state = ref.watch(
+      seasonIngredientRecipeProvider(widget.seasonIngredientInfo.prdlstNm),
+    );
+
+    List<Widget> recipeSection = [];
+
+    if (state is CursorSimplePaginationLoading) {
+      recipeSection.add(Center(child: CircularProgressIndicator()));
+    } else if (state is CursorSimplePaginationError) {
+      recipeSection.add(Text('에러: ${state.message}'));
+    } else if (state is CursorSimplePagination<RecipeModel>) {
+      final recipes = (state).data;
+      if (recipes.isEmpty) {
+        recipeSection.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 40.0),
+            child: Center(
+              child: Text(
+                '등록된 레시피가 없습니다!',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+        );
+      } else {
+        recipeSection.addAll(
+          recipes.map((recipe) => RecipeListComponent(recipeInfo: recipe)).toList(),
+        );
+      }
+    }
+
     return DefaultLayout(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -126,7 +174,8 @@ class _RecipeSeasonDetailScreenState extends State<RecipeSeasonDetailScreen> {
                   style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
                 ),
                 // 여기에 제철 레시피
-
+                ...recipeSection,
+                SizedBox(height: 50,)
               ])
             )
           )
@@ -135,4 +184,5 @@ class _RecipeSeasonDetailScreenState extends State<RecipeSeasonDetailScreen> {
     );
   }
 }
+
 
