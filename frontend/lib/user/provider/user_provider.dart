@@ -94,6 +94,7 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
     } catch (e) {
       state = UserModelError(message: '회원가입에 실패했습니다.');
       print(e.toString());
+      rethrow;
     }
   }
 }
