@@ -28,6 +28,7 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
       username: '',
       password: ''
   );
+  bool isLoading = false;
 
   void nextStep() {
     setState(() {
@@ -77,39 +78,75 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
   void updateStep4Data(File profileImage) async {
     setState(() {
       signupData.profileImage = profileImage;
+      isLoading = true;
     });
 
     // 회원가입
-    await ref.read(userProvider.notifier).signup(userInfo: signupData);
+    try {
+      await ref.read(userProvider.notifier).signup(userInfo: signupData);
+    } catch (e) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('회원가입 실패'),
+          content: const Text('회원가입에 실패했습니다. 다시 시도해주세요.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('확인'),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
 
   @override
   Widget build(BuildContext context) {
-    return DefaultLayout(
-      appBar: SignUpAppBar(),
-      child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: currentStep == 1
-              ? SignUpInfoScreen(
+    return Stack(
+      children: [
+        DefaultLayout(
+          appBar: SignUpAppBar(),
+          resizeToAvoidBottomInset: true,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: currentStep == 1
+                ? SignUpInfoScreen(
               onComplete: updateStep1Data,
-              initialData: signupData
-          )
-              : currentStep == 2
-              ? SignUpFoodPreferListScreen(
+              initialData: signupData,
+            )
+                : currentStep == 2
+                ? SignUpFoodPreferListScreen(
               onComplete: updateStep2Data,
-              initialData: signupData
-          )
-              : currentStep == 3
-              ? SignUpTasteDishPreferListScreen(
+              initialData: signupData,
+            )
+                : currentStep == 3
+                ? SignUpTasteDishPreferListScreen(
               onComplete: updateStep3Data,
-              initialData: signupData
-          )
-              : SignUpProfileImageScreen(
+              initialData: signupData,
+            )
+                : SignUpProfileImageScreen(
               onComplete: updateStep4Data,
-              initialData: signupData
-          )
-      ),
+              initialData: signupData,
+            ),
+          ),
+        ),
+        if (isLoading)
+          Container(
+            color: Colors.black.withOpacity(0.5),
+            child: const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+          ),
+      ],
     );
   }
 }

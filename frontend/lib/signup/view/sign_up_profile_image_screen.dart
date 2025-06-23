@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:frontend/signup/model/sign_up_request_model.dart';
 
-
 class SignUpProfileImageScreen extends StatefulWidget {
   final Function(File) onComplete;
   final SignupRequest? initialData;
@@ -20,18 +19,33 @@ class SignUpProfileImageScreen extends StatefulWidget {
 }
 
 class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
-  List<AssetPathEntity> albums = <AssetPathEntity>[];
-  List<AssetEntity> imageList = <AssetEntity>[];
+  List<AssetPathEntity> albums = [];
+  List<AssetEntity> imageList = [];
   AssetEntity? selectedImage;
+
+  final ScrollController _scrollController = ScrollController();
+
+  int currentPage = 0;
+  bool isLoading = false;
+  bool hasMore = true;
+  int pageSize = 30;
 
   @override
   void initState() {
     super.initState();
     _loadPhotos();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        _loadMorePhotos();
+      }
+    });
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     imageList.clear();
     albums.clear();
     selectedImage = null;
@@ -60,8 +74,36 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
 
   Future<void> _pagingPhotos() async {
     if (albums.isEmpty) return;
-    imageList = await albums.first.getAssetListPaged(page: 0, size: 30);
+
+    currentPage = 0;
+    isLoading = false;
+    hasMore = true;
+
+    final firstPage =
+    await albums.first.getAssetListPaged(page: currentPage, size: pageSize);
+
+    imageList = firstPage;
     selectedImage = imageList.isNotEmpty ? imageList.first : null;
+
+    setState(() {});
+  }
+
+  Future<void> _loadMorePhotos() async {
+    if (isLoading || !hasMore || albums.isEmpty) return;
+
+    isLoading = true;
+    currentPage++;
+
+    final nextPage =
+    await albums.first.getAssetListPaged(page: currentPage, size: pageSize);
+
+    if (nextPage.isEmpty) {
+      hasMore = false;
+    } else {
+      imageList.addAll(nextPage);
+    }
+
+    isLoading = false;
     setState(() {});
   }
 
@@ -74,60 +116,96 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    return Column(
-      children: [
-        const SizedBox(height: 16.0),
-        const Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            '프로필 이미지',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-          ),
-        ),
-        const SizedBox(height: 15.0),
-        _selectedImagePreview(width),
-        const SizedBox(height: 15.0),
-        Expanded(child: _imageGrid()),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 25.0),
-          child: GestureDetector(
-            onTap: () async {
-              if (selectedImage != null) {
-                final file = await selectedImage!.file;
-
-                if (file == null || !(await file.exists())) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('이미지 파일을 불러올 수 없습니다.')),
-                  );
-                  return;
-                }
-
-                widget.onComplete(file);
-
-              }
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                color: Colors.black,
-              ),
-              width: width,
-              height: 60,
-              child: const Center(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              const Align(
+                alignment: Alignment.centerLeft,
                 child: Text(
-                  '회원가입',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18.0,
+                  '프로필 이미지',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                ),
+              ),
+              const SizedBox(height: 15),
+              _selectedImagePreview(width),
+              const SizedBox(height: 15),
+              Expanded(
+                child: GridView.builder(
+                  controller: _scrollController,
+                  itemCount: imageList.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 3,
+                    crossAxisSpacing: 3,
+                    childAspectRatio: 1,
+                  ),
+                  itemBuilder: (_, index) => GridImageWidget(
+                    asset: imageList[index],
+                    selectedAsset: selectedImage,
+                    onTap: () => _selectImage(imageList[index]),
                   ),
                 ),
               ),
-            ),
+              const SizedBox(height: 16),
+              GestureDetector(
+                onTap: () async {
+                  if (selectedImage != null) {
+                    final file = await selectedImage!.file;
+
+                    if (file == null || !(await file.exists())) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('이미지 파일을 불러올 수 없습니다.')),
+                      );
+                      return;
+                    }
+
+                    final fileSizeInBytes = await file.length();
+                    final fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+                    if (fileSizeInMB > 15.0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              '이미지 용량이 ${fileSizeInMB.toStringAsFixed(2)}MB입니다. 15MB 이하로 줄여주세요.'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    widget.onComplete(file);
+                  }
+                },
+                child: Container(
+                  width: width,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.black,
+                  ),
+                  child: const Center(
+                    child: Text(
+                      '회원가입',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 18.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: bottomInset > 0 ? bottomInset : 32),
+            ],
           ),
-        )
-      ],
+        ),
+      ),
     );
   }
 
@@ -139,24 +217,8 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
         color: Colors.grey,
         child: selectedImage == null
             ? const Center(child: Text('이미지를 선택하세요'))
-            : SelectedImageWidget(asset: selectedImage!, size: (width * 0.5).round()),
-      ),
-    );
-  }
-
-  Widget _imageGrid() {
-    return GridView.builder(
-      itemCount: imageList.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        mainAxisSpacing: 3,
-        crossAxisSpacing: 3,
-        childAspectRatio: 1,
-      ),
-      itemBuilder: (_, index) => GridImageWidget(
-        asset: imageList[index],
-        selectedAsset: selectedImage,
-        onTap: () => _selectImage(imageList[index]),
+            : SelectedImageWidget(
+            asset: selectedImage!, size: (width * 0.5).round()),
       ),
     );
   }
@@ -175,7 +237,7 @@ class SelectedImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Uint8List?>(
-      future: asset.thumbnailDataWithSize(ThumbnailSize(size ~/ 2, size ~/ 2)),
+      future: asset.thumbnailDataWithSize(ThumbnailSize(size, size)),
       builder: (_, snapshot) {
         if (snapshot.hasData && snapshot.data != null) {
           return Image.memory(snapshot.data!, fit: BoxFit.cover, gaplessPlayback: true);
@@ -227,7 +289,8 @@ class _GridImageWidgetState extends State<GridImageWidget> {
             cachedImage = snapshot.data;
             return Opacity(
               opacity: widget.asset == widget.selectedAsset ? 0.4 : 1,
-              child: Image.memory(snapshot.data!, fit: BoxFit.cover, gaplessPlayback: true),
+              child: Image.memory(snapshot.data!,
+                  fit: BoxFit.cover, gaplessPlayback: true),
             );
           } else {
             return Container(color: Colors.grey[300]);
