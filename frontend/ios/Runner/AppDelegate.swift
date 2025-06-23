@@ -20,7 +20,7 @@ import GoogleMaps
 
     // MethodChannel 설정
         let controller = window?.rootViewController as! FlutterViewController
-        let configChannel = FlutterMethodChannel(name: "com.example.frontend/config",
+        let configChannel = FlutterMethodChannel(name: "com.bapful.onbapsang/config",
                                                binaryMessenger: controller.binaryMessenger)
 
         configChannel.setMethodCallHandler { (call: FlutterMethodCall, result: @escaping FlutterResult) in

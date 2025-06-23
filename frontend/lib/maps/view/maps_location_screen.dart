@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/maps/model/maps_auto_complete_model.dart';
 import 'package:frontend/maps/provider/maps_api_service_provider.dart';
+import 'package:frontend/maps/view/maps_root_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../settings/location_permission_handler.dart';
@@ -22,6 +23,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(apiKey);
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,

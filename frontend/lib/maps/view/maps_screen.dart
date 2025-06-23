@@ -207,7 +207,7 @@ class _MapScreenState extends State<MapScreen> {
 }
 
 class Config {
-  static const platform = MethodChannel('com.example.frontend/config');
+  static const platform = MethodChannel('com.bapful.onbapsang/config');
 
   static Future<String> getGoogleMapsApiKey() async {
     try {
