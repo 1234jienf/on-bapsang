@@ -5,6 +5,15 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+import java.util.Properties
+import java.io.FileInputStream
+
+val dotenv = Properties()
+val envFile = file("../../assets/config/.env")
+if (envFile.exists()) {
+    dotenv.load(FileInputStream(envFile))
+}
+
 android {
     namespace = "com.example.frontend"
     compileSdk = flutter.compileSdkVersion
@@ -13,6 +22,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        buildConfig = true;
     }
 
     kotlinOptions {
@@ -28,6 +41,12 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // BuildConfig에 추가 (네이티브 코드에서 사용)
+        buildConfigField("String", "GOOGLE_MAPS_API_KEY", "\"${dotenv.getProperty("GOOGLE_MAPS_API_KEY", "")}\"")
+
+        // 매니페스트에서 사용할 수 있도록 resValue로도 추가
+        resValue("string", "google_maps_api_key", dotenv.getProperty("GOOGLE_MAPS_API_KEY", ""))
     }
 
     buildTypes {

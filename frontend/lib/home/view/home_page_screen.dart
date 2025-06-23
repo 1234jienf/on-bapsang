@@ -9,13 +9,10 @@ import 'package:frontend/recipe/component/recipe_popular_list.dart';
 import 'package:frontend/recipe/component/recipe_recommend_list.dart';
 import 'package:frontend/recipe/component/recipe_season_ingredient_main_component.dart';
 import 'package:frontend/recipe/view/recipe_season_list_screen.dart';
-import 'package:frontend/search/view/search_main_screen.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../common/appbar/home_appbar.dart';
 import '../../community/component/community_card.dart';
 import '../../community/view/community_detail_screen.dart';
-import '../component/recipe_icon.dart';
 
 class HomePageScreen extends ConsumerStatefulWidget {
   const HomePageScreen({super.key});
