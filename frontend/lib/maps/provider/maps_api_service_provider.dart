@@ -21,6 +21,8 @@ class MapsApiServiceProvider {
   Future<MapsAutoCompleteModel> autoComplete(String placeName, String apiKey) async {
     final Uri url = Uri.parse('https://maps.googleapis.com/maps/api/place/autocomplete/json?key=$apiKey&input=$placeName');
     final response = await http.get(url);
+    print(response.statusCode);
+    print(response.body);
 
     if (response.statusCode == 200) {
       return MapsAutoCompleteModel.fromJson(jsonDecode(response.body));
