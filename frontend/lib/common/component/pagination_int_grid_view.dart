@@ -71,7 +71,7 @@ class _PaginationIntGridViewState<T extends IModelWithIntId> extends ConsumerSta
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: RefreshIndicator(
         onRefresh: () async {
           ref.read(widget.provider.notifier).paginate(forceRefetch: true);
@@ -89,7 +89,6 @@ class _PaginationIntGridViewState<T extends IModelWithIntId> extends ConsumerSta
             if (index == cp.data.content.length) {
               return Center(child: CircularProgressIndicator());
             }
-
             final item = cp.data.content[index];
             return widget.itemBuilder(context, index, item);
           },

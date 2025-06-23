@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../provider/search_keyword_remian_provider.dart';
 import '../view/search_root_screen.dart';
 
-class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
+class SearchAppBar extends ConsumerStatefulWidget implements PreferredSizeWidget {
   final String? hintText;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
@@ -15,15 +17,42 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
+  ConsumerState<SearchAppBar> createState() => _SearchAppBarState();
+
+  @override
   Size get preferredSize => const Size.fromHeight(48.0);
+}
+
+class _SearchAppBarState extends ConsumerState<SearchAppBar> {
+  final focusNode = FocusNode();
+  late TextEditingController searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    searchController = widget.controller ?? TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final keyword = ref.watch(searchKeywordRemainProvider);
+
+    final isFocused = focusNode.hasFocus;
+    final hint = isFocused
+        ? '아무거나 검색해 보세요!'
+        : (keyword.isEmpty ? '아무거나 검색해 보세요!' : keyword);
+
     return AppBar(
-      leadingWidth: 55,
-      automaticallyImplyLeading: true,
       backgroundColor: Colors.white,
       elevation: 0,
+      automaticallyImplyLeading: true,
+      leadingWidth: 55,
       titleSpacing: 0,
       title: Container(
         margin: const EdgeInsets.only(right: 12.0),
@@ -34,22 +63,29 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
           borderRadius: BorderRadius.circular(8.0),
         ),
         alignment: Alignment.center,
-        child: TextField(
-          decoration: InputDecoration(
-            hintText: '레시피를 검색해주세요',
-
-            hintStyle: TextStyle(fontSize: 14.0),
-            filled: true,
-            isCollapsed: true,
-            fillColor: Colors.grey[100],
-            border: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Focus(
+          onFocusChange: (_) => setState(() {}),
+          child: TextField(
+            focusNode: focusNode,
+            controller: searchController,
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: TextStyle(fontSize: 15.0),
+              filled: true,
+              isCollapsed: true,
+              fillColor: Colors.grey[100],
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            ),
+            onSubmitted: (value) {
+              if (value.trim().isEmpty) return;
+              ref.read(searchKeywordRemainProvider.notifier).setKeyword(value);
+              context.pushNamed(SearchRootScreen.routeName, extra: value);
+              searchController.clear();
+            },
           ),
-          onSubmitted: (value) {
-            context.pushNamed(SearchRootScreen.routeName, extra: value);
-          },
         ),
       ),
     );

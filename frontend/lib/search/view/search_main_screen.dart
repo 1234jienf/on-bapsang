@@ -1,19 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/search/provider/search_keyword_remian_provider.dart';
 import 'package:frontend/search/view/search_root_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../component/search_app_bar.dart';
 import '../provider/search_keyword_provider.dart';
 
-class SearchMainScreen extends ConsumerWidget {
+class SearchMainScreen extends ConsumerStatefulWidget {
   static String get routeName => 'SearchMainScreen';
 
   const SearchMainScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SearchMainScreen> createState() => _ConsumerSearchMainScreenState();
+}
+
+class _ConsumerSearchMainScreenState extends ConsumerState<SearchMainScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.read(searchKeywordRemainProvider.notifier).setKeyword("");
+    });
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(searchKeywordProvider);
 
     final items = [
@@ -29,12 +45,14 @@ class SearchMainScreen extends ConsumerWidget {
       '갈비탕',
     ];
 
+
     if (state.popular == null || state.recent == null) {
       return DefaultLayout(
         appBar: SearchAppBar(hintText: '레시피를 검색해주세요'),
         child: Center(child: CircularProgressIndicator()),
       );
     }
+
 
     return DefaultLayout(
       appBar: SearchAppBar(hintText: '레시피를 검색해주세요'),
@@ -43,14 +61,14 @@ class SearchMainScreen extends ConsumerWidget {
         child: Column(
           children: [
             _searchTitle(title: '최근 검색어'),
-            _recentSearch(items: state.recent!, context: context),
+            _recentSearch(items: state.recent!, context: context, ref : ref),
             _searchTitle(title: '인기 검색어'),
-            _famousSearch(items: state.popular!),
+            _famousSearch(items: state.popular!, ref : ref, context: context),
             _searchTitle(
               title: '온밥 추천 검색어',
               icon: Icon(Icons.info_outline_rounded, size: 18.0),
             ),
-            _recommandSearch(items: items, context: context),
+            _recommandSearch(items: items, context: context, ref : ref),
             // 배너
             Padding(
               padding: EdgeInsets.symmetric(vertical: 16.0),
@@ -63,34 +81,37 @@ class SearchMainScreen extends ConsumerWidget {
   }
 }
 
-Padding _recommandSearch({required List<String> items, required BuildContext context}) {
+Padding _recommandSearch({required List<String> items, required BuildContext context, required WidgetRef ref}) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10.0),
+    padding: const EdgeInsets.symmetric(vertical: 16.0),
     child: SizedBox(
-      height: 80,
       child: Wrap(
         direction: Axis.horizontal,
         alignment: WrapAlignment.start,
         spacing: 10.0,
         runSpacing: 10.0,
         children: List.generate(8, (index) {
-          return ConstrainedBox(
-            constraints: BoxConstraints(minWidth: 66, maxWidth: 80),
-            child: GestureDetector(
-              onTap: () {
-                context.pushNamed(SearchRootScreen.routeName, extra: items[index]);
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1.0, color: Colors.grey),
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                child: Center(
-                  child: Text(
-                    items[index],
-                    style: TextStyle(fontSize: 13.0),
-                    overflow: TextOverflow.ellipsis,
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: 66, maxWidth: 80),
+              child: GestureDetector(
+                onTap: () {
+                  ref.read(searchKeywordRemainProvider.notifier).setKeyword(items[index]);
+                  context.pushNamed(SearchRootScreen.routeName, extra: items[index]);
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1.0, color: Colors.grey),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      items[index],
+                      style: TextStyle(fontSize: 13.0),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ),
@@ -135,7 +156,7 @@ Widget _searchTitle({required String title, String? subtitle, Icon? icon}) {
   );
 }
 
-Padding _famousSearch({required List<String> items}) {
+Padding _famousSearch({required List<String> items, required WidgetRef ref, required BuildContext context}) {
   return Padding(
     padding: const EdgeInsets.only(top: 6.0, bottom: 26.0),
     child: Column(
@@ -149,19 +170,32 @@ Padding _famousSearch({required List<String> items}) {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Text(
-                  overflow: TextOverflow.ellipsis,
-                  '${leftIndex + 1}. ${items[leftIndex]}',
-                  style: TextStyle(fontSize: 14.0),
+                child: GestureDetector(
+                  onTap: () {
+                    ref.read(searchKeywordRemainProvider.notifier).setKeyword(items[leftIndex]);
+                    context.pushNamed(SearchRootScreen.routeName, extra: items[leftIndex]);
+                  },
+                  child: Text(
+                    '${leftIndex + 1}. ${items[leftIndex]}',
+                    style: TextStyle(fontSize: 14.0),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
               Expanded(
-                child: Text(
-                  rightIndex < items.length
-                      ? '${rightIndex + 1}. ${items[rightIndex]}'
-                      : '',
-                  style: TextStyle(fontSize: 14.0),
-                ),
+                child: rightIndex < items.length
+                    ? GestureDetector(
+                  onTap: () {
+                    ref.read(searchKeywordRemainProvider.notifier).setKeyword(items[rightIndex]);
+                    context.pushNamed(SearchRootScreen.routeName, extra: items[rightIndex]);
+                  },
+                  child: Text(
+                    '${rightIndex + 1}. ${items[rightIndex]}',
+                    style: TextStyle(fontSize: 14.0),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+                    : SizedBox()
               ),
             ],
           ),
@@ -171,7 +205,7 @@ Padding _famousSearch({required List<String> items}) {
   );
 }
 
-Padding _recentSearch({required List<String> items, required BuildContext context}) {
+Padding _recentSearch({required List<String> items, required BuildContext context, required WidgetRef ref}) {
   return Padding(
     padding: const EdgeInsets.only(top: 13.0, bottom: 26.0),
     child: SizedBox(
@@ -184,6 +218,7 @@ Padding _recentSearch({required List<String> items, required BuildContext contex
             padding: const EdgeInsets.only(right: 10.0),
             child: GestureDetector(
               onTap: () {
+                ref.read(searchKeywordRemainProvider.notifier).setKeyword(items[index]);
                 context.pushNamed(SearchRootScreen.routeName, extra: items[index]);
               },
               child: Container(
