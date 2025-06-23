@@ -1,11 +1,11 @@
-package com.example.frontend
+package com.bapful.onbapsang
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
-    private val CHANNEL = "com.example.frontend/config"
+    private val CHANNEL = "com.bapful.onbapsang/config"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

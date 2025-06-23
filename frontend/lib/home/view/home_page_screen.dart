@@ -202,35 +202,3 @@ Widget titleWidget({
   );
 }
 
-SliverToBoxAdapter _seasonalRecipe({required int count}) {
-  return SliverToBoxAdapter(
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-      child: SizedBox(
-        height: 180,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: 4,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(width: 175, height: 100, color: Colors.grey),
-                  const SizedBox(height: 7),
-                  Text(
-                    '메뉴명',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
-                  ),
-                  Text('9900원, 30분, 초보', style: TextStyle(fontSize: 10)),
-                  Text('스크랩 수 $count', style: TextStyle(fontSize: 10)),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
-    ),
-  );
-}

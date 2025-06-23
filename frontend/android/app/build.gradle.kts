@@ -8,7 +8,7 @@ val keystoreProperties = Properties().apply {
 }
 
 val dotenv = Properties().apply {
-    val envFile = file("../../assets/config/.env")
+    val envFile = file("../../asset/config/.env")
     if (envFile.exists()) {
         envFile.inputStream().use { this.load(it) }
     }
@@ -45,7 +45,7 @@ android {
         }
     }
 
-    namespace = "com.example.frontend"
+    namespace = "com.bapful.onbapsang"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -64,7 +64,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.frontend"
+        applicationId = "com.bapful.onbapsang"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -77,6 +77,8 @@ android {
 
         // 매니페스트에서 사용할 수 있도록 resValue로도 추가
         resValue("string", "google_maps_api_key", dotenv.getProperty("GOOGLE_MAPS_API_KEY", ""))
+
+        println("🌍 GOOGLE_MAPS_API_KEY from dotenv = ${dotenv.getProperty("GOOGLE_MAPS_API_KEY")}")
     }
 
 }
