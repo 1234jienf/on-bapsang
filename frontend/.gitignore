@@ -45,4 +45,5 @@ app.*.map.json
 /android/app/release
 
 asset/config
-ios/Flutter/Debug.xxcconfig
+#ios/Flutter/Debug.xcconfig
+#ios/Flutter/Release.xcconfig
