@@ -1,5 +1,4 @@
 #!/bin/sh
-set -e
 
 : "${MYSQL_HOST:=db}"
 : "${MYSQL_PORT:=3306}"
