@@ -14,8 +14,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, String> {
 
     Page<Recipe> findByMaterialTypeContaining(String category, Pageable pageable);
 
-    @Query(value = "SELECT * FROM recipe WHERE name LIKE CONCAT(:keyword, '%') COLLATE utf8mb4_general_ci LIMIT 10", nativeQuery = true)
-    List<Recipe> findTop10ByNameStartingWithIgnoreCase(@Param("keyword") String keyword);
+    @Query(value = "SELECT * FROM recipe WHERE name LIKE CONCAT('%', :keyword, '%') COLLATE utf8mb4_general_ci LIMIT 10", nativeQuery = true)
+    List<Recipe> findTop10ByNameContainingIgnoreCase(@Param("keyword") String keyword);
 
     @Query(value = "SELECT * FROM recipe " +
             "WHERE CAST(recipe_id AS UNSIGNED) BETWEEN :start AND :end", nativeQuery = true)
