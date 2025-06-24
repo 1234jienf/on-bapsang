@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../community/component/community_card.dart';
 import '../../community/view/community_detail_screen.dart';
+import '../../search/view/search_main_screen.dart';
 
 class HomePageScreen extends ConsumerStatefulWidget {
   const HomePageScreen({super.key});
@@ -56,42 +57,10 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 const SizedBox(height: 10.0),
-                // GestureDetector(
-                //   onTap: () {
-                //     context.pushNamed(SearchMainScreen.routeName);
-                //   },
-                //   child: InkWell(
-                //     child: Padding(
-                //       padding: EdgeInsets.symmetric(horizontal: sideGap),
-                //       child: Container(
-                //         width: 360,
-                //         height: 50,
-                //         decoration: BoxDecoration(
-                //           color: const Color(0xFFEEEEEE),
-                //         ),
-                //         child: Padding(
-                //           padding: const EdgeInsets.all(16.0),
-                //           child: Row(
-                //             children: [
-                //               Icon(Icons.search, size: 20.0),
-                //               const SizedBox(width: 5.0),
-                //               Text(
-                //                 '검색',
-                //                 style: TextStyle(
-                //                   fontWeight: FontWeight.w500,
-                //                   fontSize: 14.0,
-                //                 ),
-                //               ),
-                //             ],
-                //           ),
-                //         ),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // SizedBox(height: componentGap),
 
-                Image.asset('asset/img/home_AI_recipe_banner.png'),
+                GestureDetector(onTap : () {
+                  context.pushNamed(SearchMainScreen.routeName);
+                },child: Image.asset('asset/img/home_AI_recipe_banner.png')),
 
                 SizedBox(height: componentGap),
 
