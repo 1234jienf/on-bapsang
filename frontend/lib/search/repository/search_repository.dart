@@ -6,8 +6,10 @@ import 'package:frontend/search/model/search_recipe_model.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart' hide Headers;
 
+import '../../common/model/string/cursor_pagination_normal_string_model.dart';
 import '../../common/model/string/cursor_pagination_string_model.dart';
 import '../../common/model/string/pagination_string_params.dart';
+import '../model/search_recipe_normal_list_view.dart';
 
 part 'search_repository.g.dart';
 
@@ -23,6 +25,13 @@ final searchRepositoryProvider = Provider<SearchRepository>((ref) {
 abstract class SearchRepository
     implements IBasePaginationStringRepository<SearchRecipeModel> {
   factory SearchRepository(Dio dio, {String baseUrl}) = _SearchRepository;
+
+  @GET('/search')
+  @Headers({'accessToken': 'true'})
+  Future<CursorPaginationNormalStringModel<SearchRecipeModel>> paginateGET({
+    @Queries()
+    SearchRecipeNormalListView? paginationStringParams,
+  });
 
   @override
   @POST('/foreign')

@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/search/search_community/view/search_community_screen.dart';
 import 'package:frontend/search/search_product/view/search_product_screen.dart';
+import 'package:frontend/search/search_recipe/view/search_recipe_normal_screen.dart';
 import 'package:frontend/search/search_recipe/view/search_recipe_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../common/search_recipe_filter_header.dart';
 import '../component/search_app_bar.dart';
 import '../component/search_recipe_filter_bar.dart';
+import '../provider/search_switch_component_provider.dart';
 import '../provider/search_tab_index_provider.dart';
 import '../common/search_bottom_filter.dart';
 
@@ -43,6 +45,7 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(searchTabIndexProvider);
     final String name = GoRouterState.of(context).extra as String;
+    bool searchApi = ref.watch(searchSwitchComponentProvider);
 
     return DefaultLayout(
       appBar: SearchAppBar(),
@@ -57,7 +60,8 @@ class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
                 controller: _pageController,
                 onPageChanged: (index) {ref.read(searchTabIndexProvider.notifier).setIndex(index);},
                 children: [
-                  SearchRecipeScreen(name : name),
+                  searchApi ? SearchRecipeScreen(name: name) :
+                  SearchRecipeNormalScreen(name: name),
                   SearchProductScreen(),
                   SearchCommunityScreen(name : name),
                 ],

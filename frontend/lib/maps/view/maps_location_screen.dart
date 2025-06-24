@@ -23,7 +23,6 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(apiKey);
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,

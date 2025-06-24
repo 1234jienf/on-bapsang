@@ -21,10 +21,6 @@ class SearchFilterNotifier extends StateNotifier<List<SearchRecipeModel>> {
   void _applyFilter() {
     final filters = ref.read(searchFilterApplyProvider);
 
-    print('=== 필터링 디버깅 ===');
-    print('선택된 필터: $filters');
-    print('원본 데이터 개수: ${_data.length}');
-
     if (filters.isEmpty) {
       state = _data;
     } else {

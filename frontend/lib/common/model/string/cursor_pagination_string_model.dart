@@ -41,6 +41,7 @@ class CursorStringPagination<T> extends CursorStringPaginationBase {
   }
 }
 
+
 @JsonSerializable()
 class CursorStringPaginationMeta {
   final bool hasMore;
