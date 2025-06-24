@@ -18,6 +18,46 @@ class _SearchRepository implements SearchRepository {
   final ParseErrorLogger? errorLogger;
 
   @override
+  Future<CursorPaginationNormalStringModel<SearchRecipeModel>> paginateGET({
+    SearchRecipeNormalListView? paginationStringParams,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(
+      paginationStringParams?.toJson() ?? <String, dynamic>{},
+    );
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'accessToken': 'true'};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options =
+        _setStreamType<CursorPaginationNormalStringModel<SearchRecipeModel>>(
+          Options(method: 'GET', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/search',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late CursorPaginationNormalStringModel<SearchRecipeModel> _value;
+    try {
+      _value = CursorPaginationNormalStringModel<SearchRecipeModel>.fromJson(
+        _result.data!,
+        (json) => SearchRecipeModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<CursorStringPagination<SearchRecipeModel>> paginate({
     PaginationStringParams paginationStringParams =
         const PaginationStringParams(),

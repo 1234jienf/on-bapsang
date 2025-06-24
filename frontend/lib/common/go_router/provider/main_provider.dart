@@ -28,7 +28,7 @@ import 'package:photo_manager/photo_manager.dart';
 
 import '../../../home/view/home_page_screen.dart';
 import '../../../maps/view/maps_screen.dart';
-import '../../../search/search_detail/view/search_detail_root_screen.dart';
+import '../../../search/search_recipe/view/search_recipe_screen.dart';
 import '../../../search/view/search_main_screen.dart';
 import '../../../shopping/view/shopping_cart_screen.dart';
 import '../../../shopping/view/shopping_detail/view/shopping_detail_screen.dart';
@@ -51,193 +51,200 @@ class MainProvider extends ChangeNotifier {
     });
   }
 
-  List<RouteBase> get routes => [
-    GoRoute(
-      path: '/splash',
-      name: 'SplashScreen',
-      builder: (_, state) => const SplashScreen(),
-    ),
-    GoRoute(
-      path: '/login',
-      name: 'login',
-      builder: (_, state) => const LoginScreen(),
-      routes: [
+  List<RouteBase> get routes =>
+      [
         GoRoute(
-          path: 'signup',
-          name: 'SignUpRootScreen',
-          builder: (_, state) => SignUpRootScreen(),
+          path: '/splash',
+          name: 'SplashScreen',
+          builder: (_, state) => const SplashScreen(),
         ),
-      ],
-    ),
-    ShellRoute(
-      builder: (context, state, child) {
-        return RootTab(child: child);
-      },
-      routes: [
         GoRoute(
-          path: '/',
-          name: 'home',
-          builder: (_, state) => const HomePageScreen(),
+          path: '/login',
+          name: 'login',
+          builder: (_, state) => const LoginScreen(),
           routes: [
             GoRoute(
-              path: 'menu',
-              name: 'HomeMenuScreen',
-              builder: (_, state) => const HomeMenuScreen(),
-            ),
-            GoRoute(
-              path: 'alarm',
-              name: 'HomeAlarmScreen',
-              builder: (_, state) => const HomeAlarmScreen(),
-            ),
-            GoRoute(
-              path: 'recipe',
-              name: 'RecipeRootScreen',
-              builder: (_, state) => const RecipeRootScreen(),
-              routes: [
-                GoRoute(
-                  path: 'season',
-                  name: 'RecipeSeasonListScreen',
-                  builder: (_, state) => const RecipeSeasonListScreen(),
-                ),
-                GoRoute(
-                  path: ':category',
-                  name: 'RecipeCategoryListScreen',
-                  builder:
-                      (_, state) => RecipeCategoryListScreen(
-                        categoryName: state.pathParameters['category']!,
-                      ),
-                ),
-              ],
-            ),
-            GoRoute(
-              path: 'shopping',
-              name: 'shopping',
-              builder: (_, state) => const ShoppingRootScreen(),
-            ),
-            GoRoute(
-              path: 'community',
-              name: 'community',
-              builder: (_, state) => const CommunityRootScreen(),
-            ),
-            GoRoute(
-              path: 'maps',
-              name: 'maps',
-              builder: (_, state) {
-                final locationData = state.extra as Map<String, dynamic>?;
-
-                return MapScreen(
-                  lat: locationData?['lat'] ?? 0.0,
-                  lng: locationData?['lng'] ?? 0.0,
-                  isFirstLoading: false,
-                );
-              },
-            ),
-            GoRoute(
-              path: 'mypage',
-              name: 'MypageRootScreen',
-              builder: (_, state) => const MypageRootScreen(),
-              routes: [
-                GoRoute(
-                  path: 'scrap/recipe',
-                  name: 'MypageScrapRecipeScreen',
-                  builder: (_, state) => const MypageScrapRecipeScreen()
-                ),
-                GoRoute(
-                  path: 'scrap/community',
-                  name: 'MypageScrapCommunityScreen',
-                  builder: (_, state) => const MypageScrapCommunityScreen()
-                ),
-                GoRoute(
-                  path: 'community',
-                  name: 'MypageCommunityScreen',
-                  builder: (_, state) => const MypageCommunityScreen()
-                ),
-                GoRoute(
-                  path: 'fix',
-                  name: 'MypageFixInfoScreen',
-                  builder: (_, state) => const MypageFixInfoScreen()
-                ),
-              ]
+              path: 'signup',
+              name: 'SignUpRootScreen',
+              builder: (_, state) => SignUpRootScreen(),
             ),
           ],
         ),
-      ],
-    ),
+        ShellRoute(
+          builder: (context, state, child) {
+            return RootTab(child: child);
+          },
+          routes: [
+            GoRoute(
+              path: '/',
+              name: 'home',
+              builder: (_, state) => const HomePageScreen(),
+              routes: [
+                GoRoute(
+                  path: 'menu',
+                  name: 'HomeMenuScreen',
+                  builder: (_, state) => const HomeMenuScreen(),
+                ),
+                GoRoute(
+                  path: 'alarm',
+                  name: 'HomeAlarmScreen',
+                  builder: (_, state) => const HomeAlarmScreen(),
+                ),
+                GoRoute(
+                  path: 'recipe',
+                  name: 'RecipeRootScreen',
+                  builder: (_, state) => const RecipeRootScreen(),
+                  routes: [
+                    GoRoute(
+                      path: 'season',
+                      name: 'RecipeSeasonListScreen',
+                      builder: (_, state) => const RecipeSeasonListScreen(),
+                    ),
+                    GoRoute(
+                      path: ':category',
+                      name: 'RecipeCategoryListScreen',
+                      builder:
+                          (_, state) =>
+                          RecipeCategoryListScreen(
+                            categoryName: state.pathParameters['category']!,
+                          ),
+                    ),
+                  ],
+                ),
+                GoRoute(
+                  path: 'shopping',
+                  name: 'shopping',
+                  builder: (_, state) => const ShoppingRootScreen(),
+                ),
+                GoRoute(
+                  path: 'community',
+                  name: 'community',
+                  builder: (_, state) => const CommunityRootScreen(),
+                ),
+                GoRoute(
+                  path: 'maps',
+                  name: 'maps',
+                  builder: (_, state) {
+                    final locationData = state.extra as Map<String, dynamic>?;
 
-    GoRoute(
-      path: '/search',
-      name: 'SearchMainScreen',
-      builder: (_, state) => const SearchMainScreen(),
-      routes: [
+                    return MapScreen(
+                      lat: locationData?['lat'] ?? 0.0,
+                      lng: locationData?['lng'] ?? 0.0,
+                      isFirstLoading: false,
+                    );
+                  },
+                ),
+                GoRoute(
+                    path: 'mypage',
+                    name: 'MypageRootScreen',
+                    builder: (_, state) => const MypageRootScreen(),
+                    routes: [
+                      GoRoute(
+                          path: 'scrap/recipe',
+                          name: 'MypageScrapRecipeScreen',
+                          builder: (_, state) => const MypageScrapRecipeScreen()
+                      ),
+                      GoRoute(
+                          path: 'scrap/community',
+                          name: 'MypageScrapCommunityScreen',
+                          builder: (_,
+                              state) => const MypageScrapCommunityScreen()
+                      ),
+                      GoRoute(
+                          path: 'community',
+                          name: 'MypageCommunityScreen',
+                          builder: (_, state) => const MypageCommunityScreen()
+                      ),
+                      GoRoute(
+                          path: 'fix',
+                          name: 'MypageFixInfoScreen',
+                          builder: (_, state) => const MypageFixInfoScreen()
+                      ),
+                    ]
+                ),
+              ],
+            ),
+          ],
+        ),
+
         GoRoute(
-          path: 'detail',
-          name: 'SearchDetailRootScreen',
-          builder: (_, state) => SearchDetailRootScreen(),
+          path: '/search',
+          name: 'SearchMainScreen',
+          builder: (_, state) => const SearchMainScreen(),
+          routes: [
+            // GoRoute(
+            //   path: 'api',
+            //   name: 'SearchRecipeScreen',
+            //   builder: (_, state) {
+            //     final String name = state.extra as String;
+            //     return SearchRecipeScreen(name: name,);
+            //   },
+            // ),
+            GoRoute(
+              path: 'result',
+              name: 'SearchRootScreen',
+              builder: (_, state) => const SearchRootScreen(),
+            ),
+          ],
+        ),
+        // navbar 사용 안함
+        GoRoute(
+          path: '/recipe/detail/:id',
+          name: 'RecipeDetailScreen',
+          builder:
+              (_, state) => RecipeDetailScreen(id: state.pathParameters['id']!),
         ),
         GoRoute(
-          path: 'result',
-          name: 'SearchRootScreen',
-          builder: (_, state) => const SearchRootScreen(),
-        ),
-      ],
-    ),
-    // navbar 사용 안함
-    GoRoute(
-      path: '/recipe/detail/:id',
-      name: 'RecipeDetailScreen',
-      builder:
-          (_, state) => RecipeDetailScreen(id: state.pathParameters['id']!),
-    ),
-    GoRoute(
-      path: '/shopping/detail',
-      name: 'ShoppingDetailScreen',
-      builder: (_, state) => const ShoppingDetailScreen(),
-      routes: [
-        GoRoute(
-          path: 'payment',
-          name: 'ShoppingPayment',
-          builder: (_, state) => const ShoppingPayment(),
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/cart',
-      name: 'ShoppingCartScreen',
-      builder: (_, state) => const ShoppingCartScreen(),
-    ),
-    GoRoute(
-      path: '/community/detail/:id',
-      name: 'CommunityDetailScreen',
-      builder:
-          (_, state) => CommunityDetailScreen(
-        id: state.pathParameters['id']!,
-      ),
-    ),
-    GoRoute(
-      path: '/community/create',
-      name: 'CommunityCreateScreen',
-      builder: (_, state) => const CommunityCreateScreen(),
-      routes: [
-        GoRoute(
-          path: 'tag',
-          name: 'CommunityCreateRecipeTagScreen',
-          builder: (_, state) {
-            final image = state.extra as AssetEntity;
-            return CommunityCreateRecipeTagScreen(image: image);
-          },
+          path: '/shopping/detail',
+          name: 'ShoppingDetailScreen',
+          builder: (_, state) => const ShoppingDetailScreen(),
+          routes: [
+            GoRoute(
+              path: 'payment',
+              name: 'ShoppingPayment',
+              builder: (_, state) => const ShoppingPayment(),
+            ),
+          ],
         ),
         GoRoute(
-          path: 'upload',
-          name: 'CommunityCreateUploadScreen',
-          builder: (_, state) {
-            final data =
-            state.extra as CommunityUploadRecipeFinalListModel;
-            return CommunityCreateUploadScreen(data: data);
-          },
+          path: '/cart',
+          name: 'ShoppingCartScreen',
+          builder: (_, state) => const ShoppingCartScreen(),
         ),
-      ],
-    ),
-  ];
+        GoRoute(
+          path: '/community/detail/:id',
+          name: 'CommunityDetailScreen',
+          builder:
+              (_, state) =>
+              CommunityDetailScreen(
+                id: state.pathParameters['id']!,
+              ),
+        ),
+        GoRoute(
+          path: '/community/create',
+          name: 'CommunityCreateScreen',
+          builder: (_, state) => const CommunityCreateScreen(),
+          routes: [
+            GoRoute(
+              path: 'tag',
+              name: 'CommunityCreateRecipeTagScreen',
+              builder: (_, state) {
+                final image = state.extra as AssetEntity;
+                return CommunityCreateRecipeTagScreen(image: image);
+              },
+            ),
+            GoRoute(
+              path: 'upload',
+              name: 'CommunityCreateUploadScreen',
+              builder: (_, state) {
+                final data =
+                state.extra as CommunityUploadRecipeFinalListModel;
+                return CommunityCreateUploadScreen(data: data);
+              },
+            ),
+          ],
+        ),
+      ];
 
   void logout() {
     ref.read(userProvider.notifier).logout();

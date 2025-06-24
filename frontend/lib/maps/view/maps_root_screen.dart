@@ -51,7 +51,6 @@ class _MapsRootScreenState extends State<MapsRootScreen> {
           positionLng = position.longitude;
         });
       } else {
-        print("GPS 꺼져 있음");
       }
     } else if (Platform.isIOS && status.isLimited) {
       final position = await Geolocator.getCurrentPosition();
@@ -60,13 +59,10 @@ class _MapsRootScreenState extends State<MapsRootScreen> {
         positionLng = position.longitude;
       });
     } else if (status.isPermanentlyDenied) {
-      print("isPermanentlyDenied");
       openAppSettings();
     } else if (status.isRestricted) {
-      print("isRestricted");
       openAppSettings();
     } else if (status.isDenied) {
-      print("isDenied");
     }
   }
 

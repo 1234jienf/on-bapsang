@@ -42,7 +42,7 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
         recipeList[index] = recipe.copyWith(scrapped: !recipe.scrapped);
       });
     } catch (e) {
-      print('스크랩 실패: $e');
+      rethrow;
     }
   }
 
@@ -72,7 +72,7 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
+                      SizedBox(
                         width: 175.0,
                         height: 100.0,
                         child: Stack(

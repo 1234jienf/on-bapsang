@@ -65,7 +65,7 @@ class PaginationStringProvider<
 
     try {
       // 바로 반환하는 상황
-      if (state is CursorIntPagination && !forceRefetch) {
+      if (state is CursorStringPagination && !forceRefetch) {
         final pState = state as CursorStringPagination;
         if (!pState.meta.hasMore) {
           return;
@@ -74,8 +74,8 @@ class PaginationStringProvider<
 
       // 2) 로딩중 - fetchMore : true 일 때
       final isLoading = state is CursorStringPaginationLoading;
-      final isRefetching = state is CursorIntPaginationRefetching;
-      final isFetchingMore = state is CursorIntPaginationFetchingMore;
+      final isRefetching = state is CursorStringPaginationRefetching;
+      final isFetchingMore = state is CursorStringPaginationFetchingMore;
 
       // 반환 상황
       if (fetchMore && (isLoading || isRefetching || isFetchingMore)) {

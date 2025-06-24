@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/search/provider/search_normal_list_view_provider.dart';
 import 'package:frontend/search/search_recipe/component/search_recipe_card.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../common/component/pagination_string_list_view.dart';
 import '../../../recipe/view/recipe_detail_screen.dart';
+import '../../common/search_normal_pagination_list_view.dart';
 import '../../model/search_recipe_model.dart';
 import '../../provider/search_provider.dart';
 import '../provider/search_filter_apply_provider.dart';
 import '../provider/search_filter_provider.dart';
 
-class SearchRecipeScreen extends ConsumerWidget {
+class SearchRecipeNormalScreen extends ConsumerWidget {
   final String name;
 
-  const SearchRecipeScreen({super.key, required this.name});
+  const SearchRecipeNormalScreen({super.key, required this.name});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,23 +25,25 @@ class SearchRecipeScreen extends ConsumerWidget {
 
     return DefaultLayout(
       child:
-          hasFilters
-              ? _buildFilteredView(ref)
-              : PaginationStringListView<SearchRecipeModel>(
-                fetchCount: 100,
-                provider: searchProvider(name),
-                itemBuilder: <SearchRecipeModel>(_, index, model) {
-                  return GestureDetector(
-                    onTap: () {
-                      context.pushNamed(
-                        RecipeDetailScreen.routeName,
-                        pathParameters: {'id': model.recipe_id.toString()},
-                      );
-                    },
-                    child: SearchRecipeCard.fromModel(model: model),
-                  );
+      hasFilters
+          ? _buildFilteredView(ref)
+          : SearchNormalPaginationListView<SearchRecipeModel>(
+        fetchCount: 100,
+        provider: searchNormalListViewProvider(name),
+        itemBuilder: <SearchRecipeModel>(_, index, model) {
+          return GestureDetector(
+            onTap: () {
+              context.pushNamed(
+                RecipeDetailScreen.routeName,
+                pathParameters: {
+                  'id': model.recipe_id.toString(),
                 },
-              ),
+              );
+            },
+            child: SearchRecipeCard.fromModel(model: model),
+          );
+        },
+      ),
     );
   }
 
@@ -68,26 +72,26 @@ class SearchRecipeScreen extends ConsumerWidget {
         // 필터된 결과 리스트
         Expanded(
           child:
-              filteredData.isEmpty
-                  ? Center(child: Text('조건에 맞는 레시피가 없습니다.'))
-                  : ListView.builder(
-                    itemCount: filteredData.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          context.pushNamed(
-                            RecipeDetailScreen.routeName,
-                            pathParameters: {
-                              'id': filteredData[index].recipe_id.toString(),
-                            },
-                          );
-                        },
-                        child: SearchRecipeCard.fromModel(
-                          model: filteredData[index],
-                        ),
-                      );
+          filteredData.isEmpty
+              ? Center(child: Text('조건에 맞는 레시피가 없습니다.'))
+              : ListView.builder(
+            itemCount: filteredData.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  context.pushNamed(
+                    RecipeDetailScreen.routeName,
+                    pathParameters: {
+                      'id': filteredData[index].recipe_id.toString(),
                     },
-                  ),
+                  );
+                },
+                child: SearchRecipeCard.fromModel(
+                  model: filteredData[index],
+                ),
+              );
+            },
+          ),
         ),
       ],
     );

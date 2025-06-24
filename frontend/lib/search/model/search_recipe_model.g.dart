@@ -14,7 +14,7 @@ SearchRecipeModel _$SearchRecipeModelFromJson(Map<String, dynamic> json) =>
           (json['ingredients'] as List<dynamic>)
               .map((e) => e as String)
               .toList(),
-      descriptions: json['descriptions'] as String,
+      descriptions: json['description'] as String,
       difficulty: json['difficulty'] as String,
       image_url: json['image_url'] as String,
       material_type: json['material_type'] as String,
@@ -22,6 +22,7 @@ SearchRecipeModel _$SearchRecipeModelFromJson(Map<String, dynamic> json) =>
       portion: json['portion'] as String,
       review: json['review'] as String,
       time: json['time'] as String,
+      scrapped: json['scrapped'] as bool,
     );
 
 Map<String, dynamic> _$SearchRecipeModelToJson(SearchRecipeModel instance) =>
@@ -29,7 +30,7 @@ Map<String, dynamic> _$SearchRecipeModelToJson(SearchRecipeModel instance) =>
       'recipe_id': instance.recipe_id,
       'name': instance.name,
       'ingredients': instance.ingredients,
-      'descriptions': instance.descriptions,
+      'description': instance.descriptions,
       'review': instance.review,
       'time': instance.time,
       'difficulty': instance.difficulty,
@@ -37,4 +38,5 @@ Map<String, dynamic> _$SearchRecipeModelToJson(SearchRecipeModel instance) =>
       'method': instance.method,
       'material_type': instance.material_type,
       'image_url': instance.image_url,
+      'scrapped': instance.scrapped,
     };
