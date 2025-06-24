@@ -71,7 +71,7 @@ class _PaginationIntGridViewState<T extends IModelWithIntId> extends ConsumerSta
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: RefreshIndicator(
         onRefresh: () async {
           ref.read(widget.provider.notifier).paginate(forceRefetch: true);
@@ -81,7 +81,7 @@ class _PaginationIntGridViewState<T extends IModelWithIntId> extends ConsumerSta
           physics: AlwaysScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 10,
+            crossAxisSpacing: 8,
             childAspectRatio: widget.childAspectRatio,
           ),
           itemCount: cp.data.content.length,

@@ -57,7 +57,7 @@ class _ConsumerCommunityCreateScreenState
 
   Future<void> _pagingPhotos() async {
     if (albums.isEmpty) return;
-    imageList = await albums.first.getAssetListPaged(page: 0, size: 30);
+    imageList = await albums.first.getAssetListPaged(page: 0, size: 100);
     selectedImage = imageList.isNotEmpty ? imageList.first : null;
     setState(() {});
   }

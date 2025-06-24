@@ -10,25 +10,11 @@ import 'package:photo_manager/photo_manager.dart';
 
 import '../../common/const/colors.dart';
 import '../component/community_app_bar.dart';
+import '../component/community_build_tag.dart';
 import '../component/community_upload_recipe_component.dart';
+import '../model/community_tag_position_model.dart';
 import '../provider/community_upload_recipe_list_provider.dart';
 import 'community_create_upload_screen.dart';
-
-class TagPosition {
-  final double x;
-  final double y;
-  final String name;
-  final String imageUrl;
-  final String recipeId;
-
-  TagPosition({
-    required this.x,
-    required this.y,
-    required this.name,
-    required this.imageUrl,
-    required this.recipeId,
-  });
-}
 
 class CommunityCreateRecipeTagScreen extends ConsumerStatefulWidget {
   static String get routeName => 'CommunityCreateRecipeTagScreen';
@@ -44,10 +30,12 @@ class CommunityCreateRecipeTagScreen extends ConsumerStatefulWidget {
 class _ConsumerCommunityCreateRecipeTagScreenState
     extends ConsumerState<CommunityCreateRecipeTagScreen> {
   final ScrollController controller = ScrollController();
-  List<TagPosition> tags = [];
+  List<CommunityTagPositionModel> tags = [];
   bool isTag = false;
   String keyword = '';
   late final CommunityUploadRecipeFinalListModel model;
+  Timer? _debounceTimer;
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -61,16 +49,21 @@ class _ConsumerCommunityCreateRecipeTagScreenState
           if (tags.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('레시피 태그를 추가해주세요.', style: TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.w600),),
+                content: Text(
+                  '레시피 태그를 추가해주세요.',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 backgroundColor: gray400,
                 duration: Duration(seconds: 1),
               ),
             );
             return;
           }
-          ref
-              .read(tagSearchKeywordProvider.notifier)
-              .state = '';
+          ref.read(tagSearchKeywordProvider.notifier).state = '';
           context.pushNamed(
             CommunityCreateUploadScreen.routeName,
             extra: CommunityUploadRecipeFinalListModel(
@@ -98,56 +91,55 @@ class _ConsumerCommunityCreateRecipeTagScreenState
               _imageWithTags(),
               if (isTag)
                 ...tags.map(
-                      (tag) =>
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 16.0,
+                  (tag) => Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 16.0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.network(
+                          tag.imageUrl,
+                          fit: BoxFit.cover,
+                          width: 85,
+                          height: 85,
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Image.network(
-                              tag.imageUrl,
-                              fit: BoxFit.cover,
-                              width: 85,
-                              height: 85,
-                            ),
-                            SizedBox(
-                              width: 230,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    tag.name,
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
+                        SizedBox(
+                          width: 230,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                tag.name,
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  tags.remove(tag);
-                                  isTag = false;
-                                });
-                              },
-                              child: Icon(Icons.close_outlined, size: 25),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              tags.remove(tag);
+                              isTag = false;
+                            });
+                          },
+                          child: Icon(Icons.close_outlined, size: 25),
+                        ),
+                      ],
+                    ),
+                  ),
                 )
               else
                 Padding(
                   padding: const EdgeInsets.all(35.0),
                   child: Text(
-                    "원하는 위치에 레세피를 태그하세요",
+                    "원하는 위치에 레시피를 태그하세요",
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.w600,
@@ -219,100 +211,12 @@ class _ConsumerCommunityCreateRecipeTagScreenState
         child: Stack(
           children: [
             _imageCreate(
-              MediaQuery
-                  .of(context)
-                  .size
-                  .width,
-              MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              MediaQuery.of(context).size.width,
+              MediaQuery.of(context).size.width,
             ),
-            ...tags.map((tag) => _buildTag(tag)),
+            ...tags.map((tag) => CommunityBuildTag(tag: tag)),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildTag(TagPosition tag) {
-    final screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    final tagWidth = 210.0;
-
-    double adjustedX = tag.x - 12;
-
-    // 왼쪽으로 넘어가는 경우
-    if (adjustedX < 0) {
-      adjustedX = 10;
-    }
-
-    // 오른쪽으로 넘어가는 경우
-    if (adjustedX + tagWidth > screenWidth) {
-      adjustedX = screenWidth - tagWidth - 10;
-    }
-
-    return Positioned(
-      left: adjustedX,
-      top: tag.y - 50,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            constraints: BoxConstraints(minWidth: 100, maxWidth: 250),
-            height: 65,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: IntrinsicWidth(
-              child: Row(
-                children: [
-                  Image.network(
-                    tag.imageUrl,
-                    fit: BoxFit.cover,
-                    width: 40,
-                    height: 40,
-                  ),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    child: Text(
-                      tag.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // 연결선
-          Container(
-            width: 2,
-            height: 20,
-            color: Colors.grey,
-            margin: EdgeInsets.only(left: (tag.x - adjustedX - 12)),
-          ),
-
-          // 버튼
-          Container(
-            width: 12,
-            height: 12,
-            margin: EdgeInsets.only(left: (tag.x - adjustedX - 12)),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -330,10 +234,7 @@ class _ConsumerCommunityCreateRecipeTagScreenState
               communityUploadRecipeListProvider(keyword),
             );
             return Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 3 / 4,
+              height: MediaQuery.of(context).size.height * 3 / 4,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -342,109 +243,98 @@ class _ConsumerCommunityCreateRecipeTagScreenState
                 ),
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '레시피 태그 추가',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            context.pop();
-                          },
-                          child: Text(
-                            '취소',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
+                    Container(
+                      margin: const EdgeInsets.only(top: 2),
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20,),
                     TextField(
+                      onChanged: (value) {
+                        _debounceTimer?.cancel();
+                        _debounceTimer = Timer(Duration(milliseconds: 500), () {
+                          if (value.isNotEmpty) {
+                            ref.read(tagSearchKeywordProvider.notifier).state =
+                                value;
+                            ref.watch(communityUploadRecipeListProvider(value));
+                          } else {
+                            ref.read(tagSearchKeywordProvider.notifier).state =
+                            '';
+                          }
+                        });
+                      },
+                      controller: _searchController,
                       decoration: InputDecoration(
-                        hintText: '검색',
-                        hintStyle: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16.0,
+                        hintText: '레시피를 검색하세요',
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.grey[300]!),
                         ),
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.blue),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(color: Colors.red),
                         ),
                       ),
-                      onSubmitted: (value) {
-                        if (value.isNotEmpty) {
-                          ref
-                              .read(tagSearchKeywordProvider.notifier)
-                              .state =
-                              value;
-                          ref.watch(communityUploadRecipeListProvider(value));
-                        } else {
-                          ref
-                              .read(tagSearchKeywordProvider.notifier)
-                              .state = '';
-                        }
-                      },
                     ),
 
-                    if (keyword.isNotEmpty)
-                      Expanded(
-                        child: result.when(
-                          data: (recipes) {
-                            if (recipes.isEmpty) {
-                              return Center(child: Text('검색 결과가 없습니다.'));
-                            }
+                    Expanded(
+                      child: keyword.isNotEmpty
+                          ? result.when(
+                        data: (recipes) {
+                          if (recipes.isEmpty) {
+                            return Center(child: Text('검색 결과가 없습니다.'));
+                          }
 
-                            return ListView.builder(
-                              itemCount: recipes.length,
-                              itemBuilder: (context, index) {
-                                final recipe = recipes[index];
+                          return ListView.builder(
+                            itemCount: recipes.length,
+                            itemBuilder: (context, index) {
+                              final recipe = recipes[index];
 
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      tags.add(
-                                        TagPosition(
-                                            x: position.dx,
-                                            y: position.dy,
-                                            name: recipe.name,
-                                            imageUrl: recipe.imageUrl,
-                                            recipeId: recipe.recipeId
-                                        ),
-                                      );
-                                      isTag = true;
-                                    });
-                                    context.pop();
-                                  },
-                                  child:
-                                  CommunityUploadRecipeComponent.fromModel(
-                                    model: recipe,
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          error: (e, _) => Center(child: Text('에러 발생')),
-                          loading:
-                              () => Center(child: CircularProgressIndicator()),
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    tags.add(
+                                      CommunityTagPositionModel(
+                                        x: position.dx,
+                                        y: position.dy,
+                                        name: recipe.name,
+                                        imageUrl: recipe.imageUrl,
+                                        recipeId: recipe.recipeId,
+                                      ),
+                                    );
+                                    isTag = true;
+                                  });
+                                  context.pop();
+                                },
+                                child: CommunityUploadRecipeComponent.fromModel(
+                                  model: recipe,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        error: (e, _) => Center(child: Text('에러 발생')),
+                        loading: () => Center(child: CircularProgressIndicator()),
+                      )
+                          : Center(
+                        child: Text(
+                          '레시피를 검색해주세요',
+                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
                         ),
                       ),
+                    ),
                   ],
                 ),
               ),

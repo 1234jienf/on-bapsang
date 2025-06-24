@@ -14,6 +14,7 @@ MypageCommunityModel _$MypageCommunityModelFromJson(
   imageUrl: json['imageUrl'] as String,
   nickname: json['nickname'] as String,
   content: json['content'] as String,
+  profileImage: json['profileImage'] as String,
 );
 
 Map<String, dynamic> _$MypageCommunityModelToJson(
@@ -24,4 +25,5 @@ Map<String, dynamic> _$MypageCommunityModelToJson(
   'title': instance.title,
   'nickname': instance.nickname,
   'content': instance.content,
+  'profileImage': instance.profileImage,
 };

@@ -8,6 +8,7 @@ class CommunityCard extends StatelessWidget {
   final String imageUrl;
   final int id;
   final String content;
+  final String profileImage;
 
   const CommunityCard({
     super.key,
@@ -15,7 +16,8 @@ class CommunityCard extends StatelessWidget {
     required this.title,
     required this.imageUrl,
     required this.id,
-    required this.content
+    required this.content,
+    required this.profileImage,
   });
 
   factory CommunityCard.fromModel({required CommunityModel model}) {
@@ -25,6 +27,7 @@ class CommunityCard extends StatelessWidget {
       imageUrl: model.imageUrl,
       nickname: model.nickname,
       content: model.content,
+      profileImage: model.profileImage,
     );
   }
 
@@ -55,17 +58,33 @@ class CommunityCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
                     child: Row(
                       children: [
-                        Icon(Icons.account_circle_outlined, size: 20),
-                        const SizedBox(width: 5.0),
-                        Text(
-                          nickname,
-                          style: TextStyle(
-                            fontSize: 13.0,
-                            fontWeight: FontWeight.w500,
-                          ),
+                        profileImage.isEmpty
+                            ? Icon(Icons.account_circle_outlined, size: 20)
+                            : ClipRRect(
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Image.network(
+                                profileImage,
+                                fit: BoxFit.cover,
+                                width: 20,
+                                height: 20,
+                              ),
+                            ),
+                        const SizedBox(width: 10.0),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              nickname,
+                              style: TextStyle(
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -73,33 +92,36 @@ class CommunityCard extends StatelessWidget {
                   Icon(Icons.favorite_border_outlined, size: 20),
                 ],
               ),
-              const SizedBox(height: 6.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          content,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.w500,
+              const SizedBox(height: 10.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            content,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

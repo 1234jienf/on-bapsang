@@ -13,14 +13,15 @@ class MypageCommunityModel implements IModelWithIntId {
   final String title;
   final String nickname;
   final String content;
-
+  final String profileImage;
 
   MypageCommunityModel({
     required this.title,
     required this.id,
     required this.imageUrl,
     required this.nickname,
-    required this.content
+    required this.content,
+    required this.profileImage,
   });
 
   factory MypageCommunityModel.fromJson(Map<String, dynamic> json) => _$MypageCommunityModelFromJson(json);
@@ -34,6 +35,7 @@ class MypageCommunityModel implements IModelWithIntId {
       imageUrl: imageUrl,
       nickname: nickname,
       content: content,
+      profileImage: profileImage,
     );
   }
 }
