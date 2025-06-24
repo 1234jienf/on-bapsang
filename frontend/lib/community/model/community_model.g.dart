@@ -13,6 +13,7 @@ CommunityModel _$CommunityModelFromJson(Map<String, dynamic> json) =>
       imageUrl: json['imageUrl'] as String,
       nickname: json['nickname'] as String,
       content: json['content'] as String,
+      profileImage: json['profileImage'] as String,
     );
 
 Map<String, dynamic> _$CommunityModelToJson(CommunityModel instance) =>
@@ -22,4 +23,5 @@ Map<String, dynamic> _$CommunityModelToJson(CommunityModel instance) =>
       'title': instance.title,
       'nickname': instance.nickname,
       'content': instance.content,
+      'profileImage': instance.profileImage,
     };

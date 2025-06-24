@@ -161,7 +161,6 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
   }
 
   void _onSearchChanged(String value) {
-    // 에러 메시지 초기화
     if (errorMessage != null) {
       setState(() {
         errorMessage = null;
@@ -176,12 +175,10 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
       return;
     }
 
-    // 디바운싱을 위해 잠시 대기
     setState(() {
       isLoading = true;
     });
 
-    // 이전 요청 취소를 위한 딜레이
     Future.delayed(const Duration(milliseconds: 500), () {
       if (searchPlaceController.text.trim() == value.trim() && mounted) {
         _performSearch(value.trim());

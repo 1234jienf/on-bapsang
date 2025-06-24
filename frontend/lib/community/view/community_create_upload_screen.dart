@@ -5,11 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/community/component/community_app_bar.dart';
+import 'package:frontend/community/component/community_build_tag.dart';
 import 'package:frontend/community/model/community_upload_recipe_final_list_model.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 import '../../common/const/colors.dart';
 import '../component/community_show_dialog.dart';
+import '../model/community_tag_position_model.dart';
 import '../model/community_upload_data_model.dart';
 import '../provider/community_upload_provider.dart';
 
@@ -31,6 +33,7 @@ class _ConsumerCommunityCreateUploadScreenState
   final TextEditingController contentController = TextEditingController();
   late final CommunityUploadDataModel model;
   bool isLoading = false;
+  bool isShowTag = true;
 
   @override
   void dispose() {
@@ -45,6 +48,7 @@ class _ConsumerCommunityCreateUploadScreenState
     return Stack(
       children: [
         DefaultLayout(
+          resizeToAvoidBottomInset: true,
           appBar: CommunityAppBar(
             index: 2,
             title: '커뮤니티 올리기',
@@ -52,10 +56,18 @@ class _ConsumerCommunityCreateUploadScreenState
             isFirst: false,
             isLast: true,
             function: () async {
-              if (titleController.text.isEmpty || contentController.text.isEmpty) {
+              if (titleController.text.isEmpty ||
+                  contentController.text.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('모든 항목을 작성해주세요.', style: TextStyle(fontSize: 16.0, color: Colors.black, fontWeight: FontWeight.w600),),
+                    content: Text(
+                      '모든 항목을 작성해주세요.',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                     backgroundColor: gray400,
                     duration: Duration(seconds: 1),
                   ),
@@ -81,87 +93,116 @@ class _ConsumerCommunityCreateUploadScreenState
 
               if (response.statusCode == 200) {
                 if (context.mounted) {
-                  communityShowDialog(context, ref ,true, '작성 성공!');
+                  communityShowDialog(context, ref, true, '작성 성공!');
                 }
               } else {
                 if (context.mounted) {
                   setState(() {
                     isLoading = false;
-                    communityShowDialog(context, ref ,true, '오류가 발생했습니다. 다시 시도해주세요');
+                    communityShowDialog(
+                      context,
+                      ref,
+                      true,
+                      '오류가 발생했습니다. 다시 시도해주세요',
+                    );
                   });
                 }
               }
             },
           ),
-          child: Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: Stack(
-                  children: [
-                    _imageCreate(
-                      MediaQuery.of(context).size.width,
-                      MediaQuery.of(context).size.width,
-                    ),
-                    _buildTag(context),
-                  ],
-                ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 16.0,
-                  horizontal: 16.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    TextField(
-                      controller: titleController,
-                      decoration: InputDecoration(
-                        hintText: '제목은 최대 20자 가능합니다.',
-                        hintStyle: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey,
-                            width: 1.0,
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Stack(
+                      children: [
+                        GestureDetector(
+                          onTap: () {setState(() {
+                            isShowTag = !isShowTag;
+                          });},
+                          child: _imageCreate(
+                            MediaQuery.of(context).size.width,
+                            MediaQuery.of(context).size.width,
                           ),
                         ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey,
-                            width: 1.0,
+                        CommunityBuildTag(
+                          tag: CommunityTagPositionModel(
+                            x: widget.data.x,
+                            y: widget.data.y,
+                            name: widget.data.recipeTag,
+                            imageUrl: widget.data.tagImage,
+                            recipeId: widget.data.recipeId.toString(),
+                          ),
+                          isVisible: isShowTag,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16.0,
+                      horizontal: 16.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        TextField(
+                          controller: titleController,
+                          decoration: InputDecoration(
+                            hintText: '제목은 최대 20자 가능합니다.',
+                            hintStyle: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1.0,
+                              ),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.grey,
+                                width: 1.0,
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.only(
+                              left: 5.0,
+                              top: 26.0,
+                              bottom: 10.0,
+                            ),
                           ),
                         ),
-                        contentPadding: EdgeInsets.only(
-                          left: 5.0,
-                          top: 26.0,
-                          bottom: 10.0,
+                        TextField(
+                          controller: contentController,
+                          decoration: InputDecoration(
+                            hintText: '요리에 대한 소개를 해보세요.',
+                            hintStyle: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.only(
+                              left: 5.0,
+                              top: 10.0,
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                    TextField(
-                      controller: contentController,
-                      decoration: InputDecoration(
-                        hintText: '요리에 대한 소개를 해보세요.',
-                        hintStyle: TextStyle(
-                          fontSize: 16.0,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        contentPadding: EdgeInsets.only(left: 5.0, top: 10.0),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
         if (isLoading)
@@ -204,85 +245,6 @@ class _ConsumerCommunityCreateUploadScreenState
           );
         }
       },
-    );
-  }
-
-  Widget _buildTag(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final tagWidth = 210.0;
-
-    double adjustedX = widget.data.x - 12;
-
-    // 왼쪽으로 넘어가는 경우
-    if (adjustedX < 0) {
-      adjustedX = 10;
-    }
-
-    // 오른쪽으로 넘어가는 경우
-    if (adjustedX + tagWidth > screenWidth) {
-      adjustedX = screenWidth - tagWidth - 10;
-    }
-
-    return Positioned(
-      left: adjustedX,
-      top: widget.data.y - 50,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            constraints: BoxConstraints(minWidth: 100, maxWidth: 250),
-            height: 65,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: IntrinsicWidth(
-              child: Row(
-                children: [
-                  Image.network(
-                    widget.data.tagImage,
-                    fit: BoxFit.cover,
-                    width: 40,
-                    height: 40,
-                  ),
-                  const SizedBox(width: 10),
-                  Flexible(
-                    child: Text(
-                      widget.data.recipeTag,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // 연결선
-          Container(
-            width: 2,
-            height: 20,
-            color: Colors.grey,
-            margin: EdgeInsets.only(left: (widget.data.x - adjustedX - 12)),
-          ),
-
-          // 버튼
-          Container(
-            width: 12,
-            height: 12,
-            margin: EdgeInsets.only(left: (widget.data.x - adjustedX - 12)),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

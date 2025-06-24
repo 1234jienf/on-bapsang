@@ -6,9 +6,11 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../common/const/colors.dart';
+import '../component/community_build_tag.dart';
 import '../component/community_comment.dart';
 import '../component/community_comment_inputbox.dart';
 import '../model/community_detail_model.dart';
+import '../model/community_tag_position_model.dart';
 import '../provider/community_comment_provider.dart';
 import '../provider/community_detail_provider.dart';
 
@@ -28,6 +30,8 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
   final ScrollController controller = ScrollController();
   final double horizontal = 16.0;
   final FocusNode replyFocusNode = FocusNode();
+  late final CommunityTagPositionModel tag;
+  bool isShowTag = true;
 
   int? _parentCommentId;
   String _nickname = '';
@@ -145,9 +149,11 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
       alignment: Alignment.center,
       child: CommunityCommentInputbox(
-        contentWord: _parentCommentId != null  // 🆕 수정
-            ? '대댓글을 입력하세요'
-            : '댓글을 달아주세요',
+        contentWord:
+            _parentCommentId !=
+                    null // 🆕 수정
+                ? '대댓글을 입력하세요'
+                : '댓글을 달아주세요',
         commentId: _parentCommentId,
         replyFocusNode: _parentCommentId != null ? replyFocusNode : null,
         id: id,
@@ -174,10 +180,10 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child:
-                          state.profileImage == null
+                          state.profileImage.isEmpty
                               ? Icon(Icons.account_circle_outlined, size: 32)
                               : Image.network(
-                                state.profileImage!,
+                                state.profileImage,
                                 width: 32,
                                 height: 32,
                                 fit: BoxFit.cover,
@@ -197,12 +203,35 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                   ],
                 ),
               ),
-              Image.network(
-                state.imageUrl,
-                fit: BoxFit.cover,
-                width: imageWidth,
-                height: imageWidth,
+              Stack(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isShowTag = !isShowTag;
+                      });
+                    },
+                    child: Image.network(
+                      state.imageUrl,
+                      fit: BoxFit.cover,
+                      width: imageWidth,
+                      height: imageWidth,
+                    ),
+                  ),
+
+                  CommunityBuildTag(
+                    tag: CommunityTagPositionModel(
+                      x: state.x,
+                      y: state.y,
+                      name: state.recipeTag,
+                      imageUrl: state.recipeImageUrl,
+                      recipeId: state.id.toString(),
+                    ),
+                    isVisible: isShowTag,
+                  ),
+                ],
               ),
+
               const SizedBox(height: 12),
             ],
           ),
@@ -232,9 +261,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
               vertical: 6.0,
             ),
             child: Column(
-              children: [
-                const Divider(thickness: 0.5, color: Colors.grey),
-              ],
+              children: [const Divider(thickness: 0.5, color: Colors.grey)],
             ),
           ),
         ),
@@ -245,9 +272,10 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                 _activateReplyMode(model.id, model.nickname);
               },
               child: Container(
-                color: _parentCommentId == model.id
-                    ? Colors.blue.withOpacity(0.1)
-                    : Colors.transparent,
+                color:
+                    _parentCommentId == model.id
+                        ? Colors.blue.withOpacity(0.1)
+                        : Colors.transparent,
                 child: CommunityComment.fromModel(model: model),
               ),
             );
@@ -274,11 +302,14 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
                 onTap: () {},
                 child: Row(
                   children: [
-                    Image.network(
-                      state.recipeImageUrl,
-                      width: 85,
-                      height: 85,
-                      fit: BoxFit.cover,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: Image.network(
+                        state.recipeImageUrl,
+                        width: 85,
+                        height: 85,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     SizedBox(
                       width: 210,

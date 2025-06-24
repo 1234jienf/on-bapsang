@@ -12,7 +12,6 @@ CommunityDetailModel _$CommunityDetailModelFromJson(
   recipeTag: json['recipeTag'] as String,
   recipeImageUrl: json['recipeImageUrl'] as String,
   scrapped: json['scrapped'] as bool,
-  profileImage: json['profileImage'] as String?,
   x: (json['x'] as num).toDouble(),
   y: (json['y'] as num).toDouble(),
   scrapCount: (json['scrapCount'] as num).toInt(),
@@ -23,6 +22,7 @@ CommunityDetailModel _$CommunityDetailModelFromJson(
   imageUrl: json['imageUrl'] as String,
   nickname: json['nickname'] as String,
   content: json['content'] as String,
+  profileImage: json['profileImage'] as String,
 );
 
 Map<String, dynamic> _$CommunityDetailModelToJson(
@@ -33,8 +33,8 @@ Map<String, dynamic> _$CommunityDetailModelToJson(
   'title': instance.title,
   'nickname': instance.nickname,
   'content': instance.content,
-  'scrapped': instance.scrapped,
   'profileImage': instance.profileImage,
+  'scrapped': instance.scrapped,
   'scrapCount': instance.scrapCount,
   'commentCount': instance.commentCount,
   'x': instance.x,
