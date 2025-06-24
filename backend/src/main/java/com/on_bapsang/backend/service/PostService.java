@@ -40,7 +40,7 @@ public class PostService {
     }
 
     public List<RecipeTagSuggestion> getRecipeTagSuggestions(String keyword) {
-        return recipeRepository.findTop10ByNameStartingWithIgnoreCase(keyword)
+        return recipeRepository.findTop10ByNameContainingIgnoreCase(keyword)
                 .stream()
                 .map(r -> new RecipeTagSuggestion(r.getRecipeId(), r.getName(), r.getImageUrl()))
                 .toList();
