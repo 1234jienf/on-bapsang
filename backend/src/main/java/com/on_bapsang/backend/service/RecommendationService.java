@@ -21,8 +21,8 @@ public class RecommendationService {
     private final RecipeScrapRepository recipeScrapRepository;
     private final SearchKeywordService searchKeywordService;
 
-
-    public RecommendationService(WebClient aiWebClient, RecipeScrapRepository recipeScrapRepository, SearchKeywordService searchKeywordService) {
+    public RecommendationService(@Qualifier("aiWebClient") WebClient aiWebClient,
+            RecipeScrapRepository recipeScrapRepository, SearchKeywordService searchKeywordService) {
         this.aiWebClient = aiWebClient;
         this.recipeScrapRepository = recipeScrapRepository;
         this.searchKeywordService = searchKeywordService;
@@ -80,5 +80,3 @@ public class RecommendationService {
     }
 
 }
-
-
