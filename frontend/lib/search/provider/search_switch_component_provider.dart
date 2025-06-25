@@ -6,6 +6,10 @@ class SearchSwitchComponentNotifier extends StateNotifier<bool> {
   void switchComponent() {
     state = !state;
   }
+
+  void clear() {
+    state = false;
+  }
 }
 
 final searchSwitchComponentProvider =
