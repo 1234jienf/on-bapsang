@@ -30,6 +30,7 @@ class CommunityCommentInputbox extends ConsumerStatefulWidget {
 class _ConsumerCommunityCommentInputboxState
     extends ConsumerState<CommunityCommentInputbox> {
   late final TextEditingController controller;
+  bool isSubmit = false;
 
   @override
   void initState() {
@@ -121,7 +122,9 @@ class _ConsumerCommunityCommentInputboxState
     String text,
     int? parentId,
   ) async {
-    if (text.isEmpty) return;
+    if (text.isEmpty || isSubmit) return;
+
+    isSubmit = true;
 
     try {
       final response = await commentProvider.uploadCommentPost(
@@ -143,14 +146,18 @@ class _ConsumerCommunityCommentInputboxState
             communityShowDialog(context, ref, false, '작성 성공!');
           }
           ref.read(communityDetailProvider(widget.id).notifier).fetchData();
+          isSubmit = false;
         } else {
           if (context.mounted) {
             communityShowDialog(context, ref, false, '오류가 발생했습니다. 다시 시도해주세요');
           }
+          isSubmit = false;
         }
       }
     } on DioException {
       rethrow;
+    } finally {
+      isSubmit = false;
     }
   }
 }
