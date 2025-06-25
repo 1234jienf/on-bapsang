@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../provider/search_keyword_remian_provider.dart';
+import '../provider/search_switch_component_provider.dart';
 import '../view/search_root_screen.dart';
 
 class SearchAppBar extends ConsumerStatefulWidget implements PreferredSizeWidget {
@@ -80,6 +81,7 @@ class _SearchAppBarState extends ConsumerState<SearchAppBar> {
               contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
             onSubmitted: (value) {
+              ref.read(searchSwitchComponentProvider.notifier).clear();
               if (value.trim().isEmpty) return;
               ref.read(searchKeywordRemainProvider.notifier).setKeyword(value);
               context.pushNamed(SearchRootScreen.routeName, extra: value);
