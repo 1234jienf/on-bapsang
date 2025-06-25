@@ -16,8 +16,10 @@ class CommunityDetailModel extends CommunityModel implements IModelWithIntId {
   final String recipeTag;
   @JsonKey(fromJson: DataUtils.dateTimeFromJson)
   final DateTime createdAt;
+  final String recipeId;
 
   CommunityDetailModel({
+    required this.recipeId,
     required this.recipeTag,
     required this.recipeImageUrl,
     required this.scrapped,

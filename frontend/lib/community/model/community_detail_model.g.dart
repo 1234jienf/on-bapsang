@@ -9,6 +9,7 @@ part of 'community_detail_model.dart';
 CommunityDetailModel _$CommunityDetailModelFromJson(
   Map<String, dynamic> json,
 ) => CommunityDetailModel(
+  recipeId: json['recipeId'] as String,
   recipeTag: json['recipeTag'] as String,
   recipeImageUrl: json['recipeImageUrl'] as String,
   scrapped: json['scrapped'] as bool,
@@ -42,4 +43,5 @@ Map<String, dynamic> _$CommunityDetailModelToJson(
   'recipeImageUrl': instance.recipeImageUrl,
   'recipeTag': instance.recipeTag,
   'createdAt': instance.createdAt.toIso8601String(),
+  'recipeId': instance.recipeId,
 };

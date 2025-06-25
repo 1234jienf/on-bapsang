@@ -36,7 +36,7 @@ class CommunityComment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      padding: const EdgeInsets.symmetric(vertical: 14.0),
       child: Column(
         children: [
           Row(
@@ -44,17 +44,17 @@ class CommunityComment extends StatelessWidget {
             children: [
               profileImage == null
                   ? Icon(Icons.account_circle_outlined, size: 32)
-                  :  ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  profileImage!,
-                  width: 32,
-                  height: 32,
-                  fit: BoxFit.cover,
-                ),
-              ),
+                  : ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      profileImage!,
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
 
-              const SizedBox(width: 10),
+              const SizedBox(width: 12),
 
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,29 +67,17 @@ class CommunityComment extends StatelessWidget {
                 ],
               ),
 
-              const SizedBox(width: 16),
+              const SizedBox(width: 20),
 
               Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 38,
-                        child: Text(
-                          content,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 15),
-
-                    // 하트 아이콘
-                    Icon(Icons.favorite_border_outlined, size: 20),
-                  ],
+                child: SizedBox(
+                  height: 32,
+                  child: Text(
+                    content,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 12),
+                  ),
                 ),
               ),
             ],
@@ -103,16 +91,16 @@ class CommunityComment extends StatelessWidget {
     );
   }
 
+  // 대댓글
   Widget _childrenComments(CommunityCommentModel reply) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10 ),
+      padding: const EdgeInsets.only(top: 16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(Icons.subdirectory_arrow_right_outlined),
-          const SizedBox(width: 10.0,),
+          const SizedBox(width: 10.0),
 
-          // 대댓글 프로필
           reply.profileImage == null
               ? Icon(
                 Icons.account_circle_outlined,
@@ -129,7 +117,7 @@ class CommunityComment extends StatelessWidget {
                 ),
               ),
 
-          const SizedBox(width: 8),
+          const SizedBox(width: 12),
 
           Expanded(
             child: Row(
@@ -138,7 +126,13 @@ class CommunityComment extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(nickname, style: TextStyle(fontSize: 12, overflow: TextOverflow.ellipsis)),
+                    Text(
+                      reply.nickname,
+                      style: TextStyle(
+                        fontSize: 12,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                     Text(
                       DateFormat('yy년 M월 d일').format(createdAt),
                       style: TextStyle(fontSize: 10, color: Colors.grey),
@@ -146,7 +140,7 @@ class CommunityComment extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(width: 16.0,),
+                const SizedBox(width: 16.0),
 
                 Expanded(
                   child: Text(
@@ -159,7 +153,6 @@ class CommunityComment extends StatelessWidget {
               ],
             ),
           ),
-
         ],
       ),
     );
