@@ -5,8 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
+
 public class WebClientConfig {
     @Bean
+    Qualifier("aiWebClient")
+
     public WebClient aiWebClient() {
         return WebClient.builder()
                 .baseUrl("http://bapsang-ai:8000")
