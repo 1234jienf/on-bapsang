@@ -21,6 +21,7 @@ public class TranslationService {
     private String deeplApiKey;
 
     public String translate(String text, String targetLang) {
+        if ("KO".equalsIgnoreCase(targetLang)) return text;
         if (text == null || text.trim().isEmpty()) return text;
 
         String response = webClient.post()
