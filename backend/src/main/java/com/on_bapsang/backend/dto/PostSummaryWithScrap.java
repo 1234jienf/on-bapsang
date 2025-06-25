@@ -1,6 +1,7 @@
 package com.on_bapsang.backend.dto;
 
 import com.on_bapsang.backend.entity.Post;
+import com.on_bapsang.backend.i18n.Translatable;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -8,7 +9,9 @@ import java.time.LocalDateTime;
 @Getter
 public class PostSummaryWithScrap {
     private final Long id;
+    @Translatable
     private final String title;
+    @Translatable
     private final String content;
     private final String imageUrl;
     private final String nickname;

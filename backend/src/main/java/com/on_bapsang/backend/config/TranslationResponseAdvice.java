@@ -1,0 +1,96 @@
+package com.on_bapsang.backend.config;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.on_bapsang.backend.i18n.Translatable;
+import com.on_bapsang.backend.service.TranslationService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.MethodParameter;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
+
+import java.lang.reflect.Field;
+import java.util.IdentityHashMap;
+import java.util.Set;
+import java.util.Collections;
+
+@ControllerAdvice
+@RequiredArgsConstructor
+public class TranslationResponseAdvice implements ResponseBodyAdvice<Object> {
+
+    private final TranslationService translationService;
+
+    @Override
+    public boolean supports(MethodParameter returnType, Class converterType) {
+        // 모든 컨트롤러 응답에 적용
+        return true;
+    }
+
+    @Override
+    public Object beforeBodyWrite(Object body,
+                                  MethodParameter returnType,
+                                  MediaType selectedContentType,
+                                  Class selectedConverterType,
+                                  ServerHttpRequest request,
+                                  ServerHttpResponse response) {
+
+        // 프론트에서 보낸 언어 (예: X-Language: JA)
+        String lang = request.getHeaders().getFirst("X-Language");
+        if (lang == null || lang.equalsIgnoreCase("KO")) return body; // 한국어는 번역 안 함
+
+        try {
+            translateRecursively(body, lang);
+        } catch (Exception e) {
+            // 오류 시 번역하지 않고 원문 그대로 전달
+            System.err.println("번역 실패: " + e.getMessage());
+        }
+
+        return body;
+    }
+
+    private void translateRecursively(Object obj, String lang) throws IllegalAccessException {
+        translateRecursively(obj, lang, Collections.newSetFromMap(new IdentityHashMap<>()));
+    }
+
+    private void translateRecursively(Object obj, String lang, Set<Object> visited) throws IllegalAccessException {
+        if (obj == null || visited.contains(obj)) return;
+        visited.add(obj);
+
+        if (obj instanceof Iterable<?> iterable) {
+            for (Object element : iterable) {
+                translateRecursively(element, lang, visited);
+            }
+        } else if (isSkippable(obj)) {
+            return; // String, Number, Boolean, Enum, 등은 skip
+        } else {
+            Class<?> clazz = obj.getClass();
+            for (Field field : clazz.getDeclaredFields()) {
+                field.setAccessible(true);
+                Object fieldValue = field.get(obj);
+                if (fieldValue == null) continue;
+
+                if (field.isAnnotationPresent(Translatable.class)) {
+                    if (fieldValue instanceof String original) {
+                        String translated = translationService.translate(original, lang);
+                        field.set(obj, translated);
+                    }
+                } else {
+                    translateRecursively(fieldValue, lang, visited);
+                }
+            }
+        }
+    }
+
+    private boolean isSkippable(Object obj) {
+        Class<?> clazz = obj.getClass();
+        return clazz.isPrimitive()
+                || clazz.equals(String.class)
+                || Number.class.isAssignableFrom(clazz)
+                || Boolean.class.isAssignableFrom(clazz)
+                || Enum.class.isAssignableFrom(clazz)
+                || clazz.getPackageName().startsWith("java.");
+    }
+}

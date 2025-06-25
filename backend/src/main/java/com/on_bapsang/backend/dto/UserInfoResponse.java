@@ -1,6 +1,7 @@
 package com.on_bapsang.backend.dto;
 
 import com.on_bapsang.backend.entity.*;
+import com.on_bapsang.backend.i18n.Translatable;
 import lombok.Getter;
 
 import java.util.List;
@@ -16,8 +17,11 @@ public class UserInfoResponse {
     private String location;
     private String profileImage;
 
+    @Translatable
     private List<String> favoriteTastes;
+    @Translatable
     private List<String> favoriteDishes;
+    @Translatable
     private List<String> favoriteIngredients;
 
     public UserInfoResponse(User user, String profileImagePresignedUrl) {

@@ -1,5 +1,6 @@
 package com.on_bapsang.backend.dto;
 
+import com.on_bapsang.backend.i18n.Translatable;
 import com.on_bapsang.backend.entity.Post;
 import lombok.Getter;
 
@@ -8,9 +9,16 @@ import java.time.LocalDateTime;
 @Getter
 public class PostDetail {
     private final Long id;
+
+    @Translatable
     private final String title;
+
+    @Translatable
     private final String content;
+
+    @Translatable
     private final String recipeTag;
+
     private final String recipeId;
     private final String recipeImageUrl;
     private final String imageUrl;
@@ -38,5 +46,4 @@ public class PostDetail {
         this.y = post.getY();
         this.createdAt = post.getCreatedAt();
     }
-
 }

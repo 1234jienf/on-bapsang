@@ -1,5 +1,6 @@
 package com.on_bapsang.backend.dto.mypage;
 
+import com.on_bapsang.backend.i18n.Translatable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,11 @@ public class MyPost {
     private Long postId;
     private String nickname;
     private String profileImage;
+
+    @Translatable
     private String title;
+
+    @Translatable
     private String content;
 
     @Setter
