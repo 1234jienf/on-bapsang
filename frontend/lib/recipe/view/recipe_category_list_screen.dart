@@ -53,18 +53,21 @@ class _RecipeCategoryListScreenState extends ConsumerState<RecipeCategoryListScr
         title: Text(widget.categoryName),
         backgroundColor: Colors.white,
       ),
-      child: state is CursorStringPagination<RecipeModel>
-          ? ListView.builder(
-        controller: controller,
-        itemCount: state.data.length,
-        itemBuilder: (context, index) {
-          final recipe = state.data[index];
-          return RecipeListComponent(recipeInfo: recipe);
-        },
-      )
-          : state is CursorStringPaginationError
-          ? Center(child: Text(state.message))
-          : const Center(child: CircularProgressIndicator()),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.0),
+        child: state is CursorStringPagination<RecipeModel>
+            ? ListView.builder(
+          controller: controller,
+          itemCount: state.data.length,
+          itemBuilder: (context, index) {
+            final recipe = state.data[index];
+            return RecipeListComponent(recipeInfo: recipe);
+          },
+        )
+            : state is CursorStringPaginationError
+            ? Center(child: Text(state.message))
+            : const Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 }

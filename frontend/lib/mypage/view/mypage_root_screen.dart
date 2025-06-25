@@ -94,29 +94,40 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
                 ),
               ),
               SizedBox(height: componentGap,),
-              // GestureDetector(
-              //   onTap: () {
-              //     context.pushNamed(
-              //       MypageFixInfoScreen.routeName,
-              //     );
-              //   },
-              //   child: Container(
-              //     width: double.infinity,
-              //     height: 40,
-              //     decoration: BoxDecoration(
-              //         border: Border(
-              //             bottom: BorderSide(color: Colors.grey, width: 0.5)
-              //         )
-              //     ),
-              //     child: Text('회원정보 수정', style: TextStyle(fontSize: 17),),
-              //   ),
-              // ),
+              GestureDetector(
+                onTap: () {
+                  context.pushNamed(
+                    MypageFixInfoScreen.routeName,
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(color: Colors.grey, width: 0.5)
+                      )
+                  ),
+                  child: Text('회원정보 수정', style: TextStyle(fontSize: 17),),
+                ),
+              ),
               SizedBox(height: componentGap,),
-              // SizedBox(
-              //   width: double.infinity,
-              //   height: 40,
-              //   child: Text('회원 탈퇴', style: TextStyle(fontSize: 17, color: Colors.grey),),
-              // ),
+              Container(
+                width: double.infinity,
+                height: 40,
+                decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey, width: 0.5)
+                    )
+                ),
+                child: Text('언어 설정 변경', style: TextStyle(fontSize: 17),),
+              ),
+              SizedBox(height: componentGap,),
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: Text('회원 탈퇴', style: TextStyle(fontSize: 17, color: Colors.grey),),
+              ),
             ],
           ),
         ),

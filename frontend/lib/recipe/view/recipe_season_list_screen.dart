@@ -40,42 +40,47 @@ class _RecipeSeasonListScreenState extends ConsumerState<RecipeSeasonListScreen>
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
-          '제철 레시피',
+          '${DateTime.now().month}월의 제철 재료 레시피',
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
       backgroundColor: Colors.white,
-      child: seasonIngredientsAsync.when(
-        loading: () => SizedBox(
-          height: 50.0,
-          child: Center(child: CircularProgressIndicator()),
-        ),
-        error: (err, stack) => SizedBox(
-          height: 50.0,
-          child: Center(child: Text('$err')),
-        ),
-        data: (seasonIngredients) => CustomScrollView(
-          controller: controller,
-          slivers: [
-            SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 15.0),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                    return Column(
-                      children: [
-                        SizedBox(height: 15.0),
-                        RecipeSeasonIngredientCard(
-                          seasonIngredientInfo: seasonIngredients[index],
-                        ),
-                      ],
-                    );
-                  },
-                  childCount: seasonIngredients.length,
-                ),
+      child: RefreshIndicator(
+        onRefresh: () async {
+          ref.invalidate(seasonIngredientProvider);
+        },
+        child: seasonIngredientsAsync.when(
+          loading: () => SizedBox(
+            height: 50.0,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          error: (err, stack) => SizedBox(
+            height: 50.0,
+            child: Center(child: Text('$err')),
+          ),
+          data: (seasonIngredients) => CustomScrollView(
+            controller: controller,
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 15.0),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                      return Column(
+                        children: [
+                          SizedBox(height: 15.0),
+                          RecipeSeasonIngredientCard(
+                            seasonIngredientInfo: seasonIngredients[index],
+                          ),
+                        ],
+                      );
+                    },
+                    childCount: seasonIngredients.length,
+                  ),
+                )
               )
-            )
-          ],
+            ],
+          ),
         ),
       )
     );

@@ -60,7 +60,9 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      context.goNamed('shopping');
+                    },
                     child: Icon(Icons.chevron_right, size: 30),
                   )
                 ],
@@ -76,7 +78,9 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      context.goNamed('community');
+                    },
                     child: Icon(Icons.chevron_right, size: 30),
                   )
                 ],
@@ -90,7 +94,9 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      context.goNamed('maps');
+                    },
                     child: Icon(Icons.chevron_right, size: 30),
                   )
                 ],

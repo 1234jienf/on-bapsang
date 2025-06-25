@@ -72,18 +72,39 @@ class _RecipeListComponentState extends ConsumerState<RecipeListComponent> {
                 children: [
                   Text(
                     widget.recipeInfo.name,
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
+                  SizedBox(height: 7.0,),
                   Row(
                     children: [
-                      Text(widget.recipeInfo.portion),
+                      Icon(Icons.access_time, size: 18),
+                      SizedBox(width: 3),
+                      SizedBox(
+                        width: 65,
+                        child: Text(
+                          widget.recipeInfo.time != 'nan' ? widget.recipeInfo.time : '-',
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
                       SizedBox(width: 7),
-                      Text(widget.recipeInfo.time != 'nan' ? widget.recipeInfo.time : '-'),
-                      SizedBox(width: 7),
-                      Text(widget.recipeInfo.difficulty)
-                    ],
-                  ),
-                  Text('⭐️ 4.5')  // 점수가 없음. 뭘 보여줘야할지 정해야할듯...
+                      Image.asset(
+                        'asset/img/chef_icon.png',
+                        width: 18,
+                        height: 18,
+                        fit: BoxFit.contain
+                      ),
+                      SizedBox(width: 10),
+                      SizedBox(
+                        width: 80,
+                        child: Text(
+                          widget.recipeInfo.difficulty,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ),                    ],
+                  )
                 ],
               ),
             ),
