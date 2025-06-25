@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/maps/model/maps_auto_complete_model.dart';
 import 'package:frontend/maps/provider/maps_api_service_provider.dart';
-import 'package:frontend/maps/view/maps_root_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import '../settings/location_permission_handler.dart';
@@ -224,7 +223,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
       final position = await determinePosition();
       router.pop();
       router.pushNamed(
-        'maps',
+        'location',
         extra: {'lat': position.latitude, 'lng': position.longitude},
       );
     } catch (error) {
@@ -392,7 +391,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
       }
 
       router.pop();
-      router.pushNamed('maps', extra: {'lat': lat, 'lng': lng});
+      router.pushNamed('location', extra: {'lat': lat, 'lng': lng});
 
     } catch (error) {
       debugPrint('위치 선택 에러: $error');
