@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:frontend/common/layout/default_layout.dart';
-import 'package:frontend/maps/model/maps_place_from_coordinates_model.dart';
-import 'package:frontend/maps/provider/maps_api_service_provider.dart';
-import 'package:frontend/maps/view/maps_root_screen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../common/layout/default_layout.dart';
+import '../common/config.dart';
+import '../model/maps_place_from_coordinates_model.dart';
+import '../provider/maps_api_service_provider.dart';
 import 'maps_location_screen.dart';
 
 class MapScreen extends StatefulWidget {
@@ -30,12 +29,12 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   late double defaultLat;
   late double defaultLng;
-  late bool isLoading;
   Timer? _moveDebounce;
   Timer? _addressDebounce;
+  String apiKey = '';
+  bool isLoadingAddress = false;
 
-  MapsPlaceFromCoordinatesModel placeFromCoordinates =
-      MapsPlaceFromCoordinatesModel();
+  MapsPlaceFromCoordinatesModel placeFromCoordinates = MapsPlaceFromCoordinatesModel();
 
   Future<void> _loadApiKey() async {
     final accessApiKey = await Config.getGoogleMapsApiKey();
@@ -45,6 +44,12 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<void> getAddress() async {
+    if (apiKey.isEmpty) return;
+
+    setState(() {
+      isLoadingAddress = true;
+    });
+
     try {
       final value = await MapsApiServiceProvider().placeFromCoordinates(
         defaultLat,
@@ -56,12 +61,12 @@ class _MapScreenState extends State<MapScreen> {
 
       setState(() {
         placeFromCoordinates = value;
-        isLoading = false;
+        isLoadingAddress = false;
       });
     } catch (e) {
       if (mounted) {
         setState(() {
-          isLoading = false;
+          isLoadingAddress = false;
         });
       }
     }
@@ -70,20 +75,12 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-
-    _loadApiKey();
     defaultLat = widget.lat;
     defaultLng = widget.lng;
-    isLoading = widget.isFirstLoading;
 
-    if (!widget.isFirstLoading) {
-      getAddress();
-    } else {
-      setState(() {
-        isLoading = false;
-
-      });
-    }
+    _loadApiKey().then((_) {
+      getAddress(); // API 키 로드 후 주소 가져오기
+    });
   }
 
   @override
@@ -113,11 +110,10 @@ class _MapScreenState extends State<MapScreen> {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder:
-                    (context) => SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.75,
-                      child: MapsLocationScreen(apiKey: apiKey),
-                    ),
+                builder: (context) => SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  child: MapsLocationScreen(apiKey: apiKey),
+                ),
               );
             },
             child: const Padding(
@@ -127,94 +123,80 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ],
       ),
-      child:
-          isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : Stack(
-                children: [
-                  GoogleMap(
-                    mapType: MapType.normal,
-                    minMaxZoomPreference: const MinMaxZoomPreference(14, 18),
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(widget.lat, widget.lng),
-                      tilt: 0,
-                      zoom: 14.451926040649414,
-                    ),
-                    onCameraIdle: () {
-                      _debouncedGetAddress();
-                    },
-                    onCameraMove: (CameraPosition position) {
-                      _moveDebounce?.cancel();
-                      _moveDebounce = Timer(
-                        const Duration(milliseconds: 100),
-                        () {
-                          defaultLat = position.target.latitude;
-                          defaultLng = position.target.longitude;
-                        },
-                      );
-                    },
-                  ),
-
-                  const Center(
-                    child: Icon(Icons.location_on, color: Colors.red, size: 40),
-                  ),
-
-                  //
-                  if (placeFromCoordinates.results?.isNotEmpty == true)
-                    Positioned(
-                      bottom: 20,
-                      left: 16,
-                      right: 16,
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                '선택된 위치',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                placeFromCoordinates
-                                        .results?[0]
-                                        .formattedAddress ??
-                                    '주소를 가져오는 중...',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
+      child: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            minMaxZoomPreference: const MinMaxZoomPreference(14, 18),
+            initialCameraPosition: CameraPosition(
+              target: LatLng(widget.lat, widget.lng),
+              tilt: 0,
+              zoom: 14.451926040649414,
+            ),
+            onCameraIdle: () {
+              _debouncedGetAddress();
+            },
+            onCameraMove: (CameraPosition position) {
+              _moveDebounce?.cancel();
+              _moveDebounce = Timer(
+                const Duration(milliseconds: 100),
+                    () {
+                  defaultLat = position.target.latitude;
+                  defaultLng = position.target.longitude;
+                },
+              );
+            },
+          ),
+          const Center(
+            child: Icon(Icons.location_on, color: Colors.red, size: 40),
+          ),
+          if (placeFromCoordinates.results?.isNotEmpty == true)
+            Positioned(
+              bottom: 20,
+              left: 16,
+              right: 16,
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        '선택된 위치',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ),
-                ],
+                      const SizedBox(height: 4),
+                      Text(
+                        placeFromCoordinates.results?[0].formattedAddress ?? '주소를 가져오는 중...',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      if (isLoadingAddress)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: SizedBox(
+                            height: 2,
+                            child: LinearProgressIndicator(),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ),
+            ),
+        ],
+      ),
     );
-  }
-}
-
-class Config {
-  static const platform = MethodChannel('com.bapful.onbapsang/config');
-
-  static Future<String> getGoogleMapsApiKey() async {
-    try {
-      final String result = await platform.invokeMethod('getGoogleMapsApiKey');
-      return result;
-    } catch (e) {
-      return '';
-    }
   }
 }
