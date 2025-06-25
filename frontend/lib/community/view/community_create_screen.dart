@@ -22,11 +22,22 @@ class _ConsumerCommunityCreateScreenState
   List<AssetPathEntity> albums = <AssetPathEntity>[];
   List<AssetEntity> imageList = <AssetEntity>[];
   AssetEntity? selectedImage;
+  final ScrollController _scrollController = ScrollController();
+  int currentPage = 0;
+  bool isLoading = false;
+  bool hasMore = true;
+  final int pageSize = 60;
 
   @override
   void initState() {
     super.initState();
     _loadPhotos();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 300) {
+        _loadMorePhotos();
+      }
+    });
   }
 
   @override
@@ -57,13 +68,43 @@ class _ConsumerCommunityCreateScreenState
 
   Future<void> _pagingPhotos() async {
     if (albums.isEmpty) return;
-    imageList = await albums.first.getAssetListPaged(page: 0, size: 100);
+
+    currentPage = 0;
+    isLoading = false;
+    hasMore = true;
+
+    final imageList = await albums.first.getAssetListPaged(
+      page: currentPage,
+      size: pageSize,
+    );
     selectedImage = imageList.isNotEmpty ? imageList.first : null;
+    setState(() {});
+  }
+
+  Future<void> _loadMorePhotos() async {
+    if (isLoading || !hasMore || albums.isEmpty) return;
+
+    isLoading = true;
+    currentPage++;
+
+    final nextPage = await albums.first.getAssetListPaged(
+      page: currentPage,
+      size: pageSize,
+    );
+
+    if (nextPage.isEmpty) {
+      hasMore = false;
+    } else {
+      imageList.addAll(nextPage);
+    }
+
+    isLoading = false;
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+
     return DefaultLayout(
       appBar: CommunityAppBar(
         index: 0,
@@ -71,7 +112,51 @@ class _ConsumerCommunityCreateScreenState
         next: '다음',
         isFirst: true,
         function: () async {
-          context.pushNamed(CommunityCreateRecipeTagScreen.routeName, extra: selectedImage);
+          if (selectedImage == null) return;
+
+          final file = await selectedImage!.file;
+
+          if (file == null || !(await file.exists())) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('이미지 파일을 불러올 수 없습니다.')),
+              );
+              return;
+            }
+          }
+
+          final fileSizeInBytes = await file?.length();
+
+          if (fileSizeInBytes == null) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('이미지 용량을 확인할 수 없습니다.')),
+              );
+              return;
+            }
+            return;
+          }
+
+          final fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+
+          if (fileSizeInMB > 15.0) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '이미지 용량이 ${fileSizeInMB.toStringAsFixed(2)}MB입니다. 15MB 이하로 줄여주세요.',
+                  ),
+                ),
+              );
+              return;
+            }
+          }
+
+
+          if (context.mounted) {
+            context.pushNamed(CommunityCreateRecipeTagScreen.routeName, extra: selectedImage);
+          }
+
         },
       ),
       child: Column(
