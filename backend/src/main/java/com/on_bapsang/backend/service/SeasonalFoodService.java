@@ -25,7 +25,7 @@ public class SeasonalFoodService {
         String apiKey = "6f464a683f66b7c1b4fff9a85e09bcc2d2dc8e20893cc2e10df6fcb0b4cdfd67";
         String type = "xml";
         int start = 1;
-        int end = 5;
+        int end = 100;
         String monthStr = month + "월";
 
         String url = String.format(
