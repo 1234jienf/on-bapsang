@@ -5,11 +5,9 @@ import 'package:frontend/search/provider/search_normal_list_view_provider.dart';
 import 'package:frontend/search/search_recipe/component/search_recipe_card.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../common/component/pagination_string_list_view.dart';
 import '../../../recipe/view/recipe_detail_screen.dart';
 import '../../common/search_normal_pagination_list_view.dart';
 import '../../model/search_recipe_model.dart';
-import '../../provider/search_provider.dart';
 import '../provider/search_filter_apply_provider.dart';
 import '../provider/search_filter_provider.dart';
 

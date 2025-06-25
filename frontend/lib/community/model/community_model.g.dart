@@ -14,6 +14,7 @@ CommunityModel _$CommunityModelFromJson(Map<String, dynamic> json) =>
       nickname: json['nickname'] as String,
       content: json['content'] as String,
       profileImage: json['profileImage'] as String,
+      scrapped: json['scrapped'] as bool,
     );
 
 Map<String, dynamic> _$CommunityModelToJson(CommunityModel instance) =>
@@ -24,4 +25,5 @@ Map<String, dynamic> _$CommunityModelToJson(CommunityModel instance) =>
       'nickname': instance.nickname,
       'content': instance.content,
       'profileImage': instance.profileImage,
+      'scrapped': instance.scrapped,
     };

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/component/pagination_int_grid_view.dart';
 import 'package:frontend/community/provider/community_provider.dart';
 import 'package:frontend/community/view/community_detail_screen.dart';
@@ -6,16 +7,21 @@ import 'package:go_router/go_router.dart';
 
 import '../../../community/component/community_card.dart';
 
-class SearchCommunityScreen extends StatelessWidget {
+class SearchCommunityScreen extends ConsumerWidget {
   final String name;
 
   const SearchCommunityScreen({super.key, required this.name});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    Future.microtask(() {
+      ref.read(currentCommunityParamsProvider.notifier).state =
+          CommunityParams(keyword: name, sort: 'desc');
+    });
+
     return PaginationIntGridView(
       childAspectRatio: 175 / 275,
-      provider: communityProvider(CommunityParams(keyword: name, sort: 'desc')),
+      provider: communityProvider,
       itemBuilder: <CommunityModel>(_, index, model) {
         return GestureDetector(
           onTap: () {

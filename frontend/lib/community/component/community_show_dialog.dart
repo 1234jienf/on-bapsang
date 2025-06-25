@@ -31,7 +31,7 @@ Future<void> communityShowDialog(BuildContext context, WidgetRef ref, bool isNav
   );
 
   if (isNavigate && context.mounted) {
-    ref.read(communityProvider(CommunityParams(keyword : null, sort :'desc')));
+    ref.read(communityProvider);
     context.go('/community');
   }
 }

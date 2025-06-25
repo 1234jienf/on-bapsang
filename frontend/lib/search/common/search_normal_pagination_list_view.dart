@@ -3,12 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/model/string/cursor_pagination_normal_string_model.dart';
 import 'package:frontend/common/model/string/model_with_string_id.dart';
 import 'package:frontend/common/utils/pagination_string_utils.dart';
-import 'package:go_router/go_router.dart';
 
-import '../provider/search_keyword_remian_provider.dart';
 import '../provider/search_normal_pagination_list_view_provider.dart';
 import '../provider/search_switch_component_provider.dart';
-import '../search_recipe/view/search_recipe_screen.dart';
 
 typedef PaginationWidgetBuilder<T extends IModelWithStringId> =
     Widget Function(BuildContext context, int index, T model);
