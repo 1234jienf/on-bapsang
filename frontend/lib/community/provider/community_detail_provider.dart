@@ -6,8 +6,8 @@ import 'package:frontend/community/repository/community_detail_repository.dart';
 import '../../common/model/int/single_int_one_page_model.dart';
 
 final communityDetailProvider = StateNotifierProvider.family<
-    SingleIntOnePageNotifier<CommunityDetailModel>,
-    AsyncValue<SingleIntOnePageModel<CommunityDetailModel>>,
+  SingleIntOnePageNotifier<CommunityDetailModel>,
+  AsyncValue<SingleIntOnePageModel<CommunityDetailModel>>,
   String
 >((ref, id) {
   final repo = ref.watch(communityDetailRepositoryProvider);
@@ -18,5 +18,4 @@ final communityDetailProvider = StateNotifierProvider.family<
       return response;
     },
   );
-
 });

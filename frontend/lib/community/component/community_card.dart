@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/common/const/colors.dart';
+import 'package:frontend/community/provider/community_scrap_provider.dart';
 
 import '../model/community_model.dart';
+import '../provider/community_scrap_status_provider.dart';
 
-class CommunityCard extends StatelessWidget {
+class CommunityCard extends ConsumerWidget {
   final String nickname;
   final String title;
   final String imageUrl;
@@ -32,11 +36,9 @@ class CommunityCard extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return _renderComponent();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(communityScrapStatusProvider(id.toString()));
 
-  Widget _renderComponent() {
     return SizedBox(
       width: 175,
       height: 260,
@@ -59,7 +61,10 @@ class CommunityCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 2.0,
+                    ),
                     child: Row(
                       children: [
                         profileImage.isEmpty
@@ -89,7 +94,36 @@ class CommunityCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Icon(Icons.favorite_border_outlined, size: 20),
+
+                  GestureDetector(
+                    onTap: () {
+                      ref.read(communityScrapProvider).scrap(id: id.toString());
+                      ref.read(communityScrapStatusProvider(id.toString()).notifier).toggle();
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            state.scrapped ?
+                            '스크랩 취소' : '스크랩 성공',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          backgroundColor: primaryColor,
+                          duration: Duration(seconds: 1),
+                        ),
+                      );
+                    },
+                    child: Icon(
+                      state.scrapped
+                          ? Icons.bookmark
+                          : Icons.bookmark_border_outlined,
+                      size: 20,
+                      color: state.scrapped ? primaryColor : null,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 10.0),
@@ -102,7 +136,10 @@ class CommunityCard extends StatelessWidget {
                       title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Row(

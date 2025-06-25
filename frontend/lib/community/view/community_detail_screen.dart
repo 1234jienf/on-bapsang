@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../common/const/colors.dart';
+import '../../recipe/view/recipe_detail_screen.dart';
 import '../component/community_build_tag.dart';
 import '../component/community_comment.dart';
 import '../component/community_comment_inputbox.dart';
@@ -13,6 +14,8 @@ import '../model/community_detail_model.dart';
 import '../model/community_tag_position_model.dart';
 import '../provider/community_comment_provider.dart';
 import '../provider/community_detail_provider.dart';
+import '../provider/community_scrap_provider.dart';
+import '../provider/community_scrap_status_provider.dart';
 
 class CommunityDetailScreen extends ConsumerStatefulWidget {
   final String id;
@@ -27,388 +30,524 @@ class CommunityDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
-  final ScrollController controller = ScrollController();
-  final double horizontal = 16.0;
-  final FocusNode replyFocusNode = FocusNode();
-  late final CommunityTagPositionModel tag;
-  bool isShowTag = true;
+  static const double _horizontalPadding = 16.0;
+  static const double _profileImageSize = 32.0;
+  static const double _tagImageSize = 85.0;
+  static const double _commentInputHeight = 60.0;
+  static const double _tagDetailHeight = 90.0;
+  static const double _tagContentWidth = 210.0;
 
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode _replyFocusNode = FocusNode();
+
+  bool _isShowTag = true;
   int? _parentCommentId;
-  String _nickname = '';
+  String _replyToNickname = '';
+
+  double _previousKeyboardHeight = 0;
 
   @override
   void initState() {
     super.initState();
+    _loadCommunityData();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _replyFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _loadCommunityData() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(communityDetailProvider(widget.id).notifier).fetchData();
     });
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    replyFocusNode.dispose();
-    super.dispose();
-  }
-
   void _activateReplyMode(int parentCommentId, String nickname) {
     setState(() {
       _parentCommentId = parentCommentId;
-      _nickname = nickname;
+      _replyToNickname = nickname;
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      replyFocusNode.requestFocus();
+      _replyFocusNode.requestFocus();
     });
   }
 
   void _deactivateReplyMode() {
     setState(() {
       _parentCommentId = null;
-      _nickname = '';
+      _replyToNickname = '';
     });
-    replyFocusNode.unfocus();
+    _replyFocusNode.unfocus();
+  }
+
+  void _toggleTag() {
+    setState(() {
+      _isShowTag = !_isShowTag;
+    });
+  }
+
+  void _handleScrapToggle(String postId) async {
+    await ref.read(communityScrapProvider).scrap(id: postId);
+
+    ref.read(communityScrapStatusProvider(postId).notifier).toggle();
+  }
+
+  void _scrollToCommentSection() {
+    const headerHeight = 60.0;
+    final imageHeight = MediaQuery.of(context).size.width;
+    const tagSectionHeight = _tagDetailHeight + 12;
+
+    final totalHeight = headerHeight + imageHeight + tagSectionHeight;
+
+    _scrollController.animateTo(
+      totalHeight,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _handleKeyboardVisibilityChange(double keyboardHeight) {
+    if (keyboardHeight > _previousKeyboardHeight && keyboardHeight > 100) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToCommentSection();
+      });
+    }
+    _previousKeyboardHeight = keyboardHeight;
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(communityDetailProvider(widget.id)).value?.data;
+    final communityState = ref.watch(communityDetailProvider(widget.id));
+    final data = communityState.value?.data;
 
-    if (state == null) {
-      return DefaultLayout(child: Center(child: CircularProgressIndicator()));
+    if (data == null) {
+      return const DefaultLayout(
+        child: Center(child: CircularProgressIndicator()),
+      );
     }
 
+    final scrapStatus = ref.watch(communityScrapStatusProvider(widget.id));
+
     return DefaultLayout(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: GestureDetector(
-          onTap: () {
-            context.pop();
-          },
-          child: Icon(Icons.close_outlined),
-        ),
-        elevation: 0,
-        title: Text(
-          '게시물',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-        ),
-      ),
+      appBar: _buildAppBar(context),
       resizeToAvoidBottomInset: true,
-      bottomNavigationBar: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (_parentCommentId != null)
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  border: Border(
-                    bottom: BorderSide(color: gray300, width: 0.5),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.reply, size: 16, color: gray600),
-                    SizedBox(width: 8),
-                    Text(
-                      '$_nickname님에게 답글',
-                      style: TextStyle(fontSize: 14, color: gray600),
-                    ),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: _deactivateReplyMode,
-                      child: Icon(Icons.close, size: 18, color: gray600),
-                    ),
-                  ],
-                ),
-              ),
-            Padding(
-              padding: EdgeInsets.only(
-                bottom:
-                    MediaQuery.of(context).viewInsets.bottom > 100
-                        ? MediaQuery.of(context).viewInsets.bottom
-                        : 0,
-                left: 16,
-                right: 16,
-              ),
-              child: _commentInput(context, widget.id),
-            ),
-          ],
-        ),
-      ),
-      child: _content(state),
+      bottomNavigationBar: _buildBottomNavigationBar(context),
+      child: _buildContent(data, scrapStatus),
     );
   }
 
-  Widget _commentInput(BuildContext context, String id) {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.white,
+      elevation: 0,
+      leading: IconButton(
+        onPressed: () => context.pop(),
+        icon: const Icon(Icons.close_outlined),
+        tooltip: '닫기',
+      ),
+      title: const Text(
+        '게시물',
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+      ),
+    );
+  }
+
+  Widget _buildBottomNavigationBar(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final keyboardHeight = mediaQuery.viewInsets.bottom;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleKeyboardVisibilityChange(keyboardHeight);
+    });
+
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (_parentCommentId != null) _buildReplyIndicator(),
+          Container(
+            padding: EdgeInsets.only(
+              bottom: keyboardHeight > 0 ? keyboardHeight : 0,
+              left: _horizontalPadding,
+              right: _horizontalPadding,
+            ),
+            child: _buildCommentInput(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReplyIndicator() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 60,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.0)),
-      alignment: Alignment.center,
+      padding: const EdgeInsets.only(left: _horizontalPadding),
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        border: Border(bottom: BorderSide(color: gray300, width: 0.5)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.reply, size: 16, color: gray700),
+              const SizedBox(width: 8),
+              Text(
+                '$_replyToNickname님에게 답글',
+                style: TextStyle(fontSize: 14, color: gray700),
+              ),
+            ],
+          ),
+          IconButton(
+            onPressed: _deactivateReplyMode,
+            icon: Icon(Icons.close, size: 18, color: gray700),
+            tooltip: '답글 취소',
+            constraints: const BoxConstraints(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCommentInput() {
+    return SizedBox(
+      height: _commentInputHeight,
       child: CommunityCommentInputbox(
-        contentWord:
-            _parentCommentId !=
-                    null // 🆕 수정
-                ? '대댓글을 입력하세요'
-                : '댓글을 달아주세요',
+        contentWord: _parentCommentId != null ? '대댓글을 입력하세요' : '댓글을 달아주세요',
         commentId: _parentCommentId,
-        replyFocusNode: _parentCommentId != null ? replyFocusNode : null,
-        id: id,
+        replyFocusNode: _parentCommentId != null ? _replyFocusNode : null,
+        id: widget.id,
         onCommentSubmit: _deactivateReplyMode,
       ),
     );
   }
 
-  Widget _content(CommunityDetailModel state) {
-    final imageWidth = MediaQuery.of(context).size.width;
+  Widget _buildContent(CommunityDetailModel data, ScrapStatus scrapStatus) {
     return CustomScrollView(
-      controller: controller,
+      controller: _scrollController,
       slivers: [
-        SliverToBoxAdapter(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: horizontal,
-                  vertical: 8.0,
-                ),
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child:
-                          state.profileImage.isEmpty
-                              ? Icon(Icons.account_circle_outlined, size: 32)
-                              : Image.network(
-                                state.profileImage,
-                                width: 32,
-                                height: 32,
-                                fit: BoxFit.cover,
-                              ),
-                    ),
-                    const SizedBox(width: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(state.nickname, style: TextStyle(fontSize: 14)),
-                        Text(
-                          DateFormat('yy년 M월 d일').format(state.createdAt),
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+        _buildHeader(data),
+        _buildImageSection(data),
+        _buildTagSection(data),
+        _buildDivider(),
+        _buildContentSection(data, scrapStatus),
+        _buildDivider(),
+        _buildCommentSection(data),
+      ],
+    );
+  }
+
+  Widget _buildHeader(CommunityDetailModel data) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: _horizontalPadding,
+          vertical: 8.0,
+        ),
+        child: Row(
+          children: [
+            _buildProfileImage(data.profileImage),
+            const SizedBox(width: 10),
+            _buildUserInfo(data),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileImage(String profileImageUrl) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child:
+          profileImageUrl.isEmpty
+              ? const Icon(
+                Icons.account_circle_outlined,
+                size: _profileImageSize,
+              )
+              : Image.network(
+                profileImageUrl,
+                width: _profileImageSize,
+                height: _profileImageSize,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.account_circle_outlined,
+                    size: _profileImageSize,
+                  );
+                },
               ),
-              Stack(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isShowTag = !isShowTag;
-                      });
-                    },
-                    child: Image.network(
-                      state.imageUrl,
-                      fit: BoxFit.cover,
-                      width: imageWidth,
-                      height: imageWidth,
-                    ),
-                  ),
+    );
+  }
 
-                  CommunityBuildTag(
-                    tag: CommunityTagPositionModel(
-                      x: state.x,
-                      y: state.y,
-                      name: state.recipeTag,
-                      imageUrl: state.recipeImageUrl,
-                      recipeId: state.id.toString(),
-                    ),
-                    isVisible: isShowTag,
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 12),
-            ],
-          ),
+  Widget _buildUserInfo(CommunityDetailModel data) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          data.nickname,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
-
-        SliverPadding(
-          padding: EdgeInsets.only(left: horizontal),
-          sliver: _tagDetail(state),
-        ),
-
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: horizontal,
-              vertical: 6.0,
-            ),
-            child: const Divider(thickness: 0.5, color: Colors.grey),
-          ),
-        ),
-
-        _contentDetail(state),
-
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: horizontal,
-              vertical: 6.0,
-            ),
-            child: Column(
-              children: [const Divider(thickness: 0.5, color: Colors.grey)],
-            ),
-          ),
-        ),
-        CommunityCommentListViewFamily(
-          itemBuilder: <CommunityCommentModel>(_, index, model) {
-            return GestureDetector(
-              onLongPress: () {
-                _activateReplyMode(model.id, model.nickname);
-              },
-              child: Container(
-                color:
-                    _parentCommentId == model.id
-                        ? Colors.blue.withOpacity(0.1)
-                        : Colors.transparent,
-                child: CommunityComment.fromModel(model: model),
-              ),
-            );
-          },
-          provider: communityCommentProvider,
-          childAspectRatio: 175 / 250,
-          id: state.id.toString(),
+        Text(
+          DateFormat('yy년 M월 d일').format(data.createdAt),
+          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
         ),
       ],
     );
   }
 
-  Widget _tagDetail(CommunityDetailModel state) {
+  Widget _buildImageSection(CommunityDetailModel data) {
     return SliverToBoxAdapter(
-      child: SizedBox(
-        height: 90,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: 1,
-          itemBuilder: (_, index) {
-            return Padding(
-              padding: const EdgeInsets.only(right: 12.0),
-              child: GestureDetector(
-                onTap: () {},
-                child: Row(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20.0),
-                      child: Image.network(
-                        state.recipeImageUrl,
-                        width: 85,
-                        height: 85,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 210,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                state.recipeTag,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+      child: Stack(
+        children: [
+          GestureDetector(
+            onTap: _toggleTag,
+            child: AspectRatio(
+              aspectRatio: 1.0,
+              child: Image.network(
+                data.imageUrl,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[300],
+                    child: const Center(child: Icon(Icons.image_not_supported)),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ),
+          CommunityBuildTag(
+            tag: CommunityTagPositionModel(
+              x: data.x,
+              y: data.y,
+              name: data.recipeTag,
+              imageUrl: data.recipeImageUrl,
+              recipeId: data.id.toString(),
+            ),
+            isVisible: _isShowTag,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTagSection(CommunityDetailModel data) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: _horizontalPadding,
+        vertical: 26,
+      ),
+      sliver: SliverToBoxAdapter(
+        child: SizedBox(
+          height: _tagDetailHeight,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 1,
+            itemBuilder: (_, index) {
+              return _buildTagItem(data);
+            },
+          ),
         ),
       ),
     );
   }
 
-  Widget _contentDetail(CommunityDetailModel state) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: horizontal),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  state.commentCount.toString(),
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(width: 4.0),
-                Icon(Icons.comment_outlined, size: 24),
-                const SizedBox(width: 10.0),
-                Text(
-                  state.scrapCount.toString(),
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
-                ),
-                state.scrapped
-                    ? Icon(Icons.bookmark, size: 26)
-                    : Icon(Icons.bookmark_border_outlined, size: 26),
-              ],
+  Widget _buildTagItem(CommunityDetailModel data) {
+    return GestureDetector(
+      onTap: () {
+        context.pushNamed(
+          RecipeDetailScreen.routeName,
+          pathParameters: {'id': data.recipeId.toString()},
+        );
+      },
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20.0),
+            child: Image.network(
+              data.recipeImageUrl,
+              width: _tagImageSize,
+              height: _tagImageSize,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Container(
+                  width: _tagImageSize,
+                  height: _tagImageSize,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  child: const Icon(Icons.image_not_supported),
+                );
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
+          ),
+          SizedBox(
+            width: _tagContentWidth,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: SizedBox(
-                      width: 270,
-                      child: Text(
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        state.title,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                  Text(
+                    data.recipeTag,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: SizedBox(
-                      width: 350,
-                      child: Text(
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        state.content,
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                   ),
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
+        child: const Divider(thickness: 0.5, color: Colors.grey),
+      ),
+    );
+  }
+
+  Widget _buildContentSection(
+    CommunityDetailModel data,
+    ScrapStatus scrapStatus,
+  ) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: _horizontalPadding,
+          vertical: 26.0,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildContentHeader(data, scrapStatus),
+            const SizedBox(height: 10),
+            _buildContentBody(data),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildContentHeader(
+    CommunityDetailModel data,
+    ScrapStatus scrapStatus,
+  ) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: Text(
+            data.title,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: 16),
+        _buildInteractionButtons(data, scrapStatus),
+      ],
+    );
+  }
+
+  Widget _buildInteractionButtons(
+    CommunityDetailModel data,
+    ScrapStatus scrapStatus,
+  ) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          data.commentCount.toString(),
+          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(width: 4.0),
+        const Icon(Icons.comment_outlined, size: 24),
+        const SizedBox(width: 16.0),
+
+        Text(
+          scrapStatus.scrapCount.toString(),
+          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(width: 4.0),
+
+        GestureDetector(
+          onTap: () {
+            _handleScrapToggle(data.id.toString());
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  scrapStatus.scrapped ?
+                  '스크랩 취소' : '스크랩 성공',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                backgroundColor: primaryColor,
+                duration: Duration(seconds: 1),
+              ),
+            );
+          },
+          child: Icon(
+            scrapStatus.scrapped
+                ? Icons.bookmark
+                : Icons.bookmark_border_outlined,
+            size: 26,
+            color: scrapStatus.scrapped ? primaryColor : null,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildContentBody(CommunityDetailModel data) {
+    return SizedBox(
+      width: double.infinity,
+      child: Text(
+        data.content,
+        style: TextStyle(fontSize: 16),
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
+  Widget _buildCommentSection(CommunityDetailModel data) {
+    return CommunityCommentListViewFamily(
+      itemBuilder: <CommunityCommentModel>(_, index, model) {
+        return GestureDetector(
+          onLongPress: () {
+            _activateReplyMode(model.id, model.nickname);
+          },
+          child: Container(
+            color:
+                _parentCommentId == model.id
+                    ? Colors.blue.withOpacity(0.1)
+                    : Colors.transparent,
+            child: CommunityComment.fromModel(model: model),
+          ),
+        );
+      },
+      provider: communityCommentProvider,
+      childAspectRatio: 175 / 250,
+      id: data.id.toString(),
     );
   }
 }
