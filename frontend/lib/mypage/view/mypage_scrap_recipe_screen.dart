@@ -78,9 +78,12 @@ class _MypageScrapRecipeScreenState extends ConsumerState<MypageScrapRecipeScree
           title: Text('스크랩한 레시피'),
           backgroundColor: Colors.white,
         ),
-        child: ListView(
-          controller: controller,
-          children: recipeSection,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          child: ListView(
+            controller: controller,
+            children: recipeSection,
+          ),
         ),
     );
   }

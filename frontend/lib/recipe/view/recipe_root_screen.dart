@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/home/component/category_icons.dart';
+import 'package:frontend/recipe/provider/recipe_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -46,62 +48,68 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
     return DefaultLayout(
         appBar: RecipeAppbar(isImply: false, searchMessage: '레시피를 검색해보세요!',),
         backgroundColor: Colors.white,
-        child: CustomScrollView(
-          controller: controller,
-          slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  SizedBox(height: componentGap),
-                  // 제철 레시피 이미지 들어가야함
-                  GestureDetector(
-                    onTap: () {
-                      context.pushNamed(
-                        RecipeSeasonListScreen.routeName
-                      );
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: sideGap),
-                      child: Container(
-                        width: 360,
-                        height: 140,
-                        decoration: BoxDecoration(color: Colors.grey),
-                        child: Image.asset(
-                          'asset/img/season_recipe_banner_image.png',
-                          width: double.infinity,
-                          fit: BoxFit.cover,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(popularRecipesProvider);
+            ref.invalidate(recommendRecipesProvider);
+          },
+          child: CustomScrollView(
+            controller: controller,
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    SizedBox(height: componentGap),
+                    GestureDetector(
+                      onTap: () {
+                        context.pushNamed(
+                          RecipeSeasonListScreen.routeName
+                        );
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: sideGap),
+                        child: Container(
+                          decoration: BoxDecoration(color: Colors.grey),
+                          child: Image.asset(
+                            'asset/img/season_recipe_banner.png',
+                            width: double.infinity,
+                            fit: BoxFit.fitWidth,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: componentGap),
+                    SizedBox(height: componentGap),
 
-                  // 인기 레시피
-                  titleWidget(
-                    title: '인기 레시피',
-                    fontSize: 16,
-                    sidePadding: sideGap,
-                  ),
-                  SizedBox(height: titleTextGap),
-                  RecipePopularList(),
-                  SizedBox(height: componentGap),
+                    CategoryIcons(type: 'recipe'),
+                    SizedBox(height: componentGap),
 
-                  // AI 추천 레시피
-                  titleWidget(
-                    title: 'AI 추천 레시피',
-                    fontSize: 16,
-                    sidePadding: sideGap,
-                  ),
-                  SizedBox(height: titleTextGap),
-                  RecipeRecommendList(),
-                  SizedBox(height: componentGap),
+                    // 인기 레시피
+                    titleWidget(
+                      title: '요즘 핫한 인기 레시피',
+                      fontSize: 20,
+                      sidePadding: sideGap,
+                    ),
+                    SizedBox(height: titleTextGap),
+                    RecipePopularList(),
+                    SizedBox(height: componentGap),
 
-                  // 컨텐츠 추가 예정
-                ]),
+                    // AI 추천 레시피
+                    titleWidget(
+                      title: 'AI 추천 레시피',
+                      fontSize: 20,
+                      sidePadding: sideGap,
+                    ),
+                    SizedBox(height: titleTextGap),
+                    RecipeRecommendList(),
+                    SizedBox(height: componentGap),
+
+                    // 컨텐츠 추가 예정
+                  ]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         )
     );
   }

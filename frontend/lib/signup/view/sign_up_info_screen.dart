@@ -29,6 +29,8 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
   final TextEditingController nicknameController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
+  String? selectedCountry;
+
 
   String? usernameError;
   String? passwordError;
@@ -36,6 +38,7 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
   String? nicknameError;
   String? ageError;
   String? locationError;
+  String? countryError;
 
   @override
   void initState() {
@@ -45,6 +48,7 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
       passwordController.text = widget.initialData!.password ?? '';
       nicknameController.text = widget.initialData!.nickname ?? '';
       locationController.text = widget.initialData!.location ?? '';
+      selectedCountry = widget.initialData!.country;
       if (widget.initialData!.age != null) {
         ageController.text = widget.initialData!.age.toString();
       }
@@ -104,6 +108,11 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
     return null;
   }
 
+  String? validateCountry(String? value) {
+    if (value == null || value.isEmpty) return '언어를 선택해주세요';
+    return null;
+  }
+
   bool validateAll() {
     setState(() {
       usernameError = validateUsername(usernameController.text);
@@ -111,13 +120,15 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
       passwordConfirmError = validatePasswordConfirm(passwordConfirmController.text);
       nicknameError = validateNickname(nicknameController.text);
       ageError = validateAge(ageController.text);
+      countryError = validateCountry(selectedCountry);
     });
 
     return usernameError == null &&
         passwordError == null &&
         passwordConfirmError == null &&
         nicknameError == null &&
-        ageError == null;
+        ageError == null &&
+        countryError == null;
   }
 
   void onNextPressed() {
@@ -126,7 +137,7 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
         username: usernameController.text,
         password: passwordController.text,
         nickname: nicknameController.text,
-        country: '한국',
+        country: selectedCountry!,
         age: int.parse(ageController.text),
         location: '한국',
       );
@@ -219,6 +230,50 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
                           }
                         },
                       ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '언어 선택',
+                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 2),
+                          DropdownButtonFormField<String>(
+                            value: selectedCountry,
+                            hint: const Text('언어를 선택해주세요', style: TextStyle(fontSize: 14.0),),
+                            items: const [
+                              DropdownMenuItem(value: 'KO', child: Text('한국어')),
+                              DropdownMenuItem(value: 'EN', child: Text('영어')),
+                              DropdownMenuItem(value: 'ZH', child: Text('중국어')),
+                              DropdownMenuItem(value: 'JA', child: Text('일본어')),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                selectedCountry = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 5),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: countryError != null ? Colors.red : Colors.black,
+                                  width: 1,
+                                ),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: countryError != null ? Colors.red : Colors.blue,
+                                  width: 2,
+                                ),
+                              ),
+                              errorText: countryError,
+                              errorStyle: const TextStyle(fontSize: 12.0),
+                            ),
+                          ),
+                          const SizedBox(height: 24.0),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -268,9 +323,9 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
       children: [
         Text(
           title,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 2),
         TextField(
           controller: controller,
           obscureText: obscureText,
@@ -280,7 +335,7 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
             hintText: hintText,
             hintStyle: const TextStyle(fontSize: 14.0),
             isDense: true,
-            contentPadding: const EdgeInsets.symmetric(vertical: 10),
+            contentPadding: const EdgeInsets.symmetric(vertical: 5),
             enabledBorder: UnderlineInputBorder(
               borderSide: BorderSide(
                 color: errorText != null ? Colors.red : Colors.black,
@@ -297,7 +352,7 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
             errorStyle: const TextStyle(fontSize: 12.0),
           ),
         ),
-        const SizedBox(height: 24.0),
+        const SizedBox(height: 30.0),
       ],
     );
   }

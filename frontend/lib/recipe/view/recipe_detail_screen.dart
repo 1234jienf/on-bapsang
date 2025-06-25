@@ -84,284 +84,285 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
             )
           ],
         ),
-        body: recipeAsync.when(
-          loading: () => Center(child: CircularProgressIndicator()),
-          error: (err, stack) => Center(child: Text('$err')),
-          data: (recipe) => CustomScrollView(
-            controller: controller,
-            slivers: [
-              // 레시피 이미지
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 402,
-                  child: Image.network(
-                    recipe.image_url,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: Colors.grey[300],
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: Colors.grey[300],
-                        child: Icon(Icons.error, size: 50),
-                      );
-                    },
+        body: RefreshIndicator(
+          onRefresh: () async {
+            ref.invalidate(recipeDetailProvider);
+          },
+          child: recipeAsync.when(
+            loading: () => Center(child: CircularProgressIndicator()),
+            error: (err, stack) => Center(child: Text('$err')),
+            data: (recipe) => CustomScrollView(
+              controller: controller,
+              slivers: [
+                // 레시피 이미지
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 402,
+                    child: Image.network(
+                      recipe.image_url,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return Container(
+                          color: Colors.grey[300],
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.grey[300],
+                          child: Icon(Icons.error, size: 50),
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    SizedBox(height: componentGap),
-                    // 레시피 제목
-                    Text(
-                      recipe.name,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(height: componentGap),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      SizedBox(height: componentGap),
+                      // 레시피 제목
+                      Text(
+                        recipe.name,
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700),
+                      ),
+                      SizedBox(height: componentGap),
 
-                    // 레시피 설명(review, descriptions?)
-                    Text(
-                      recipe.review,
-                      style: TextStyle(fontSize: 16, color: Colors.black45),
-                    ),
-                    SizedBox(height: componentGap),
+                      // 레시피 설명(review, descriptions?)
+                      Text(
+                        recipe.review,
+                        style: TextStyle(fontSize: 16, color: Colors.black45),
+                      ),
+                      SizedBox(height: componentGap),
 
-                    // 레시피 정보
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        infoWidget(title: '분량', content: recipe.portion),
-                        infoWidget(title: '시간', content: recipe.time == 'nan' ? '-' : recipe.time),
-                        infoWidget(title: '난이도', content: recipe.difficulty),
-                      ],
-                    ),
-                    SizedBox(height: componentGap),
-                  ]),
-                ),
-              ),
-
-              // 구분선
-              SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  height: 5,
-                  decoration: BoxDecoration(color: Colors.black12),
-                ),
-              ),
-
-              // 재료
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    SizedBox(height: componentGap),
-                    const Text(
-                      '재료',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(height: titleTextGap),
-
-                    ...List.generate(recipe.ingredients.length * 2 - 1, (index) {
-                      if (index.isEven) {
-                        final i = index ~/ 2;
-                        final ingredient = recipe.ingredients[i];
-                        return gradientWidget(
-                          context: context,
-                          ingredientId: ingredient.ingredientId,
-                          name: ingredient.name,
-                          quantity: ingredient.amount,
-                        );
-                      } else {
-                        // 구분선
-                        return Container(
-                          height: 1.0,
-                          decoration: const BoxDecoration(color: Colors.black12),
-                        );
-                      }
-                    }),
-
-                    SizedBox(height: componentGap),
-                  ]),
-                ),
-              ),
-
-              // 구분선
-              SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  height: 5,
-                  decoration: BoxDecoration(color: Colors.black12),
-                ),
-              ),
-
-              // 조리순서
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    SizedBox(height: componentGap),
-                    Text(
-                      '조리순서',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                    ),
-                    SizedBox(height: componentGap),
-                    ...List.generate(recipe.instruction.length, (index) {
-                      return Column(
+                      // 레시피 정보
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            width: double.infinity,
-                            height: 60.0,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '${index + 1}',
-                                  style: TextStyle(
-                                    fontSize: 17.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 15.0),
-                                Expanded(
-                                  child: Text(
-                                    recipe.instruction[index],
-                                    style: TextStyle(
-                                      fontSize: 14
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          infoWidget(title: '분량', content: recipe.portion == 'nan' ? '2인분' : recipe.portion),
+                          infoWidget(title: '시간', content: recipe.time == 'nan' ? '-' : recipe.time),
+                          infoWidget(title: '난이도', content: recipe.difficulty),
                         ],
-                      );
-                    })
-                  ]),
+                      ),
+                      SizedBox(height: componentGap),
+                    ]),
+                  ),
                 ),
-              ),
 
-              // 구분선 3
-              SliverToBoxAdapter(
-                child: Container(
-                  width: double.infinity,
-                  height: 5,
-                  decoration: BoxDecoration(color: Colors.black12),
+                // 구분선
+                SliverToBoxAdapter(
+                  child: Container(
+                    width: double.infinity,
+                    height: 5,
+                    decoration: BoxDecoration(color: Colors.black12),
+                  ),
                 ),
-              ),
 
-              // 후기
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    SizedBox(height: componentGap),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '레시피 후기 ${recipe.reviewCount}',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                        ),
-                        TextButton(
-                            onPressed: (){
-                              // 커뮤니티 글 쓰는 페이지로 보내주기
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              foregroundColor: Colors.white,
-                            ),
-                            child: Text('리뷰쓰기')
-                        )
-                      ],
-                    ),
-                    SizedBox(height: componentGap),
+                // 재료
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      SizedBox(height: componentGap),
+                      const Text(
+                        '재료',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                      ),
+                      SizedBox(height: titleTextGap),
 
-                    recipe.reviews.isNotEmpty
-                        ? Column(
-                      children: List.generate((recipe.reviews.length + 2) ~/ 3, (i) {
+                      ...List.generate(recipe.ingredients.length * 2 - 1, (index) {
+                        if (index.isEven) {
+                          final i = index ~/ 2;
+                          final ingredient = recipe.ingredients[i];
+                          return gradientWidget(
+                            context: context,
+                            ingredientId: ingredient.ingredientId,
+                            name: ingredient.name,
+                            quantity: ingredient.amount,
+                          );
+                        } else {
+                          // 구분선
+                          return Container(
+                            height: 1.0,
+                            decoration: const BoxDecoration(color: Colors.black12),
+                          );
+                        }
+                      }),
+
+                      SizedBox(height: componentGap),
+                    ]),
+                  ),
+                ),
+
+                // 구분선
+                SliverToBoxAdapter(
+                  child: Container(
+                    width: double.infinity,
+                    height: 5,
+                    decoration: BoxDecoration(color: Colors.black12),
+                  ),
+                ),
+
+                // 조리순서
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      SizedBox(height: componentGap),
+                      Text(
+                        '조리순서',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                      ),
+                      SizedBox(height: componentGap),
+                      ...List.generate(recipe.instruction.length, (index) {
+                        final cleanedText = recipe.instruction[index].replaceAll("*", "");
+
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 15.0),
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Row(
-                            children: List.generate(3, (j) {
-                              int index = i * 3 + j;
-
-                              if (index >= recipe.reviews.length) {
-                                return Expanded(child: SizedBox());
-                              }
-
-                              final imageUrl = recipe.reviews[index].imageUrl;
-
-                              return Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      context.pushNamed(
-                                        CommunityDetailScreen.routeName,
-                                        pathParameters: {'id': recipe.reviews[index].id.toString()},
-                                      );
-                                    },
-                                    child: Image.network(
-                                      imageUrl,
-                                      fit: BoxFit.cover,
-                                      loadingBuilder: (context, child, loadingProgress) {
-                                        if (loadingProgress == null) return child;
-                                        return Container(
-                                          height: 100,
-                                          color: Colors.grey[300],
-                                          child: Center(child: CircularProgressIndicator()),
-                                        );
-                                      },
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Container(
-                                          height: 100,
-                                          color: Colors.grey[300],
-                                          child: Icon(Icons.error, size: 50),
-                                        );
-                                      },
-                                    ),
-                                  ),
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${index + 1}',
+                                style: TextStyle(
+                                  fontSize: 17.0,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              );
-                            }),
+                              ),
+                              SizedBox(width: 15.0),
+                              Expanded(
+                                child: Text(
+                                  cleanedText,
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       }),
-                    )
-                        : Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Text('아직 작성된 리뷰가 없습니다.'),
-                    ),
-
-                    SizedBox(height: titleTextGap),
-
-                    recipe.reviewCount > 9
-                    ? InkWell(
-                      onTap: (){
-                        // 여기서 커뮤니티 페이지로 넘겨야 함.
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        height: 50,
-                        decoration: BoxDecoration(border: Border.all(color: Colors.black12, width: 1.0)),
-                        child: Center(child: Text('더보기')),
-                      ),
-                    )
-                    : SizedBox(height: 10.0,),
-                    SizedBox(height: componentGap),
-                  ]),
+                      SizedBox(height: componentGap),
+                    ]),
+                  ),
                 ),
-              ),
-            ],
+
+                // 구분선 3
+                SliverToBoxAdapter(
+                  child: Container(
+                    width: double.infinity,
+                    height: 5,
+                    decoration: BoxDecoration(color: Colors.black12),
+                  ),
+                ),
+
+                // 후기
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      SizedBox(height: componentGap),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '레시피 후기 ${recipe.reviewCount}',
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                          ),
+                          TextButton(
+                              onPressed: (){
+                                // 커뮤니티 글 쓰는 페이지로 보내주기
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                foregroundColor: Colors.white,
+                              ),
+                              child: Text('리뷰쓰기')
+                          )
+                        ],
+                      ),
+                      SizedBox(height: componentGap),
+
+                      recipe.reviews.isNotEmpty
+                          ? Column(
+                        children: List.generate((recipe.reviews.length + 2) ~/ 3, (i) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 15.0),
+                            child: Row(
+                              children: List.generate(3, (j) {
+                                int index = i * 3 + j;
+
+                                if (index >= recipe.reviews.length) {
+                                  return Expanded(child: SizedBox());
+                                }
+
+                                final imageUrl = recipe.reviews[index].imageUrl;
+
+                                return Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        context.pushNamed(
+                                          CommunityDetailScreen.routeName,
+                                          pathParameters: {'id': recipe.reviews[index].id.toString()},
+                                        );
+                                      },
+                                      child: Image.network(
+                                        imageUrl,
+                                        fit: BoxFit.cover,
+                                        loadingBuilder: (context, child, loadingProgress) {
+                                          if (loadingProgress == null) return child;
+                                          return Container(
+                                            height: 100,
+                                            color: Colors.grey[300],
+                                            child: Center(child: CircularProgressIndicator()),
+                                          );
+                                        },
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            height: 100,
+                                            color: Colors.grey[300],
+                                            child: Icon(Icons.error, size: 50),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ),
+                          );
+                        }),
+                      )
+                          : Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Text('아직 작성된 리뷰가 없습니다.'),
+                      ),
+
+                      SizedBox(height: titleTextGap),
+
+                      recipe.reviewCount > 9
+                      ? InkWell(
+                        onTap: (){
+                          // 여기서 커뮤니티 페이지로 넘겨야 함.
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 50,
+                          decoration: BoxDecoration(border: Border.all(color: Colors.black12, width: 1.0)),
+                          child: Center(child: Text('더보기')),
+                        ),
+                      )
+                      : SizedBox(height: 10.0,),
+                      SizedBox(height: componentGap),
+                    ]),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       persistentFooterButtons: recipeAsync.when (
@@ -423,12 +424,12 @@ Widget infoWidget({
         title,
         style: TextStyle(fontSize: 16, color: Colors.black45),
       ),
-      SizedBox(width: 6.0,),
+      SizedBox(width: 10.0,),
       Text(
         content,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
       ),
-      SizedBox(width: 12.0,),
+      SizedBox(width: 15.0,),
     ],
   );
 }

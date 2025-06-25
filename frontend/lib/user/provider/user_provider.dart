@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/common/const/securetoken.dart';
 import 'package:frontend/common/secure_storage/secure_storage.dart';
+import 'package:frontend/mypage/provider/mypage_provider.dart';
 import 'package:frontend/user/repository/auth_repository.dart';
 import 'package:frontend/user/repository/user_repository.dart';
 
@@ -16,6 +17,7 @@ final userProvider = StateNotifierProvider<UserStateNotifier, UserModelBase?>((
   final userRepository = ref.watch(userRepositoryProvider);
 
   return UserStateNotifier(
+    ref: ref,
     storage: storage,
     authRepository: authRepository,
     userRepository: userRepository,
@@ -23,15 +25,18 @@ final userProvider = StateNotifierProvider<UserStateNotifier, UserModelBase?>((
 });
 
 class UserStateNotifier extends StateNotifier<UserModelBase?> {
+  final Ref _ref;
   final FlutterSecureStorage storage;
   final AuthRepository authRepository;
   final UserRepository userRepository;
 
   UserStateNotifier({
+    required Ref ref,
     required this.storage,
     required this.authRepository,
     required this.userRepository,
-  }) : super(UserModelLoading()) {
+  }) : _ref = ref,
+        super(UserModelLoading()) {
     getMe();
   }
 
@@ -66,6 +71,9 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
 
       final userResp = await userRepository.getMe();
       state = userResp;
+
+      _ref.invalidate(mypageInfoProvider);  // 마이페이지 정보 강제 새로고침
+
       return userResp;
     } catch (e) {
       state = UserModelError(message: '로그인에 실패했습니다');
@@ -80,6 +88,8 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       storage.delete(key: ACCESS_TOKEN),
       storage.delete(key: REFRESH_TOKEN),
     ]);
+
+    _ref.invalidate(mypageInfoProvider);
   }
 
   Future<void> signup({
