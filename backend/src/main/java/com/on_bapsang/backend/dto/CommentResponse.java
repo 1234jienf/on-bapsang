@@ -2,6 +2,7 @@
 package com.on_bapsang.backend.dto;
 
 import com.on_bapsang.backend.entity.Comment;
+import com.on_bapsang.backend.i18n.Translatable;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,10 @@ import java.util.stream.Collectors;
 @Getter
 public class CommentResponse {
     private final Long id;
+
+    @Translatable
     private final String content;
+
     private final String nickname;
     private final String profileImage;
     private final LocalDateTime createdAt;

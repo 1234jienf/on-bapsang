@@ -29,4 +29,4 @@ ENV REDIS_PORT=6379
 COPY --from=builder /home/app/build/libs/*.jar app.jar
 
 EXPOSE 8081
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "--add-opens=java.base/java.util=ALL-UNNAMED", "-jar", "app.jar"]
