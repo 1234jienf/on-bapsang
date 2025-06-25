@@ -474,15 +474,15 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
       children: [
         Text(
           data.commentCount.toString(),
-          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
         ),
         const SizedBox(width: 4.0),
-        const Icon(Icons.comment_outlined, size: 24),
-        const SizedBox(width: 16.0),
+        const Icon(Icons.comment_outlined, size: 20),
+        const SizedBox(width: 8.0),
 
         Text(
           scrapStatus.scrapCount.toString(),
-          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
+          style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
         ),
         const SizedBox(width: 4.0),
 
@@ -509,7 +509,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
             scrapStatus.scrapped
                 ? Icons.bookmark
                 : Icons.bookmark_border_outlined,
-            size: 26,
+            size: 20,
             color: scrapStatus.scrapped ? primaryColor : null,
           ),
         ),
@@ -518,13 +518,16 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
   }
 
   Widget _buildContentBody(CommunityDetailModel data) {
-    return SizedBox(
-      width: double.infinity,
-      child: Text(
-        data.content,
-        style: TextStyle(fontSize: 16),
-        maxLines: 3,
-        overflow: TextOverflow.ellipsis,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: Text(
+          data.content,
+          style: TextStyle(fontSize: 16),
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }
