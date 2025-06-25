@@ -29,7 +29,8 @@ class CommunityDetailScreen extends ConsumerStatefulWidget {
       _CommunityDetailScreenState();
 }
 
-class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
+class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
+    with WidgetsBindingObserver {
   static const double _horizontalPadding = 16.0;
   static const double _profileImageSize = 32.0;
   static const double _tagImageSize = 85.0;
@@ -43,20 +44,33 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
   bool _isShowTag = true;
   int? _parentCommentId;
   String _replyToNickname = '';
-
   double _previousKeyboardHeight = 0;
+  bool _isReplying = false;
 
   @override
   void initState() {
     super.initState();
     _loadCommunityData();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
     _replyFocusNode.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
+    if (_replyFocusNode.hasFocus) {
+      _handleKeyboardVisibilityChange(keyboardHeight);
+    }
   }
 
   void _loadCommunityData() {
@@ -69,6 +83,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
     setState(() {
       _parentCommentId = parentCommentId;
       _replyToNickname = nickname;
+      _isReplying = true;
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -111,6 +126,11 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
   }
 
   void _handleKeyboardVisibilityChange(double keyboardHeight) {
+    if (_isReplying) {
+      _isReplying = false;
+      return;
+    }
+
     if (keyboardHeight > _previousKeyboardHeight && keyboardHeight > 100) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollToCommentSection();
@@ -140,6 +160,30 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
     );
   }
 
+  Widget _buildContent(CommunityDetailModel data, ScrapStatus scrapStatus) {
+    return CustomScrollView(
+      controller: _scrollController,
+      slivers: [
+        _buildHeader(data),
+        _buildImageSection(data),
+        _buildTagSection(data),
+        _buildDivider(),
+        _buildContentSection(data, scrapStatus),
+        _buildDivider(),
+        SliverPadding(
+          sliver: SliverToBoxAdapter(
+            child: Text(
+              '댓글',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+            ),
+          ),
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 30.0),
+        ),
+        _buildCommentSection(data),
+      ],
+    );
+  }
+
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
@@ -159,10 +203,6 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
   Widget _buildBottomNavigationBar(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final keyboardHeight = mediaQuery.viewInsets.bottom;
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _handleKeyboardVisibilityChange(keyboardHeight);
-    });
 
     return SafeArea(
       child: Column(
@@ -220,25 +260,10 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
       child: CommunityCommentInputbox(
         contentWord: _parentCommentId != null ? '대댓글을 입력하세요' : '댓글을 달아주세요',
         commentId: _parentCommentId,
-        replyFocusNode: _parentCommentId != null ? _replyFocusNode : null,
+        replyFocusNode: _replyFocusNode,
         id: widget.id,
         onCommentSubmit: _deactivateReplyMode,
       ),
-    );
-  }
-
-  Widget _buildContent(CommunityDetailModel data, ScrapStatus scrapStatus) {
-    return CustomScrollView(
-      controller: _scrollController,
-      slivers: [
-        _buildHeader(data),
-        _buildImageSection(data),
-        _buildTagSection(data),
-        _buildDivider(),
-        _buildContentSection(data, scrapStatus),
-        _buildDivider(),
-        _buildCommentSection(data),
-      ],
     );
   }
 
@@ -492,8 +517,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  scrapStatus.scrapped ?
-                  '스크랩 취소' : '스크랩 성공',
+                  scrapStatus.scrapped ? '스크랩 취소' : '스크랩 성공',
                   style: TextStyle(
                     fontSize: 16.0,
                     color: Colors.white,
@@ -542,7 +566,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen> {
           child: Container(
             color:
                 _parentCommentId == model.id
-                    ? Colors.blue.withOpacity(0.1)
+                    ? Colors.blue.withAlpha(25)
                     : Colors.transparent,
             child: CommunityComment.fromModel(model: model),
           ),

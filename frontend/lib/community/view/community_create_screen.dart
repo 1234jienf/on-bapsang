@@ -73,7 +73,7 @@ class _ConsumerCommunityCreateScreenState
     isLoading = false;
     hasMore = true;
 
-    final imageList = await albums.first.getAssetListPaged(
+    imageList = await albums.first.getAssetListPaged(
       page: currentPage,
       size: pageSize,
     );
