@@ -1,6 +1,6 @@
 package com.on_bapsang.backend.dto;
 
-import com.on_bapsang.backend.entity.Post;
+import com.on_bapsang.backend.i18n.Translatable;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -9,7 +9,10 @@ import java.time.LocalDateTime;
 public class PostSummary {
 
     private Long id;
+
+    @Translatable
     private String title;
+
     private String imageUrl;
     private int scrapCount;
     private int commentCount;

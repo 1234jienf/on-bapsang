@@ -1,6 +1,7 @@
 package com.on_bapsang.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.on_bapsang.backend.i18n.Translatable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -21,6 +22,7 @@ public class RecommendResponse {
     private String foodName;
 
     /** 고정된 메시지 */
+    @Translatable
     private String message;
 
     /** AI가 추천한 레시피 리스트 */
