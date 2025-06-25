@@ -6,6 +6,8 @@ import com.on_bapsang.backend.dto.RecommendResponse;
 import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.exception.CustomException;
 import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import com.on_bapsang.backend.repository.RecipeScrapRepository;
 import org.springframework.stereotype.Service;
