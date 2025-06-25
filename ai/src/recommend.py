@@ -23,8 +23,17 @@ PINECONE_API_KEY   = os.getenv("PINECONE_API_KEY")
 PINECONE_INDEX     = os.getenv("PINECONE_INDEX_NAME", "recipe-index")
 
 # DB 커넥션 (모듈 레벨에서 한 번만)
-conn   = mysql.connector.connect(**DB_CONF)
-cursor = conn.cursor()
+# DB 커넥션 (모듈 레벨에서 한 번만)
+try:
+    conn = mysql.connector.connect(**DB_CONF)
+    cursor = conn.cursor()
+    print(f"✅ DB 연결 성공: {DB_CONF['host']}:{DB_CONF.get('database')}")
+except mysql.connector.Error as e:
+    import sys, traceback
+    print("❌ DB 연결 실패!", file=sys.stderr)
+    traceback.print_exc()
+    raise RuntimeError("DB 연결 실패. .env 환경설정 또는 DB 상태 확인 요망.")
+
 
 # OpenAI / Pinecone 클라이언트
 openai = OpenAI(api_key=UPSTAGE_API_TOKEN, base_url="https://api.upstage.ai/v1")
