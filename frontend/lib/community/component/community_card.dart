@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/const/colors.dart';
+import 'package:frontend/community/provider/community_provider.dart';
 import 'package:frontend/community/provider/community_scrap_provider.dart';
 
 import '../model/community_model.dart';
-import '../provider/community_scrap_status_provider.dart';
 
 class CommunityCard extends ConsumerWidget {
   final String nickname;
@@ -13,6 +13,7 @@ class CommunityCard extends ConsumerWidget {
   final int id;
   final String content;
   final String profileImage;
+  final bool scrapped;
 
   const CommunityCard({
     super.key,
@@ -22,6 +23,7 @@ class CommunityCard extends ConsumerWidget {
     required this.id,
     required this.content,
     required this.profileImage,
+    required this.scrapped,
   });
 
   factory CommunityCard.fromModel({required CommunityModel model}) {
@@ -32,12 +34,13 @@ class CommunityCard extends ConsumerWidget {
       nickname: model.nickname,
       content: model.content,
       profileImage: model.profileImage,
+      scrapped: model.scrapped,
     );
   }
 
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(communityScrapStatusProvider(id.toString()));
 
     return SizedBox(
       width: 175,
@@ -96,14 +99,14 @@ class CommunityCard extends ConsumerWidget {
                   ),
 
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       ref.read(communityScrapProvider).scrap(id: id.toString());
-                      ref.read(communityScrapStatusProvider(id.toString()).notifier).toggle();
+                      ref.read(communityProvider.notifier).updateScrapStatus(id, !scrapped);
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            state.scrapped ?
+                            scrapped ?
                             '스크랩 취소' : '스크랩 성공',
                             style: TextStyle(
                               fontSize: 16.0,
@@ -117,11 +120,11 @@ class CommunityCard extends ConsumerWidget {
                       );
                     },
                     child: Icon(
-                      state.scrapped
+                      scrapped
                           ? Icons.bookmark
                           : Icons.bookmark_border_outlined,
                       size: 20,
-                      color: state.scrapped ? primaryColor : null,
+                      color: scrapped ? primaryColor : null,
                     ),
                   ),
                 ],

@@ -112,7 +112,6 @@ class SearchNormalPaginationListViewProvider
           }
         }
       } else {
-        print(state);
         if (state is CursorPaginationNormalStringModel && !forceRefetch) {
           final pState =
               state as CursorPaginationNormalStringModel<SearchRecipeModel>;

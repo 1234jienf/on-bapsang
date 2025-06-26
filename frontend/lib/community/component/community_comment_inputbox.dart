@@ -101,7 +101,7 @@ class _ConsumerCommunityCommentInputboxState
         const SizedBox(width: 10),
         GestureDetector(
           onTap: () {
-            if (controller.text.trim().isNotEmpty) {
+            if (controller.text.trim().isNotEmpty && !isSubmit) {
               __comment(
                 commentProvider,
                 widget.id,
@@ -110,7 +110,13 @@ class _ConsumerCommunityCommentInputboxState
               );
             }
           },
-          child: Icon(Icons.send),
+          child: isSubmit
+              ? SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          )
+              : Icon(Icons.send),
         ),
       ],
     );
@@ -124,7 +130,9 @@ class _ConsumerCommunityCommentInputboxState
   ) async {
     if (text.isEmpty || isSubmit) return;
 
-    isSubmit = true;
+    setState(() {
+      isSubmit = true;
+    });
 
     try {
       final response = await commentProvider.uploadCommentPost(
@@ -146,18 +154,21 @@ class _ConsumerCommunityCommentInputboxState
             communityShowDialog(context, ref, false, '작성 성공!');
           }
           ref.read(communityDetailProvider(widget.id).notifier).fetchData();
-          isSubmit = false;
         } else {
           if (context.mounted) {
             communityShowDialog(context, ref, false, '오류가 발생했습니다. 다시 시도해주세요');
           }
-          isSubmit = false;
         }
       }
+      setState(() {
+        isSubmit = false;
+      });
     } on DioException {
       rethrow;
     } finally {
-      isSubmit = false;
+      setState(() {
+        isSubmit = false;
+      });
     }
   }
 }

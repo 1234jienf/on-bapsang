@@ -27,6 +27,7 @@ class CommunityScrapProvider {
       return response;
 
     } on DioException catch (e) {
+      print(e);
       rethrow;
     }
   }

@@ -12,6 +12,7 @@ class CommunityModel implements IModelWithIntId {
   final String nickname;
   final String content;
   final String profileImage;
+  final bool scrapped;
 
 
   CommunityModel({
@@ -22,7 +23,28 @@ class CommunityModel implements IModelWithIntId {
     required this.nickname,
     required this.content,
     required this.profileImage,
+    required this.scrapped,
   });
+
+  CommunityModel copyWith({
+    int? id,
+    String? title,
+    String? imageUrl,
+    String? nickname,
+    String? content,
+    String? profileImage,
+    bool? scrapped,
+  }) {
+    return CommunityModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      imageUrl: imageUrl ?? this.imageUrl,
+      nickname: nickname ?? this.nickname,
+      content: content ?? this.content,
+      profileImage: profileImage ?? this.profileImage,
+      scrapped: scrapped ?? this.scrapped,
+    );
+  }
 
   factory CommunityModel.fromJson(Map<String, dynamic> json) => _$CommunityModelFromJson(json);
 

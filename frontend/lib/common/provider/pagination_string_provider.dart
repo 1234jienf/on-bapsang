@@ -1,7 +1,6 @@
 import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../search/model/search_recipe_pagination_params.dart';
-import '../model/int/cursor_pagination_int_model.dart';
 import '../model/string/cursor_pagination_string_model.dart';
 import '../model/string/model_with_string_id.dart';
 import '../model/string/pagination_string_params.dart';
