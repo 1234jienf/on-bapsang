@@ -11,6 +11,20 @@ import 'package:frontend/recipe/component/recipe_popular_list.dart';
 import 'package:frontend/recipe/component/recipe_recommend_list.dart';
 import 'package:frontend/recipe/view/recipe_season_list_screen.dart';
 
+// 언어에 따른 배너 세팅
+String bannerAsset(BuildContext ctx) {
+  switch (ctx.locale.languageCode) {
+    case 'ko':
+      return 'asset/img/season_recipe_ko.png';
+    case 'ja':
+      return 'asset/img/season_recipe_ja.png';
+    case 'zh':
+      return 'asset/img/season_recipe_zh.png';
+    default:
+      return 'asset/img/season_recipe_en.png';
+  }
+}
+
 class RecipeRootScreen extends ConsumerStatefulWidget {
   static String get routeName => 'RecipeRootScreen';
 
@@ -73,7 +87,7 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
                         child: Container(
                           decoration: BoxDecoration(color: Colors.grey),
                           child: Image.asset(
-                            'asset/img/season_recipe_banner.png',
+                            bannerAsset(context),
                             width: double.infinity,
                             fit: BoxFit.fitWidth,
                           ),
