@@ -14,6 +14,7 @@ import 'package:frontend/recipe/view/recipe_season_list_screen.dart';
 import 'package:frontend/user/model/user_model.dart';
 import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import '../../community/component/community_card.dart';
 import '../../community/view/community_detail_screen.dart';
@@ -54,11 +55,13 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
         ref.invalidate(popularRecipesProvider);
         ref.invalidate(recommendRecipesProvider);
         ref.invalidate(seasonIngredientProvider);
+        final communityNotifier = ref.refresh(homeScreenCommunityProvider.notifier);
+        communityNotifier.fetchData();
       }
     });
 
     return DefaultLayout(
-      appBar: RecipeAppbar(isImply: false, searchMessage: '온밥 통합검색',),
+      appBar: RecipeAppbar(isImply: false, searchMessage: 'search.search_hint',),
       // appBar: HomeAppbar(isImply: false),
       backgroundColor: Colors.white,
       child: RefreshIndicator(
@@ -66,6 +69,9 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
           ref.invalidate(popularRecipesProvider);
           ref.invalidate(recommendRecipesProvider);
           ref.invalidate(seasonIngredientProvider);
+          final communityNotifier =
+            ref.refresh(homeScreenCommunityProvider.notifier);
+          await communityNotifier.fetchData();
         },
         child: CustomScrollView(
           controller: controller,
@@ -89,7 +95,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
         
                   // 인기 레시피
                   titleWidget(
-                    title: '요즘 핫한 인기 레시피',
+                    titleKey: 'home.main_popular_recipe',
                     fontSize: 20,
                     sidePadding: sideGap,
                   ),
@@ -104,7 +110,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '지금 꼭 먹어야 할 제철 레시피',
+                          'home.main_season_recipe'.tr(),
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
                         ),
                         GestureDetector(
@@ -132,7 +138,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
         
                   // 추천 레시피
                   titleWidget(
-                    title: '추천 레시피',
+                    titleKey: 'home.main_recommend_recipe',
                     fontSize: 20,
                     sidePadding: sideGap,
                   ),
@@ -141,7 +147,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                   SizedBox(height: 50.0,),
         
                   // 커뮤니티
-                  titleWidget(title: '커뮤니티', fontSize: 16, sidePadding: sideGap),
+                  titleWidget(titleKey: 'home.main_community', fontSize: 16, sidePadding: sideGap),
                   SizedBox(height: titleTextGap),
                 ]),
               ),
@@ -171,7 +177,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
 }
 
 Widget titleWidget({
-  required String title,
+  required String titleKey,
   required double fontSize,
   required double sidePadding,
 }) {
@@ -181,7 +187,7 @@ Widget titleWidget({
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          title,
+          titleKey.tr(),
           style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w800),
         ),
         // Text('더보기 >')

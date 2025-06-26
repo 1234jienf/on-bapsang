@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
@@ -66,7 +67,7 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
             padding: const EdgeInsets.symmetric(vertical: 40.0),
             child: Center(
               child: Text(
-                '등록된 레시피가 없습니다!',
+                "recipe.recipe_error".tr(),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
             ),
@@ -84,7 +85,7 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
-          '제철 레시피',
+          "recipe.season_card_title".tr(namedArgs: {'ingredient': widget.seasonIngredientInfo.prdlstNm}),
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
@@ -126,7 +127,7 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
                 delegate: SliverChildListDelegate([
                   SizedBox(height: 20.0,),
                   Text(
-                    '제철 ${widget.seasonIngredientInfo.prdlstNm} 레시피',
+                    "recipe.season_card_title".tr(namedArgs: {'ingredient': widget.seasonIngredientInfo.prdlstNm}),
                     style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
                   ),
                   SizedBox(height: 5.0,),
@@ -137,7 +138,7 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
 
                   SizedBox(height: 20.0,),
                   Text(
-                    '효능',
+                    'recipe.season_effect'.tr(),
                     style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
                   ),
                   SizedBox(height: 5.0,),
@@ -152,7 +153,7 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
 
                   SizedBox(height: 20.0,),
                   Text(
-                    '구매 팁',
+                    "recipe.season_purchase_tip".tr(),
                     style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
                   ),
                   SizedBox(height: 5.0,),
@@ -163,7 +164,7 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
 
                   SizedBox(height: 20.0,),
                   Text(
-                    '조리 팁',
+                    "recipe.season_cook_tip".tr(),
                     style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
                   ),
                   SizedBox(height: 5.0,),
@@ -174,7 +175,7 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
 
                   SizedBox(height: 20.0,),
                   Text(
-                    '${widget.seasonIngredientInfo.prdlstNm} 레시피',
+                    "recipe.season_recipe".tr(namedArgs: {"ingredient": widget.seasonIngredientInfo.prdlstNm}),
                     style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
                   ),
                   // 여기에 제철 레시피

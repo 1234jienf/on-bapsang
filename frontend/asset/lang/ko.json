@@ -1,0 +1,112 @@
+{
+  "common": {
+    "more": "더보기",
+    "next": "다음",
+    "no_result": "검색 결과가 없습니다.",
+    "category": {
+      "beef": "소고기",
+      "pork": "돼지고기",
+      "seafood": "해물류",
+      "egg_dairy": "달걀/유제품",
+      "vegetables": "채소류",
+      "rice": "쌀",
+      "grains": "곡류",
+      "flour": "밀가루",
+      "processed": "가공식품류",
+      "dried": "건어물류",
+      "etc": "기타"
+    },
+    "home": "홈",
+    "recipe": "레시피",
+    "shopping": "쇼핑",
+    "community": "커뮤니티",
+    "map": "주변",
+    "error_message": "데이터를 가져오는 과정에서 문제가 발생했습니다."
+  },
+  "home": {
+    "main_popular_recipe": "요즘 핫한 인기 레시피",
+    "main_season_recipe": "지금 꼭 먹어야 할 제철 레시피",
+    "main_recommend_recipe": "AI가 추천하는 레시피",
+    "main_community": "커뮤니티",
+    "main_menu_title": "전체 메뉴"
+  },
+  "recipe": {
+    "season_title": "{month}월의 제철 재료 레시피",
+    "season_card_title": "제철 {ingredient} 레시피",
+    "season_effect": "효능",
+    "season_purchase_tip": "구매 팁",
+    "season_cook_tip": "조리 팁",
+    "season_recipe": "{ingredient} 활용 레시피",
+    "portion": "분량",
+    "time": "시간",
+    "difficulty": "난이도",
+    "ingredient": "재료",
+    "instruction": "조리 순서",
+    "review": "레시피 후기",
+    "review_write": "리뷰 쓰기",
+    "buy_ingredients": "재료 구매하기",
+    "ingredient_price_title": "{ingredient}의 시세",
+    "ingredient_time_price": "{ingredient}의 일자별 가격",
+    "ingredient_market_price": "시장별 {ingredient} 도매 가격",
+    "search_hint": "레시피를 검색해보세요!",
+    "recipe_error": "등록된 레시피가 없습니다!",
+    "no_review": "아직 작성된 리뷰가 없습니다."
+  },
+  "shopping" : {
+    "special_price_title": "온밥상 마켓 특가",
+    "recommend_title": "{user}님께 추천하는 상품",
+    "recipe_title": "레시피에 딱 맞는 재료",
+    "category_title": "카테고리별 인기 재료",
+    "cart": {
+      "title": "장바구니",
+      "select_all": "전체 선택",
+      "select_undo": "선택 해제",
+      "whole_price": "총 상품금액",
+      "whole_delivery": "총 배송비",
+      "whole_discount": "총 할인금액",
+      "payment_amount": "결제 금액",
+      "won": "원"
+    }
+  },
+  "community": {
+    "post": "게시글",
+    "comments": "댓글",
+    "no_comments": "아직 댓글이 없습니다.",
+    "comment_hint": "댓글을 달아주세요",
+    "new_post": "커뮤니티 글쓰기",
+    "recipe_tag_hint" : "원하는 위치에 레시피를 태그하세요",
+    "recipe_search_hint": "레시피를 검색하세요",
+    "upload_title": "커뮤니티 올리기",
+    "upload": "업로드",
+    "post_title_hint": "제목은 최대 20자 가능합니다.",
+    "post_hint": "요리에 대한 소개를 해보세요.",
+    "post_error_hint": "모든 항목을 작성해주세요.",
+    "post_success": "작성 완료"
+  },
+  "map": {
+    "loading_message": "위치정보를 가져오는 중",
+    "selected_location": "선택된 위치",
+    "search_title": "위치 검색",
+    "search_hint": "위치를 검색하세요",
+    "now_location": "현재 위치 사용",
+    "no_result": "검색 결과가 없습니다"
+  },
+  "search": {
+    "search_hint": "아무거나 검색해 보세요!",
+    "recent": "최근 검색어",
+    "popular": "인기 검색어",
+    "recommend": "온밥상 추천 검색어",
+    "filter": "필터",
+    "latest": "최신순",
+    "no_result_community": "검색된 커뮤니티가 없습니다."
+  },
+  "mypage": {
+    "title": "{user}의 마이페이지",
+    "scrap_recipe": "스크랩한 레시피",
+    "community": "내가 쓴 글 모아보기",
+    "scrap_community": "내가 스크랩한 글",
+    "setting_info": "회원정보 수정",
+    "setting_language": "언어 설정 변경",
+    "withdraw": "회원 탈퇴"
+  }
+}

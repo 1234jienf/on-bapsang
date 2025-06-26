@@ -1,0 +1,112 @@
+{
+  "common": {
+    "more": "More",
+    "next": "Next",
+    "no_result": "No search results found.",
+    "category": {
+      "beef": "Beef",
+      "pork": "Pork",
+      "seafood": "Seafood",
+      "egg_dairy": "Eggs/Dairy",
+      "vegetables": "Vegetables",
+      "rice": "Rice",
+      "grains": "Grains",
+      "flour": "Flour",
+      "processed": "Processed Foods",
+      "dried": "Dried Goods",
+      "etc": "Others"
+    },
+    "home": "Home",
+    "recipe": "Recipe",
+    "shopping": "Shopping",
+    "community": "Community",
+    "map": "Nearby",
+    "error_message": "An error occurred while fetching the data."
+  },
+  "home": {
+    "main_popular_recipe": "Trending Popular Recipes",
+    "main_season_recipe": "Seasonal Recipes You Must Try Now",
+    "main_recommend_recipe": "AI Recommended Recipes",
+    "main_community": "Community",
+    "main_menu_title": "All Menu"
+  },
+  "recipe": {
+    "season_title": "Seasonal Recipes for {month}",
+    "season_card_title": "Seasonal {ingredient} Recipes",
+    "season_effect": "Effects",
+    "season_purchase_tip": "Buying Tips",
+    "season_cook_tip": "Cooking Tips",
+    "season_recipe": "Recipes using {ingredient}",
+    "portion": "Servings",
+    "time": "Time",
+    "difficulty": "Difficulty",
+    "ingredient": "Ingredients",
+    "instruction": "Steps",
+    "review": "Recipe Reviews",
+    "review_write": "Write a Review",
+    "buy_ingredients": "Buy Ingredients",
+    "ingredient_price_title": "Market Price of {ingredient}",
+    "ingredient_time_price": "{ingredient}'s Price Over Time",
+    "ingredient_market_price": "{ingredient} Wholesale Price by Market",
+    "search_hint": "Search for recipes!",
+    "recipe_error": "No registered recipes found!",
+    "no_review": "There are no reviews yet."
+  },
+  "shopping": {
+    "special_price_title": "onbapsang Market Specials",
+    "recommend_title": "Recommended for You, {user}",
+    "recipe_title": "Ingredients for Your Recipes",
+    "category_title": "Popular Ingredients by Category",
+    "cart": {
+      "title": "Shopping Cart",
+      "select_all": "Select All",
+      "select_undo": "Deselect All",
+      "whole_price": "Total Product Price",
+      "whole_delivery": "Total Delivery Fee",
+      "whole_discount": "Total Discount",
+      "payment_amount": "Payment Amount",
+      "won": "KRW"
+    }
+  },
+  "community": {
+    "post": "Post",
+    "comments": "Comments",
+    "no_comments": "No comments yet.",
+    "comment_hint": "Leave a comment",
+    "new_post": "Write a Community Post",
+    "recipe_tag_hint": "Tag a recipe where needed",
+    "recipe_search_hint": "Search for a recipe",
+    "upload_title": "Upload to Community",
+    "upload": "Upload",
+    "post_title_hint": "Title can be up to 20 characters.",
+    "post_hint": "Introduce your recipe here.",
+    "post_error_hint": "Please fill out all fields.",
+    "post_success": "Post completed"
+  },
+  "map": {
+    "loading_message": "Fetching location info...",
+    "selected_location": "Selected Location",
+    "search_title": "Search Location",
+    "search_hint": "Search for a location",
+    "now_location": "Use Current Location",
+    "no_result": "No results found"
+  },
+  "search": {
+    "search_hint": "Try searching anything!",
+    "recent": "Recent Searches",
+    "popular": "Popular Searches",
+    "recommend": "onbapsang Recommended Searches",
+    "filter": "Filter",
+    "latest": "Latest",
+    "no_result_community": "No community posts found."
+  },
+  "mypage": {
+    "title": "{user}'s My Page",
+    "scrap_recipe": "Saved Recipes",
+    "community": "My Community Posts",
+    "scrap_community": "Saved Posts",
+    "setting_info": "Edit Profile",
+    "setting_language": "Change Language",
+    "withdraw": "Delete Account"
+  }
+}

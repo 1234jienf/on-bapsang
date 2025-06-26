@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/recipe/component/recipe_ingredient_market_chart.dart';
 
@@ -39,7 +40,7 @@ class _RecipeIngredientPriceScreenState extends ConsumerState<RecipeIngredientPr
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '${widget.ingredientName}의 시세',
+                  "recipe.ingredient_price_title".tr(namedArgs: {"ingredient": widget.ingredientName}),
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                 ),
                 // Text('디자인 추후 수정예정'),
@@ -49,14 +50,14 @@ class _RecipeIngredientPriceScreenState extends ConsumerState<RecipeIngredientPr
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '${widget.ingredientName}의 일자별 가격',
+                    "recipe.ingredient_time_price".tr(namedArgs: {"ingredient": widget.ingredientName}),
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                   ),
                 ),
                 SizedBox(height: 15),
                 ingredientTimeData.when(
                     data: (data) => RecipeIngredientPriceChart(ingredientPriceDataList: data.monthlyPrices),
-                    error: (err, stack) => Center(child: Text('데이터를 가져오는 과정에서 문제가 발생하였습니다. $err')),
+                    error: (err, stack) => Center(child: Text('${"common.error_message".tr()} $err')),
                     loading: () => Center(child: CircularProgressIndicator()),
                 ),
 
@@ -66,14 +67,14 @@ class _RecipeIngredientPriceScreenState extends ConsumerState<RecipeIngredientPr
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    '시장별 ${widget.ingredientName} 도매 가격',
+                    "recipe.ingredient_market_price".tr(namedArgs: {"ingredient": widget.ingredientName}),
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                   ),
                 ),
                 SizedBox(height: 15),
                 ingredientRegionData.when(
                   data: (data) => RecipeIngredientMarketChart(marketDataList: data.markets),
-                  error: (err, stack) => Center(child: Text('데이터를 가져오는 과정에서 문제가 발생하였습니다.$err')),
+                  error: (err, stack) => Center(child: Text('${"common.error_message".tr()} $err')),
                   loading: () => Center(child: CircularProgressIndicator()),
                 )
               ],

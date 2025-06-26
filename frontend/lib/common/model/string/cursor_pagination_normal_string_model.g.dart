@@ -17,6 +17,13 @@ _$CursorPaginationNormalStringModelFromJson<T>(
   data: (json['data'] as List<dynamic>).map(fromJsonT).toList(),
 );
 
+Map<String, dynamic> _$CursorPaginationNormalStringModelToJson<T>(
+  CursorPaginationNormalStringModel<T> instance,
+  Object? Function(T value) toJsonT,
+) => <String, dynamic>{
+  'meta': instance.meta,
+  'data': instance.data.map(toJsonT).toList(),
+};
 
 CursorStringPaginationMeta _$CursorStringPaginationMetaFromJson(
   Map<String, dynamic> json,

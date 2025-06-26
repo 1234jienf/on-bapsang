@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/community/view/community_create_screen.dart';
 import 'package:frontend/community/view/community_detail_screen.dart';
@@ -144,9 +145,9 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          infoWidget(title: '분량', content: recipe.portion == 'nan' ? '2인분' : recipe.portion),
-                          infoWidget(title: '시간', content: recipe.time == 'nan' ? '-' : recipe.time),
-                          infoWidget(title: '난이도', content: recipe.difficulty),
+                          infoWidget(title: "recipe.portion".tr(), content: recipe.portion == 'nan' ? '-' : recipe.portion),
+                          infoWidget(title: "recipe.time".tr(), content: recipe.time == 'nan' ? '-' : recipe.time),
+                          infoWidget(title: "recipe.difficulty".tr(), content: recipe.difficulty),
                         ],
                       ),
                       SizedBox(height: componentGap),
@@ -169,8 +170,8 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
                       SizedBox(height: componentGap),
-                      const Text(
-                        '재료',
+                      Text(
+                        "recipe.ingredient".tr(),
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                       ),
                       SizedBox(height: titleTextGap),
@@ -215,7 +216,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                     delegate: SliverChildListDelegate([
                       SizedBox(height: componentGap),
                       Text(
-                        '조리순서',
+                        "recipe.instruction".tr(),
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                       ),
                       SizedBox(height: componentGap),
@@ -269,7 +270,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '레시피 후기 ${recipe.reviewCount}',
+                            '${"recipe.review".tr()} ${recipe.reviewCount}',
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                           ),
                           TextButton(
@@ -280,7 +281,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                                 backgroundColor: Colors.black,
                                 foregroundColor: Colors.white,
                               ),
-                              child: Text('리뷰쓰기')
+                              child: Text("recipe.review_write".tr())
                           )
                         ],
                       ),
@@ -340,7 +341,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                       )
                           : Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text('아직 작성된 리뷰가 없습니다.'),
+                        child: Text("recipe.no_review".tr()),
                       ),
 
                       SizedBox(height: titleTextGap),
@@ -354,7 +355,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                           width: double.infinity,
                           height: 50,
                           decoration: BoxDecoration(border: Border.all(color: Colors.black12, width: 1.0)),
-                          child: Center(child: Text('더보기')),
+                          child: Center(child: Text("common.more".tr())),
                         ),
                       )
                       : SizedBox(height: 10.0,),
@@ -376,11 +377,17 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
               child: ElevatedButton(
                 onPressed: () async {
                   final discounted = await loadDiscountedIngredients(); // JSON 불러오기
+                  final discountedIds = discounted.map((e) => e.ingredientId).toSet();
 
-                  final recipeIngredientNames = recipe.ingredients.map((e) => e.name).toSet();
+                  final idToName = {
+                    for (final ing in recipe.ingredients)
+                      ing.ingredientId: ing.name,
+                  };
 
                   final matched = discounted
-                      .where((item) => recipeIngredientNames.contains(item.ingredient))
+                      .where((d) => idToName.containsKey(d.ingredientId))
+                      .map((d) =>
+                      d.copyWith(ingredientName: idToName[d.ingredientId]!))
                       .toList();
 
                   Navigator.push(
@@ -399,7 +406,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                   ),
                 ),
                 child: Text(
-                  '재료 구매하기/재료보기',
+                  "recipe.buy_ingredients".tr(),
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
