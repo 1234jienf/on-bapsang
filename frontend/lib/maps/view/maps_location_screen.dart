@@ -189,6 +189,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
       final result = await MapsApiServiceProvider().autoComplete(
         query,
         widget.apiKey,
+        Language.korean
       );
 
       if (mounted) {
@@ -378,6 +379,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
       final result = await MapsApiServiceProvider().getCoordinatesFromPlaceId(
         placeId,
         widget.apiKey,
+        Language.korean
       );
 
       final lat = result.result?.geometry?.location?.lat;

@@ -55,6 +55,7 @@ class _MapScreenState extends State<MapScreen> {
         defaultLat,
         defaultLng,
         apiKey,
+        Language.korean
       );
 
       if (!mounted) return;
@@ -79,7 +80,7 @@ class _MapScreenState extends State<MapScreen> {
     defaultLng = widget.lng;
 
     _loadApiKey().then((_) {
-      getAddress(); // API 키 로드 후 주소 가져오기
+      getAddress();
     });
   }
 
@@ -99,6 +100,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('Placecoordinates : ${placeFromCoordinates.results?[0].formattedAddress}');
     return DefaultLayout(
       appBar: AppBar(
         backgroundColor: Colors.white,
