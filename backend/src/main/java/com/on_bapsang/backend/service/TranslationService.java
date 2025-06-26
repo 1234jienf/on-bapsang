@@ -29,8 +29,6 @@ public class TranslationService {
             .baseUrl("https://api-free.deepl.com/v2")
             .build();
 
-    @Value("${deepl.api.key}")
-    private String deeplApiKey;
 
     // 캐시 TTL: 24시간
     private static final long CACHE_TTL = 24;

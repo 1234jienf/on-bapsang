@@ -1,5 +1,6 @@
 package com.on_bapsang.backend.controller;
 
+import com.on_bapsang.backend.dto.seasonal.SeasonalFoodDto;
 import com.on_bapsang.backend.entity.SeasonalFood;
 import com.on_bapsang.backend.service.SeasonalFoodService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class SeasonalFoodController {
     private final SeasonalFoodService foodService;
 
     @GetMapping
-    public ResponseEntity<List<SeasonalFood>> getByMonth(@RequestParam int month) {
+    public ResponseEntity<List<SeasonalFoodDto>> getByMonth(@RequestParam int month) {
         return ResponseEntity.ok(foodService.getFoodsByMonth(String.valueOf(month)));
     }
 
