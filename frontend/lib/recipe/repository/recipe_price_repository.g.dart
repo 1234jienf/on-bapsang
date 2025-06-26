@@ -19,7 +19,7 @@ class _RecipePriceRepository implements RecipePriceRepository {
 
   @override
   Future<IngredientTimeSeries> getIngredientTimeSeries(int id) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
@@ -47,7 +47,7 @@ class _RecipePriceRepository implements RecipePriceRepository {
 
   @override
   Future<IngredientRegion> getIngredientRegion(int id) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);

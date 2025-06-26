@@ -1,13 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/common/const/securetoken.dart';
+import 'package:frontend/common/dio/dio.dart';
 import 'package:frontend/common/secure_storage/secure_storage.dart';
 import 'package:frontend/mypage/provider/mypage_provider.dart';
+import 'package:frontend/recipe/provider/recipe_provider.dart';
+import 'package:frontend/recipe/provider/recipe_season_provider.dart';
 import 'package:frontend/user/repository/auth_repository.dart';
 import 'package:frontend/user/repository/user_repository.dart';
 
 import '../model/user_model.dart';
 import 'package:frontend/signup/model/sign_up_request_model.dart';
+
+final languageProvider = StateProvider<String?>((_) => null);
 
 final userProvider = StateNotifierProvider<UserStateNotifier, UserModelBase?>((
   ref,
@@ -40,6 +45,16 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
     getMe();
   }
 
+  Future<void> _applyLanguage(String? lang) async {
+    if (lang == null || lang.isEmpty) return;
+
+    await storage.write(key: LANGUAGE_KEY, value: lang);
+    _ref.read(languageProvider.notifier).state = lang;
+
+    final dio = _ref.read(dioProvider);
+    dio.options.headers['X-Language'] = lang;
+  }
+
   Future<void> getMe() async {
     final accessToken = await storage.read(key: ACCESS_TOKEN);
     final refreshToken = await storage.read(key: REFRESH_TOKEN);
@@ -50,6 +65,8 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
     }
     final resp = await userRepository.getMe();
     state = resp;
+
+    await _applyLanguage(resp.country);
   }
 
   Future<UserModelBase> login({
@@ -69,10 +86,17 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
         storage.write(key: REFRESH_TOKEN, value: resp.refreshToken),
       ]);
 
+      _ref.invalidate(dioProvider);
+
       final userResp = await userRepository.getMe();
       state = userResp;
 
+      await _applyLanguage(userResp.country);
+
       _ref.invalidate(mypageInfoProvider);  // 마이페이지 정보 강제 새로고침
+      _ref.invalidate(popularRecipesProvider); // 메인페이지 정보도 새로 고침
+      _ref.invalidate(recommendRecipesProvider);
+      _ref.invalidate(seasonIngredientProvider);
 
       return userResp;
     } catch (e) {
@@ -87,9 +111,18 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
     await Future.wait([
       storage.delete(key: ACCESS_TOKEN),
       storage.delete(key: REFRESH_TOKEN),
+      storage.delete(key: LANGUAGE_KEY),
     ]);
 
+    _ref.read(languageProvider.notifier).state = null;
+    _ref.read(dioProvider).options.headers.remove('X-Language');
+
+    _ref.invalidate(dioProvider);
+
     _ref.invalidate(mypageInfoProvider);
+    _ref.invalidate(popularRecipesProvider); // 메인페이지 정보도 새로 고침
+    _ref.invalidate(recommendRecipesProvider);
+    _ref.invalidate(seasonIngredientProvider);
   }
 
   Future<void> signup({

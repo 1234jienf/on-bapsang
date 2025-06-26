@@ -21,7 +21,7 @@ class _CommunityDetailRepository implements CommunityDetailRepository {
   Future<SingleIntOnePageModel<CommunityDetailModel>> fetchData({
     required String id,
   }) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
@@ -57,7 +57,7 @@ class _CommunityDetailRepository implements CommunityDetailRepository {
   Future<SingleIntOnePageModel<List<CommunityCommentModel>>> fetchComment({
     required String id,
   }) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);

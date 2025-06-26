@@ -19,7 +19,7 @@ final communityUploadRecipeListProvider =
       final response = await dio.get(
         '$ip/api/community/posts/autocomplete',
         queryParameters: {'keyword': keyword},
-        options: Options(headers: { 'Authorization': 'Bearer $accessToken'})
+        options: Options(headers: { 'Authorization': 'Bearer $accessToken'}, extra:  {'useLang': true})
       );
 
       final Map<String, dynamic> data = response.data;

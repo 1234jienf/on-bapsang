@@ -21,7 +21,7 @@ class _RecipeSeasonRepository implements RecipeSeasonRepository {
   Future<List<RecipeSeasonIngredientModel>> getSeasonIngredients(
     int month,
   ) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{r'month': month};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);

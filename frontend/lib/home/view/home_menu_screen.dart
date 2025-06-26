@@ -34,72 +34,76 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: componentGap),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '레시피',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      context.goNamed(RecipeRootScreen.routeName);
-                    },
-                    child: Icon(Icons.chevron_right, size: 30),
-                  )
-                ],
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  context.goNamed(RecipeRootScreen.routeName);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '레시피',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                    ),
+                    Icon(Icons.chevron_right, size: 30),
+                  ],
+                ),
               ),
               SizedBox(height: 20.0),
               CategoryIcons(type: 'recipe'),
               SizedBox(height: componentGap),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '쇼핑',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      context.goNamed('shopping');
-                    },
-                    child: Icon(Icons.chevron_right, size: 30),
-                  )
-                ],
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  context.goNamed('shopping');
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '쇼핑',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                    ),
+                    Icon(Icons.chevron_right, size: 30),
+                  ],
+                ),
               ),
               SizedBox(height: 20.0),
               CategoryIcons(type: 'shopping'),
               SizedBox(height: componentGap),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '커뮤니티',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      context.goNamed('community');
-                    },
-                    child: Icon(Icons.chevron_right, size: 30),
-                  )
-                ],
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  context.goNamed('community');
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '커뮤니티',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                    ),
+                    Icon(Icons.chevron_right, size: 30)
+                  ],
+                ),
               ),
               SizedBox(height: componentGap),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '주변',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      context.goNamed('maps');
-                    },
-                    child: Icon(Icons.chevron_right, size: 30),
-                  )
-                ],
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  context.goNamed('maps');
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '주변',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                    ),
+                    Icon(Icons.chevron_right, size: 30),
+                  ],
+                ),
               ),
               SizedBox(height: componentGap),
             ],

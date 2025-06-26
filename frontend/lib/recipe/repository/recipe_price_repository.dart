@@ -5,6 +5,7 @@ import 'package:frontend/common/dio/dio.dart';
 import 'package:frontend/recipe/model/recipe_price_model.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
 
 part 'recipe_price_repository.g.dart';
 
@@ -19,9 +20,11 @@ abstract class RecipePriceRepository {
 
   @GET('/timeseries/{ingredientId}')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<IngredientTimeSeries> getIngredientTimeSeries(@Path('ingredientId') int id);
 
   @GET('/region/{ingredientId}?yearMonth=202503')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<IngredientRegion> getIngredientRegion(@Path('ingredientId') int id);
 }

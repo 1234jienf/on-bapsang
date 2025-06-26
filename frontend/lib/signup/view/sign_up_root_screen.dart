@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // 추가 필요
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/signup/component/sign_up_app_bar.dart';
 import 'package:frontend/signup/view/sign_up_food_prefer_list_screen.dart';
@@ -12,7 +12,7 @@ import 'package:frontend/signup/view/sign_up_profile_image_screen.dart';
 import 'package:frontend/signup/view/sign_up_taste_dish_prefer_list_screen.dart';
 import 'package:frontend/user/provider/user_provider.dart';
 
-// todo: 프로필 이미지....?
+
 class SignUpRootScreen extends ConsumerStatefulWidget { // StatefulWidget → ConsumerStatefulWidget
   static String get routeName => 'SignUpRootScreen';
 

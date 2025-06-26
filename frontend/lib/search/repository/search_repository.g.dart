@@ -21,7 +21,7 @@ class _SearchRepository implements SearchRepository {
   Future<CursorPaginationNormalStringModel<SearchRecipeModel>> paginateGET({
     SearchRecipeNormalListView? paginationStringParams,
   }) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(
       paginationStringParams?.toJson() ?? <String, dynamic>{},
@@ -62,7 +62,7 @@ class _SearchRepository implements SearchRepository {
     PaginationStringParams paginationStringParams =
         const PaginationStringParams(),
   }) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(paginationStringParams.toJson());
     final _headers = <String, dynamic>{r'accessToken': 'true'};

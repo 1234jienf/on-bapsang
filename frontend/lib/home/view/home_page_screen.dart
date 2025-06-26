@@ -11,6 +11,8 @@ import 'package:frontend/recipe/component/recipe_season_ingredient_main_componen
 import 'package:frontend/recipe/provider/recipe_provider.dart';
 import 'package:frontend/recipe/provider/recipe_season_provider.dart';
 import 'package:frontend/recipe/view/recipe_season_list_screen.dart';
+import 'package:frontend/user/model/user_model.dart';
+import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../community/component/community_card.dart';
@@ -46,6 +48,14 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
     final double componentGap = 20.0;
     // 화면 전체 양 사이드 갭
     final double sideGap = 5.0;
+
+    ref.listen<UserModelBase?>(userProvider, (prev, next) {
+      if (prev != next) {
+        ref.invalidate(popularRecipesProvider);
+        ref.invalidate(recommendRecipesProvider);
+        ref.invalidate(seasonIngredientProvider);
+      }
+    });
 
     return DefaultLayout(
       appBar: RecipeAppbar(isImply: false, searchMessage: '온밥 통합검색',),

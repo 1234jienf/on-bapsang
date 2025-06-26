@@ -19,7 +19,7 @@ class _RecipeRepository implements RecipeRepository {
 
   @override
   Future<List<RecipeModel>> getPopularRecipes() async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
@@ -52,7 +52,7 @@ class _RecipeRepository implements RecipeRepository {
 
   @override
   Future<List<RecipeModel>> getRecommendRecipes() async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
@@ -85,7 +85,7 @@ class _RecipeRepository implements RecipeRepository {
 
   @override
   Future<RecipeDetailModel> getRecipeDetail(int id) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
@@ -155,7 +155,7 @@ class _RecipeRepository implements RecipeRepository {
   Future<CursorSimplePagination<RecipeModel>> paginate({
     PaginationIntParams paginationIntParams = const PaginationWithNameParams(),
   }) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(paginationIntParams.toJson());
     final _headers = <String, dynamic>{r'accessToken': 'true'};
@@ -191,7 +191,7 @@ class _RecipeRepository implements RecipeRepository {
     int page,
     int size,
   ) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{
       r'name': ingredientName,
       r'page': page,

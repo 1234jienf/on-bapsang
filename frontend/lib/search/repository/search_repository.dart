@@ -28,6 +28,7 @@ abstract class SearchRepository
 
   @GET('/search')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<CursorPaginationNormalStringModel<SearchRecipeModel>> paginateGET({
     @Queries()
     SearchRecipeNormalListView? paginationStringParams,
@@ -36,6 +37,7 @@ abstract class SearchRepository
   @override
   @POST('/foreign')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<CursorStringPagination<SearchRecipeModel>> paginate({
     @Body()
     @Queries()
