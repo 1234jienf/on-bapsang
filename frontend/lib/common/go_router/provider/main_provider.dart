@@ -25,8 +25,8 @@ import 'package:frontend/shopping/view/shopping_root_screen.dart';
 import 'package:frontend/signup/view/sign_up_root_screen.dart';
 import 'package:frontend/user/view/login_screen.dart';
 import 'package:go_router/go_router.dart';
-import 'package:photo_manager/photo_manager.dart';
 
+import '../../../community/model/community_next_upload_model.dart';
 import '../../../home/view/home_page_screen.dart';
 import '../../../maps/view/maps_screen.dart';
 import '../../../search/view/search_main_screen.dart';
@@ -225,14 +225,17 @@ class MainProvider extends ChangeNotifier {
     GoRoute(
       path: '/community/create',
       name: 'CommunityCreateScreen',
-      builder: (_, state) => const CommunityCreateScreen(),
+      builder: (_, state) {
+        String recipe_name = state.extra as String;
+        return CommunityCreateScreen(recipe_name : recipe_name);
+      },
       routes: [
         GoRoute(
           path: 'tag',
           name: 'CommunityCreateRecipeTagScreen',
           builder: (_, state) {
-            final image = state.extra as AssetEntity;
-            return CommunityCreateRecipeTagScreen(image: image);
+            final nextModel = state.extra as CommunityNextUploadModel;
+            return CommunityCreateRecipeTagScreen(nextModel: nextModel);
           },
         ),
         GoRoute(

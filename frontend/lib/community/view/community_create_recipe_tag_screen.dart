@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/community/model/community_next_upload_model.dart';
 import 'package:frontend/community/model/community_upload_recipe_final_list_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -18,9 +19,9 @@ import 'community_create_upload_screen.dart';
 
 class CommunityCreateRecipeTagScreen extends ConsumerStatefulWidget {
   static String get routeName => 'CommunityCreateRecipeTagScreen';
-  final AssetEntity image;
+  final CommunityNextUploadModel nextModel;
 
-  const CommunityCreateRecipeTagScreen({super.key, required this.image});
+  const CommunityCreateRecipeTagScreen({super.key, required, required this.nextModel});
 
   @override
   ConsumerState<CommunityCreateRecipeTagScreen> createState() =>
@@ -36,6 +37,19 @@ class _ConsumerCommunityCreateRecipeTagScreenState
   late final CommunityUploadRecipeFinalListModel model;
   Timer? _debounceTimer;
   final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final initialKeyword = widget.nextModel.recipe_name;
+    if (initialKeyword != "" && initialKeyword.isNotEmpty) {
+      _searchController.text = initialKeyword;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(tagSearchKeywordProvider.notifier).state = initialKeyword;
+        ref.watch(communityUploadRecipeListProvider(initialKeyword));
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +86,7 @@ class _ConsumerCommunityCreateRecipeTagScreenState
               y: tags.first.y,
               x: tags.first.x,
               recipeTag: tags.first.name,
-              imageFile: widget.image,
+              imageFile: widget.nextModel.selectedImage,
             ),
           );
         },
@@ -156,7 +170,7 @@ class _ConsumerCommunityCreateRecipeTagScreenState
 
   FutureBuilder<Uint8List?> _imageCreate(double width, double height) {
     return FutureBuilder<Uint8List?>(
-      future: widget.image.thumbnailDataWithSize(
+      future: widget.nextModel.selectedImage.thumbnailDataWithSize(
         ThumbnailSize(width.toInt(), height.toInt()),
       ),
       builder: (context, snapshot) {
@@ -373,4 +387,5 @@ class _ConsumerCommunityCreateRecipeTagScreenState
       ),
     );
   }
+
 }

@@ -5,12 +5,14 @@ import 'package:frontend/community/component/community_app_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:photo_manager/photo_manager.dart';
 
+import '../model/community_next_upload_model.dart';
 import 'community_create_recipe_tag_screen.dart';
 
 class CommunityCreateScreen extends ConsumerStatefulWidget {
   static String get routeName => 'CommunityCreateScreen';
+  final String recipe_name;
 
-  const CommunityCreateScreen({super.key});
+  const CommunityCreateScreen({super.key, required this.recipe_name});
 
   @override
   ConsumerState<CommunityCreateScreen> createState() =>
@@ -26,7 +28,7 @@ class _ConsumerCommunityCreateScreenState
   int currentPage = 0;
   bool isLoading = false;
   bool hasMore = true;
-  final int pageSize = 60;
+  final int pageSize = 100;
 
   @override
   void initState() {
@@ -34,7 +36,7 @@ class _ConsumerCommunityCreateScreenState
     _loadPhotos();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 300) {
+          _scrollController.position.maxScrollExtent - 200) {
         _loadMorePhotos();
       }
     });
@@ -45,6 +47,7 @@ class _ConsumerCommunityCreateScreenState
     imageList.clear();
     albums.clear();
     selectedImage = null;
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -104,11 +107,10 @@ class _ConsumerCommunityCreateScreenState
 
   @override
   Widget build(BuildContext context) {
-
     return DefaultLayout(
       appBar: CommunityAppBar(
         index: 0,
-        title: '사진 올리기',
+        title: '커뮤니티 글쓰기',
         next: '다음',
         isFirst: true,
         function: () async {
@@ -144,7 +146,8 @@ class _ConsumerCommunityCreateScreenState
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    '이미지 용량이 ${fileSizeInMB.toStringAsFixed(2)}MB입니다. 15MB 이하로 줄여주세요.',
+                    '이미지 용량이 ${fileSizeInMB.toStringAsFixed(
+                        2)}MB입니다. 15MB 이하로 줄여주세요.',
                   ),
                 ),
               );
@@ -154,9 +157,12 @@ class _ConsumerCommunityCreateScreenState
 
 
           if (context.mounted) {
-            context.pushNamed(CommunityCreateRecipeTagScreen.routeName, extra: selectedImage);
+            context.pushNamed(CommunityCreateRecipeTagScreen.routeName,
+                extra: CommunityNextUploadModel(
+                    selectedImage: selectedImage!,
+                    recipe_name: widget.recipe_name
+                ));
           }
-
         },
       ),
       child: Column(
@@ -170,23 +176,27 @@ class _ConsumerCommunityCreateScreenState
   }
 
   Widget _content(BuildContext context) {
-    final double mediaQuerySize = MediaQuery.of(context).size.width;
+    final double mediaQuerySize = MediaQuery
+        .of(context)
+        .size
+        .width;
     return Container(
       width: mediaQuerySize,
       height: mediaQuerySize,
       color: Colors.grey,
       child:
-          selectedImage == null
-              ? Center(child: Text('이미지를 선택하세요'))
-              : SelectedImageWidget(
-                asset: selectedImage!,
-                size: mediaQuerySize.round(),
-              ),
+      selectedImage == null
+          ? Center(child: Text('이미지를 선택하세요'))
+          : SelectedImageWidget(
+        asset: selectedImage!,
+        size: mediaQuerySize.round(),
+      ),
     );
   }
 
   Widget _imageSelectList(BuildContext context) {
     return GridView.builder(
+      controller: _scrollController,
       itemCount: imageList.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4,
@@ -195,7 +205,8 @@ class _ConsumerCommunityCreateScreenState
         childAspectRatio: 1,
       ),
       itemBuilder:
-          (_, index) => GridImageWidget(
+          (_, index) =>
+          GridImageWidget(
             asset: imageList[index],
             selectedAsset: selectedImage,
             onTap: () {
@@ -273,11 +284,11 @@ class _GridImageWidgetState extends State<GridImageWidget> {
       onTap: widget.onTap,
       child: FutureBuilder(
         future:
-            cachedImage != null
-                ? Future.value(cachedImage)
-                : widget.asset.thumbnailDataWithSize(
-                  const ThumbnailSize(200, 200),
-                ),
+        cachedImage != null
+            ? Future.value(cachedImage)
+            : widget.asset.thumbnailDataWithSize(
+          const ThumbnailSize(200, 200),
+        ),
         builder: (_, AsyncSnapshot snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
             cachedImage = snapshot.data;

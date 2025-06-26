@@ -134,7 +134,7 @@ class CommunityComment extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      DateFormat('yy년 M월 d일').format(createdAt),
+                      DateFormat('yy년 M월 d일').format(reply.createdAt),
                       style: TextStyle(fontSize: 10, color: Colors.grey),
                     ),
                   ],
