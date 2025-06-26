@@ -69,26 +69,28 @@ public class CommentService {
 
     // 특정 게시글의 최상위 댓글 목록 + 대댓글 포함 응답
     @Transactional(readOnly = true)
-    public List<CommentResponse> getComments(Long postId) {
+    public List<CommentResponse> getComments(Long postId, User currentUser) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
 
         List<Comment> topLevelComments = commentRepository.findByPostAndParentIsNullWithUserAndReplies(post);
 
         return topLevelComments.stream()
-                .map(this::buildCommentResponseWithChildren)
+                .map(comment -> buildCommentResponseWithChildren(comment, currentUser))
                 .collect(Collectors.toList());
     }
 
-    private CommentResponse buildCommentResponseWithChildren(Comment comment) {
+    private CommentResponse buildCommentResponseWithChildren(Comment comment, User currentUser) {
         String profileImageUrl = comment.getUser().getProfileImage() != null
                 ? imageUploader.generatePresignedUrl(comment.getUser().getProfileImage(), 120)
                 : null;
 
+        boolean isAuthor = comment.getUser().getUserId().equals(currentUser.getUserId());
+
         List<CommentResponse> children = comment.getChildren().stream()
-                .map(this::buildCommentResponseWithChildren) // 재귀 호출
+                .map(child -> buildCommentResponseWithChildren(child, currentUser))
                 .collect(Collectors.toList());
 
-        return new CommentResponse(comment, profileImageUrl, children);
+        return new CommentResponse(comment, profileImageUrl, children, isAuthor);
     }
 }

@@ -111,36 +111,30 @@ public class PostService {
     public PostDetailWithScrap getPostById(Long id, User user) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+
         boolean isScrapped = scrapService.isScrapped(post, user);
+        boolean isAuthor = post.getUser().getUserId().equals(user.getUserId());
 
         String presignedUrl = post.getImageUrl() != null
                 ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
                 : null;
 
-        // 레시피 이미지 URL 조회
         String recipeImageUrl = null;
         String recipeId = post.getRecipeId();
-        System.out.println("DEBUG - recipeId in post: " + recipeId);
-
         if (recipeId != null) {
             Recipe recipe = recipeRepository.findById(recipeId).orElse(null);
             if (recipe != null) {
                 recipeImageUrl = recipe.getImageUrl();
-                System.out.println("DEBUG - Found recipe imageUrl: " + recipeImageUrl);
-            } else {
-                System.out.println("DEBUG - No recipe found with id: " + recipeId);
             }
-        } else {
-            System.out.println("DEBUG - recipeId is null in Post");
         }
 
         String profileImageUrl = post.getUser().getProfileImage() != null
                 ? imageUploader.generatePresignedUrl(post.getUser().getProfileImage(), 120)
                 : null;
 
-        return new PostDetailWithScrap(post, isScrapped, presignedUrl, recipeImageUrl, profileImageUrl);
-
+        return new PostDetailWithScrap(post, isScrapped, isAuthor, presignedUrl, recipeImageUrl, profileImageUrl);
     }
+
 
     public Post update(Long id, PostRequest request, User user, String imageUrl) {
         Post post = postRepository.findById(id)
