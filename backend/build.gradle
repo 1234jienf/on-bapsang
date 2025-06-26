@@ -37,6 +37,8 @@ dependencies {
 	implementation 'org.glassfish.jaxb:jaxb-runtime:3.0.2'
 	// (옵션) JSON 사용 시 필요
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	// XML 파싱용
+	implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 	// 번역 관련 파싱
 	implementation 'com.fasterxml.jackson.module:jackson-module-parameter-names'
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
