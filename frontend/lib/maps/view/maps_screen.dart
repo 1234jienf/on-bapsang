@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -102,7 +103,7 @@ class _MapScreenState extends State<MapScreen> {
     return DefaultLayout(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text("주변"),
+        title: Text("common.map".tr()),
         actions: [
           GestureDetector(
             onTap: () {
@@ -166,8 +167,8 @@ class _MapScreenState extends State<MapScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        '선택된 위치',
+                      Text(
+                        "map.selected_location".tr(),
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
@@ -176,7 +177,7 @@ class _MapScreenState extends State<MapScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        placeFromCoordinates.results?[0].formattedAddress ?? '주소를 가져오는 중...',
+                        placeFromCoordinates.results?[0].formattedAddress ?? "map.loading_message".tr(),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/common/const/colors.dart';
 import 'package:go_router/go_router.dart';
@@ -39,31 +40,31 @@ class RootTab extends StatelessWidget {
           _navItem(
             'asset/img/home.png',
             'asset/img/home_color.png',
-            '홈',
+            "common.home",
             currentIndex == 0,
           ),
           _navItem(
             'asset/img/recipe.png',
             'asset/img/recipe_color.png',
-            '레시피',
+            "common.recipe",
             currentIndex == 1,
           ),
           _navItem(
             'asset/img/shopping.png',
             'asset/img/shopping_color.png',
-            '쇼핑',
+            "common.shopping",
             currentIndex == 2,
           ),
           _navItem(
             'asset/img/community.png',
             'asset/img/community_color.png',
-            '커뮤',
+            "common.community",
             currentIndex == 3,
           ),
           _navItem(
             'asset/img/map.png',
             'asset/img/map_color.png',
-            '주변',
+            "common.map",
             currentIndex == 4,
           ),
         ],
@@ -84,7 +85,7 @@ class RootTab extends StatelessWidget {
         width: 24,
         height: 24
       ),
-      label: label,
+      label: label.tr(),
     );
   }
 }

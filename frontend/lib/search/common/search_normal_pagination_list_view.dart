@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/model/string/cursor_pagination_normal_string_model.dart';
@@ -74,7 +75,7 @@ class _PaginationStringListViewState<T extends IModelWithStringId>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            '검색된 레시피가 없습니다. \n\n ${state.message} 와 유사한 레시피를 추천해드릴까요?',
+            "search.no_result_recipe".tr(namedArgs: {"food": state.message}),
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),
           ),
@@ -91,7 +92,7 @@ class _PaginationStringListViewState<T extends IModelWithStringId>
                 ),
                 alignment: Alignment.center,
                 // 텍스트 가운데 정렬
-                child: Text('아니요', style: TextStyle(fontSize: 16)),
+                child: Text("search.no".tr(), style: TextStyle(fontSize: 16)),
               ),
               const SizedBox(width: 20),
               GestureDetector(
@@ -107,7 +108,7 @@ class _PaginationStringListViewState<T extends IModelWithStringId>
                   ),
                   alignment: Alignment.center,
                   // 텍스트 가운데 정렬
-                  child: Text('예', style: TextStyle(fontSize: 16)),
+                  child: Text("search.yes".tr(), style: TextStyle(fontSize: 16)),
                 ),
               ),
             ],

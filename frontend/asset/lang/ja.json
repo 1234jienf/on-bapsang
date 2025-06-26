@@ -21,7 +21,13 @@
     "shopping": "ショッピング",
     "community": "コミュニティ",
     "map": "周辺",
-    "error_message": "データの取得中に問題が発生しました。"
+    "error_message": "データの取得中に問題が発生しました。",
+    "error_message2": "エラーが発生しました。もう一度お試しください。",
+    "image_error": "画像の読み込みに失敗しました。",
+    "image_error2": "画像のサイズを確認できません。",
+    "image_error3": "画像のサイズは {fileSize}MB です。15MB 以下に縮小してください。",
+    "image_hint": "画像を選択してください。",
+    "again": "もう一度試す"
   },
   "home": {
     "main_popular_recipe": "今人気のレシピ",
@@ -50,7 +56,11 @@
     "ingredient_market_price": "市場別の{ingredient}卸売価格",
     "search_hint": "レシピを検索してみましょう！",
     "recipe_error": "登録されたレシピがありません！",
-    "no_review": "まだレビューがありません。"
+    "no_review": "まだレビューがありません。",
+    "no_season_ingredient": "今月の旬の食材はありません。",
+    "recipe_loading_err": "レシピの読み込み中に問題が発生しました。",
+    "no_season_recipe1": "{ingredient} のレシピは現在準備中です。",
+    "no_season_recipe2": "ほかの旬のレシピもぜひご覧ください！"
   },
   "shopping": {
     "special_price_title": "onbapsangマーケット特価",
@@ -74,14 +84,21 @@
     "no_comments": "コメントはまだありません。",
     "comment_hint": "コメントを入力してください",
     "new_post": "コミュニティ投稿",
+    "recipe_tag": "レシピタグ",
+    "recipe_tag_notice": "レシピタグを追加してください。",
     "recipe_tag_hint": "必要な箇所にレシピをタグ付けしてください",
     "recipe_search_hint": "レシピを検索してください",
+    "recipe_tag_one": "レシピタグは1つだけ登録できます。",
     "upload_title": "コミュニティに投稿",
     "upload": "アップロード",
     "post_title_hint": "タイトルは最大20文字までです。",
     "post_hint": "料理の紹介を書いてみましょう。",
     "post_error_hint": "すべての項目を入力してください。",
-    "post_success": "投稿完了しました"
+    "post_success": "投稿完了しました",
+    "reply_info": "{replyTo}さんへの返信",
+    "reply_hint": "返信を入力してください",
+    "success_scrap": "スクラップに成功しました",
+    "fail_scrap": "スクラップを解除しました"
   },
   "map": {
     "loading_message": "位置情報を取得中…",
@@ -89,16 +106,32 @@
     "search_title": "位置を検索",
     "search_hint": "場所を検索してください",
     "now_location": "現在地を使用",
-    "no_result": "該当する場所が見つかりませんでした"
+    "no_result": "該当する場所が見つかりませんでした",
+    "no_location": "位置情報がありません",
+    "fail_get_location": "選択した場所の情報を取得できませんでした。",
+    "fail_get_point": "選択した場所の座標を取得できませんでした。",
+    "error_hint": "位置選択エラー",
+    "error_message": "位置情報の取得中にエラーが発生しました。",
+    "location_get_error": "現在地を取得できません。位置情報の権限を確認してください。",
+    "no_auth": "位置サービスが無効になっています。",
+    "auth_hint": "位置情報の許可が必要です。設定で許可を与えてください。",
+    "auth_deny": "位置情報の許可が拒否されました。"
   },
   "search": {
+    "goods": "商品",
     "search_hint": "何でも検索してみよう！",
     "recent": "最近の検索",
     "popular": "人気の検索ワード",
     "recommend": "onbapsangおすすめ検索ワード",
     "filter": "フィルター",
     "latest": "新着順",
-    "no_result_community": "該当するコミュニティ投稿がありません。"
+    "no_result_community": "該当するコミュニティ投稿がありません。",
+    "no_result_recipe": "該当するレシピが見つかりません。\n\n{food} に似たレシピをおすすめしましょうか？",
+    "yes": "はい",
+    "no": "いいえ",
+    "type": "種類",
+    "method": "調理法",
+    "essential_ingredient": "必須食材"
   },
   "mypage": {
     "title": "{user}のマイページ",

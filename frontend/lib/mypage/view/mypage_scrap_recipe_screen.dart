@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
@@ -51,7 +52,7 @@ class _MypageScrapRecipeScreenState extends ConsumerState<MypageScrapRecipeScree
     if (state is CursorSimplePaginationLoading) {
       recipeSection.add(Center(child: CircularProgressIndicator()));
     } else if (state is CursorSimplePaginationError) {
-      recipeSection.add(Text('에러: ${state.message}'));
+      recipeSection.add(Text('${"common.error_message".tr()}: ${state.message}'));
     } else if (state is CursorSimplePagination<RecipeModel>) {
       final recipes = (state).data;
       if (recipes.isEmpty) {
@@ -60,7 +61,7 @@ class _MypageScrapRecipeScreenState extends ConsumerState<MypageScrapRecipeScree
             padding: const EdgeInsets.symmetric(vertical: 40.0),
             child: Center(
               child: Text(
-                '등록된 레시피가 없습니다!',
+                "recipe.recipe_error".tr(),
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
             ),
@@ -75,7 +76,7 @@ class _MypageScrapRecipeScreenState extends ConsumerState<MypageScrapRecipeScree
 
     return DefaultLayout(
         appBar: AppBar(
-          title: Text('스크랩한 레시피'),
+          title: Text("mypage.scrap_recipe".tr()),
           backgroundColor: Colors.white,
         ),
         child: Padding(

@@ -67,12 +67,12 @@ class _ConsumerSearchMainScreenState extends ConsumerState<SearchMainScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 23.0, vertical: 16.0),
         child: Column(
           children: [
-            _searchTitle(title: '최근 검색어'),
+            _searchTitle(title: "search.recent"),
             _recentSearch(items: state.recent!, context: context, ref : ref),
-            _searchTitle(title: '인기 검색어'),
+            _searchTitle(title: "search.popular"),
             _famousSearch(items: state.popular!, ref : ref, context: context),
             _searchTitle(
-              title: '온밥 추천 검색어',
+              title: "search.recommend",
               icon: Icon(Icons.info_outline_rounded, size: 18.0),
             ),
             _recommandSearch(items: items, context: context, ref : ref),
@@ -152,7 +152,7 @@ Widget _searchTitle({required String title, String? subtitle, Icon? icon}) {
         Row(
           children: [
             Text(
-              title,
+              title.tr(),
               style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w600),
             ),
             const SizedBox(width: 5.0),
@@ -161,7 +161,7 @@ Widget _searchTitle({required String title, String? subtitle, Icon? icon}) {
         ),
       if (icon == null)
         Text(
-          title,
+          title.tr(),
           style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w600),
         ),
       if (subtitle != null)

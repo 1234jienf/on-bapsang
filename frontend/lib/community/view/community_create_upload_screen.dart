@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
@@ -51,8 +52,8 @@ class _ConsumerCommunityCreateUploadScreenState
           resizeToAvoidBottomInset: true,
           appBar: CommunityAppBar(
             index: 2,
-            title: '커뮤니티 올리기',
-            next: '업로드',
+            title: "community.new_post".tr(),
+            next: "community.upload".tr(),
             isFirst: false,
             isLast: true,
             function: () async {
@@ -61,7 +62,7 @@ class _ConsumerCommunityCreateUploadScreenState
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      '모든 항목을 작성해주세요.',
+                      "community.post_error_hint".tr(),
                       style: TextStyle(
                         fontSize: 16.0,
                         color: Colors.black,
@@ -93,7 +94,7 @@ class _ConsumerCommunityCreateUploadScreenState
 
               if (response.statusCode == 200) {
                 if (context.mounted) {
-                  communityShowDialog(context, ref, true, '작성 성공!');
+                  communityShowDialog(context, ref, true, "community.post_success".tr());
                 }
               } else {
                 if (context.mounted) {
@@ -103,7 +104,7 @@ class _ConsumerCommunityCreateUploadScreenState
                       context,
                       ref,
                       true,
-                      '오류가 발생했습니다. 다시 시도해주세요',
+                      "common.error_message2".tr(),
                     );
                   });
                 }
@@ -154,7 +155,7 @@ class _ConsumerCommunityCreateUploadScreenState
                         TextField(
                           controller: titleController,
                           decoration: InputDecoration(
-                            hintText: '제목은 최대 20자 가능합니다.',
+                            hintText: "community.post_title_hint".tr(),
                             hintStyle: TextStyle(
                               fontSize: 16.0,
                               color: Colors.grey,
@@ -182,7 +183,7 @@ class _ConsumerCommunityCreateUploadScreenState
                         TextField(
                           controller: contentController,
                           decoration: InputDecoration(
-                            hintText: '요리에 대한 소개를 해보세요.',
+                            hintText: "community.post_hint".tr(),
                             hintStyle: TextStyle(
                               fontSize: 16.0,
                               color: Colors.grey,

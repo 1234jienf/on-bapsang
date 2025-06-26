@@ -20,7 +20,14 @@
     "recipe": "食谱",
     "shopping": "购物",
     "community": "社区",
-    "map": "附近"
+    "map": "附近",
+    "error_message": "获取数据时发生了错误。",
+    "error_message2": "发生错误。请再试一次。",
+    "image_error": "图片加载失败。",
+    "image_error2": "无法获取图片大小。",
+    "image_error3": "图片大小为 {fileSize}MB。请将其压缩至15MB以下。",
+    "image_hint": "请选择图片。",
+    "again": "请再试一次"
   },
   "home": {
     "main_popular_recipe": "当前热门食谱",
@@ -50,7 +57,15 @@
     "search_hint": "搜索食谱试试吧！",
     "recipe_error": "没有已注册的食谱！",
     "no_review": "尚未有评论。",
-    "error_message": "获取数据时发生错误。"
+    "error_message": "获取数据时发生错误。",
+    "no_season_ingredient": "本月没有应季食材。",
+    "recipe_loading_err": "加载食谱时出现问题。",
+    "no_season_recipe1": "{ingredient} 的食谱正在准备中。",
+    "no_season_recipe2": "请先看看其他应季食谱！",
+    "reply_info": "回复 {replyTo} 的留言",
+    "reply_hint": "请输入回复内容",
+    "success_scrap": "收藏成功",
+    "fail_scrap": "已取消收藏"
   },
   "shopping": {
     "special_price_title": "onbapsang 特价商品",
@@ -74,8 +89,11 @@
     "no_comments": "暂时没有评论。",
     "comment_hint": "请输入评论",
     "new_post": "发表社区帖子",
+    "recipe_tag": "食谱标签",
+    "recipe_tag_notice": "请添加食谱标签。",
     "recipe_tag_hint": "在需要的位置标记食谱",
     "recipe_search_hint": "搜索食谱",
+    "recipe_tag_one": "只能添加一个食谱标签。",
     "upload_title": "上传到社区",
     "upload": "上传",
     "post_title_hint": "标题最多可输入20个字符。",
@@ -89,16 +107,32 @@
     "search_title": "搜索位置",
     "search_hint": "请输入位置名称",
     "now_location": "使用当前位置",
-    "no_result": "没有找到相关位置"
+    "no_result": "没有找到相关位置",
+    "no_location": "无位置信息",
+    "fail_get_location": "无法获取所选位置的信息。",
+    "fail_get_point": "无法获取所选位置的坐标。",
+    "error_hint": "位置选择错误",
+    "error_message": "获取位置信息时发生错误。",
+    "location_get_error": "无法获取当前位置。请检查位置信息权限。",
+    "no_auth": "位置服务已被禁用。",
+    "auth_hint": "需要位置权限。请在设置中允许权限。",
+    "auth_deny": "位置权限已被拒绝。"
   },
   "search": {
+    "goods": "商品",
     "search_hint": "试着搜索任何内容！",
     "recent": "最近搜索",
     "popular": "热门搜索",
     "recommend": "onbapsang 推荐搜索词",
     "filter": "筛选",
     "latest": "最新",
-    "no_result_community": "未找到相关社区帖子。"
+    "no_result_community": "未找到相关社区帖子。",
+    "no_result_recipe": "未找到相关的食谱。\n\n要推荐与 {food} 类似的食谱吗？",
+    "yes": "是",
+    "no": "否",
+    "type": "种类",
+    "method": "烹饪方式",
+    "essential_ingredient": "必需食材"
   },
   "mypage": {
     "title": "{user}的个人主页",

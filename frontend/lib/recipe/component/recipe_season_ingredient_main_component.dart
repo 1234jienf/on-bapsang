@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/recipe/component/recipe_card.dart';
@@ -15,7 +16,7 @@ class RecipeSeasonIngredientMainComponent extends ConsumerStatefulWidget {
 
 class _RecipeSeasonIngredientMainComponentState
     extends ConsumerState<RecipeSeasonIngredientMainComponent> {
-  String? selectedIngredient;
+  String selectedIngredient = '';
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class _RecipeSeasonIngredientMainComponentState
       ),
       data: (seasonIngredients) {
         if (seasonIngredients.isEmpty) {
-          return const Text("제철 재료가 없습니다.");
+          return Text("recipe.no_season_ingredient".tr());
         }
 
         // 선택이 없으면 첫 번째 재료를 기본 선택
@@ -91,7 +92,7 @@ class _RecipeSeasonIngredientMainComponentState
             recipeListAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (err, stack) =>
-                  Center(child: Text('레시피 로딩 에러: $err')),
+                  Center(child: Text('${"recipe.recipe_loading_err".tr()} $err')),
               data: (List<RecipeModel> recipes) {
                 if (recipes.isEmpty) {
                   return Center(
@@ -99,10 +100,12 @@ class _RecipeSeasonIngredientMainComponentState
                         children: [
                           SizedBox(height: 50.0,),
                           Text(
-                            '${selectedIngredient} 레시피는 지금 준비중이에요.',
+                            "recipe.no_season_recipe1".tr(namedArgs: {
+                              "ingredient" : selectedIngredient
+                            }),
                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                           ),
-                          Text('다른 제철 재료 레시피 먼저 만나보세요!'),
+                          Text("recipe.no_season_recipe2".tr()),
                           SizedBox(height: 50.0,),
                         ],
                       )

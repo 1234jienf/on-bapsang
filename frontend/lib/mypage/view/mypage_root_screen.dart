@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,7 +55,7 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
                         bottom: BorderSide(color: Colors.grey, width: 0.5)
                     )
                   ),
-                  child: Text('스크랩한 레시피', style: TextStyle(fontSize: 17),),
+                  child: Text("mypage.scrap_recipe".tr(), style: TextStyle(fontSize: 17),),
                 ),
               ),
               SizedBox(height: componentGap,),
@@ -72,7 +73,7 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
                           bottom: BorderSide(color: Colors.grey, width: 0.5)
                       )
                   ),
-                  child: Text('내가 쓴 글 모아보기', style: TextStyle(fontSize: 17),),
+                  child: Text("mypage.community".tr(), style: TextStyle(fontSize: 17),),
                 ),
               ),
               SizedBox(height: componentGap,),
@@ -90,7 +91,7 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
                           bottom: BorderSide(color: Colors.grey, width: 0.5)
                       )
                   ),
-                  child: Text('내가 스크랩한 글', style: TextStyle(fontSize: 17),),
+                  child: Text("mypage.scrap_community".tr(), style: TextStyle(fontSize: 17),),
                 ),
               ),
               SizedBox(height: componentGap,),
@@ -108,7 +109,7 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
                           bottom: BorderSide(color: Colors.grey, width: 0.5)
                       )
                   ),
-                  child: Text('회원정보 수정', style: TextStyle(fontSize: 17),),
+                  child: Text("mypage.setting_info".tr(), style: TextStyle(fontSize: 17),),
                 ),
               ),
               SizedBox(height: componentGap,),
@@ -120,13 +121,13 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
                         bottom: BorderSide(color: Colors.grey, width: 0.5)
                     )
                 ),
-                child: Text('언어 설정 변경', style: TextStyle(fontSize: 17),),
+                child: Text("mypage.setting_language".tr(), style: TextStyle(fontSize: 17),),
               ),
               SizedBox(height: componentGap,),
               SizedBox(
                 width: double.infinity,
                 height: 40,
-                child: Text('회원 탈퇴', style: TextStyle(fontSize: 17, color: Colors.grey),),
+                child: Text("mypage.withdraw".tr(), style: TextStyle(fontSize: 17, color: Colors.grey),),
               ),
             ],
           ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -21,7 +22,7 @@ Future<void> communityShowDialog(BuildContext context, WidgetRef ref, bool isNav
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              title,
+              title.tr(),
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
             ),
           ],

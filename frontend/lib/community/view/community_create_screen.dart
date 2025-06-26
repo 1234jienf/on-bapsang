@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
@@ -110,8 +111,8 @@ class _ConsumerCommunityCreateScreenState
     return DefaultLayout(
       appBar: CommunityAppBar(
         index: 0,
-        title: '커뮤니티 글쓰기',
-        next: '다음',
+        title: "community.new_post".tr(),
+        next: "common.next".tr(),
         isFirst: true,
         function: () async {
           if (selectedImage == null) return;
@@ -121,7 +122,7 @@ class _ConsumerCommunityCreateScreenState
           if (file == null || !(await file.exists())) {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('이미지 파일을 불러올 수 없습니다.')),
+                SnackBar(content: Text("common.image_error".tr())),
               );
               return;
             }
@@ -132,7 +133,7 @@ class _ConsumerCommunityCreateScreenState
           if (fileSizeInBytes == null) {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('이미지 용량을 확인할 수 없습니다.')),
+                SnackBar(content: Text("common.image_error2".tr())),
               );
               return;
             }
@@ -146,8 +147,7 @@ class _ConsumerCommunityCreateScreenState
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    '이미지 용량이 ${fileSizeInMB.toStringAsFixed(
-                        2)}MB입니다. 15MB 이하로 줄여주세요.',
+                    "common.image_error3".tr(namedArgs: {"fileSize": fileSizeInMB.toStringAsFixed(2)})
                   ),
                 ),
               );
