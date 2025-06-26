@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class SearchBottomFilter extends StatelessWidget {
@@ -14,7 +15,7 @@ class SearchBottomFilter extends StatelessWidget {
             onTap: () {},
             child: Row(
               children: [
-                Text('최신순', style: TextStyle(fontSize: 13.0)),
+                Text("search.latest".tr(), style: TextStyle(fontSize: 13.0)),
                 Icon(Icons.swap_vert_outlined, size: 20,)
               ],
             ),

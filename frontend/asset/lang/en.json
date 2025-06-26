@@ -21,7 +21,13 @@
     "shopping": "Shopping",
     "community": "Community",
     "map": "Nearby",
-    "error_message": "An error occurred while fetching the data."
+    "error_message": "An error occurred while fetching the data.",
+    "error_message2": "An error occurred. Please try again.",
+    "image_error": "Failed to load the image.",
+    "image_error2": "Unable to determine the image size.",
+    "image_error3": "The image size is {fileSize}MB. Please reduce it to under 15MB.",
+    "image_hint": "Please select an image.",
+    "again": "Try again"
   },
   "home": {
     "main_popular_recipe": "Trending Popular Recipes",
@@ -50,7 +56,11 @@
     "ingredient_market_price": "{ingredient} Wholesale Price by Market",
     "search_hint": "Search for recipes!",
     "recipe_error": "No registered recipes found!",
-    "no_review": "There are no reviews yet."
+    "no_review": "There are no reviews yet.",
+    "no_season_ingredient": "There are no seasonal ingredients this month.",
+    "recipe_loading_err": "There was a problem loading the recipe.",
+    "no_season_recipe1": "{ingredient} recipes are being prepared now.",
+    "no_season_recipe2": "Check out other seasonal recipes first!"
   },
   "shopping": {
     "special_price_title": "onbapsang Market Specials",
@@ -74,14 +84,21 @@
     "no_comments": "No comments yet.",
     "comment_hint": "Leave a comment",
     "new_post": "Write a Community Post",
+    "recipe_tag": "Recipe Tag",
+    "recipe_tag_notice": "Please add a recipe tag.",
     "recipe_tag_hint": "Tag a recipe where needed",
     "recipe_search_hint": "Search for a recipe",
+    "recipe_tag_one": "Only one recipe tag can be added.",
     "upload_title": "Upload to Community",
     "upload": "Upload",
     "post_title_hint": "Title can be up to 20 characters.",
     "post_hint": "Introduce your recipe here.",
     "post_error_hint": "Please fill out all fields.",
-    "post_success": "Post completed"
+    "post_success": "Post completed",
+    "reply_info": "Reply to {replyTo}",
+    "reply_hint": "Write a reply",
+    "success_scrap": "Scrap successful",
+    "fail_scrap": "Scrap canceled"
   },
   "map": {
     "loading_message": "Fetching location info...",
@@ -89,16 +106,32 @@
     "search_title": "Search Location",
     "search_hint": "Search for a location",
     "now_location": "Use Current Location",
-    "no_result": "No results found"
+    "no_result": "No results found",
+    "no_location": "No location information",
+    "fail_get_location": "Unable to retrieve information for the selected location.",
+    "fail_get_point": "Unable to retrieve coordinates for the selected location.",
+    "error_hint": "Location selection error",
+    "error_message": "An error occurred while retrieving location information.",
+    "location_get_error": "Unable to retrieve current location. Please check location permissions.",
+    "no_auth": "Location services are disabled.",
+    "auth_hint": "Location permission is required. Please allow permission in settings.",
+    "auth_deny": "Location permission has been denied."
   },
   "search": {
+    "goods": "Goods",
     "search_hint": "Try searching anything!",
     "recent": "Recent Searches",
     "popular": "Popular Searches",
     "recommend": "onbapsang Recommended Searches",
     "filter": "Filter",
     "latest": "Latest",
-    "no_result_community": "No community posts found."
+    "no_result_community": "No community posts found.",
+    "no_result_recipe": "No matching recipes found. \n\n Shall we recommend some recipes similar to {food}?",
+    "yes": "Yes",
+    "no": "No",
+    "type": "Type",
+    "method": "Method",
+    "essential_ingredient": "Essential Ingredient"
   },
   "mypage": {
     "title": "{user}'s My Page",

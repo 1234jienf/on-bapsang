@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/const/colors.dart';
@@ -107,7 +108,7 @@ class CommunityCard extends ConsumerWidget {
                         SnackBar(
                           content: Text(
                             scrapped ?
-                            '스크랩 취소' : '스크랩 성공',
+                            "community.fail_scrap".tr() : "community.success_scrap".tr(),
                             style: TextStyle(
                               fontSize: 16.0,
                               color: Colors.white,

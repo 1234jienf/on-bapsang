@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/search/component/search_recipe_filter_type.dart';
@@ -18,7 +19,7 @@ class SearchRecipeFilterBar extends ConsumerStatefulWidget {
 }
 
 class _ConsumerSearchRecipeFilterBarState extends ConsumerState<SearchRecipeFilterBar> {
-  final List<String> tabs = ['종류', '조리법', '필수 식재료'];
+  final List<String> tabs = ["search.type".tr(), "search.method".tr(), "search.essential_ingredient".tr()];
   late PageController _pageController = PageController();
   final double menuGap = 10.0;
 
@@ -41,9 +42,9 @@ class _ConsumerSearchRecipeFilterBarState extends ConsumerState<SearchRecipeFilt
 
     return SearchRecipeFilterHeader(
       topFilter: SearchTopFilter(
-        recipeTypeIcon: SearchRecipeIcon(title: '필터'),
+        recipeTypeIcon: SearchRecipeIcon(title: "search.filter".tr()),
         recipeTypeOptions: SearchRecipeOptions(
-          title: '필터',
+          title: "search.filter".tr(),
           options: _typeOptions(state),
         ),
       ),

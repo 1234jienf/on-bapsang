@@ -151,12 +151,12 @@ class _ConsumerCommunityCommentInputboxState
           }
 
           if (context.mounted) {
-            communityShowDialog(context, ref, false, '작성 성공!');
+            communityShowDialog(context, ref, false, "community.post_success");
           }
           ref.read(communityDetailProvider(widget.id).notifier).fetchData();
         } else {
           if (context.mounted) {
-            communityShowDialog(context, ref, false, '오류가 발생했습니다. 다시 시도해주세요');
+            communityShowDialog(context, ref, false, "common.error_message2");
           }
         }
       }

@@ -139,7 +139,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                                 RecipeSeasonListScreen.routeName
                             );
                           },
-                          child: Text('더보기 >')
+                          child: Text('${"common.more".tr()} >')
                         )
                       ],
                     ),

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:geolocator/geolocator.dart';
@@ -35,7 +36,7 @@ class _MapsRootScreenState extends State<MapsRootScreen> {
         final isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
 
         if (!isLocationServiceEnabled) {
-          throw Exception('위치 서비스가 비활성화되어 있습니다.');
+          throw Exception("map.no_auth".tr());
         }
 
         // 3. 플랫폼별 위치 설정
@@ -77,14 +78,14 @@ class _MapsRootScreenState extends State<MapsRootScreen> {
         }
       } else if (status.isPermanentlyDenied || status.isRestricted) {
         openAppSettings();
-        throw Exception('위치 권한이 필요합니다. 설정에서 권한을 허용해주세요.');
+        throw Exception("map.auth_hint".tr());
       } else {
-        throw Exception('위치 권한이 거부되었습니다.');
+        throw Exception("map.auth_deny".tr());
       }
     } catch (error) {
       if (mounted) {
         setState(() {
-          errorMessage = '현재 위치를 가져올 수 없습니다: $error';
+          errorMessage = '${"map.error_message".tr()}: $error';
           isLoading = false;
         });
       }
@@ -94,14 +95,14 @@ class _MapsRootScreenState extends State<MapsRootScreen> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const DefaultLayout(
+      return DefaultLayout(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircularProgressIndicator(),
               SizedBox(height: 16),
-              Text('위치 정보를 가져오는 중...'),
+              Text("map.loading_message".tr()),
             ],
           ),
         ),
@@ -134,7 +135,7 @@ class _MapsRootScreenState extends State<MapsRootScreen> {
                   });
                   _requestLocationAndGetPosition();
                 },
-                child: const Text('다시 시도'),
+                child: Text("common.again".tr()),
               ),
             ],
           ),
