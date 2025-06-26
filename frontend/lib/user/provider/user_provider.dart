@@ -145,4 +145,15 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       rethrow;
     }
   }
+
+  Future<void> withdraw() async {
+    try {
+      await userRepository.withdraw();
+
+      await logout();
+    } catch (e, st) {
+      state = UserModelError(message: "회원 탈퇴에 실패했습니다.");
+      rethrow;
+    }
+  }
 }

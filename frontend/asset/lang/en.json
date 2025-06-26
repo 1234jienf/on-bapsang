@@ -140,6 +140,8 @@
     "scrap_community": "Saved Posts",
     "setting_info": "Edit Profile",
     "setting_language": "Change Language",
-    "withdraw": "Delete Account"
+    "withdraw": "Delete Account",
+    "confirm_withdrawal": "Are you sure you want to withdraw?\\nAll information will be deleted."
+
   }
 }
