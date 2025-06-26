@@ -23,7 +23,7 @@ class _ConsumerSearchMainScreenState extends ConsumerState<SearchMainScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(searchKeywordRemainProvider.notifier).setKeyword("");
+      ref.read(searchKeywordRemainProvider.notifier).clear();
     });
   }
 
@@ -55,7 +55,7 @@ class _ConsumerSearchMainScreenState extends ConsumerState<SearchMainScreen> {
 
 
     return DefaultLayout(
-      appBar: SearchAppBar(hintText: '레시피를 검색해주세요'),
+      appBar: SearchAppBar(hintText: ''),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 23.0, vertical: 16.0),
         child: Column(
