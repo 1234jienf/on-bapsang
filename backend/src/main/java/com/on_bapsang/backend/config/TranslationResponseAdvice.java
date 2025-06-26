@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.lang.reflect.Field;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
@@ -122,7 +123,7 @@ public class TranslationResponseAdvice implements ResponseBodyAdvice<Object> {
                 translateRecursively(element, lang, visited);
             }
         } else if (isSkippable(obj)) {
-            return; // String, Number, Boolean, Enum, 등은 skip
+            return;
         } else {
             Class<?> clazz = obj.getClass();
             for (Field field : clazz.getDeclaredFields()) {
@@ -136,12 +137,26 @@ public class TranslationResponseAdvice implements ResponseBodyAdvice<Object> {
                         String translated = translationService.translate(original, lang);
                         field.set(obj, translated);
                     }
+                    else if (fieldValue instanceof List<?> list
+                            && !list.isEmpty()
+                            && list.get(0) instanceof String) {
+
+                        @SuppressWarnings("unchecked")
+                        List<String> originalList = (List<String>) fieldValue;
+
+                        List<String> translatedList = originalList.stream()
+                                .map(text -> translationService.translate(text, lang))
+                                .toList();
+
+                        field.set(obj, translatedList);
+                    }
                 } else {
                     translateRecursively(fieldValue, lang, visited);
                 }
             }
         }
     }
+
 
     private boolean isSkippable(Object obj) {
         Class<?> clazz = obj.getClass();
