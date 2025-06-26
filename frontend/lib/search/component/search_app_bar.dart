@@ -50,6 +50,10 @@ class _SearchAppBarState extends ConsumerState<SearchAppBar> {
         : (keyword.isEmpty ? '아무거나 검색해 보세요!' : keyword);
 
     return AppBar(
+      leading: GestureDetector(onTap: () {
+        context.pop();
+        ref.read(searchKeywordRemainProvider.notifier).clear();
+      }, child : Icon(Icons.arrow_back_ios_new_outlined)),
       backgroundColor: Colors.white,
       elevation: 0,
       automaticallyImplyLeading: true,

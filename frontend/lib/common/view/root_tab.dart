@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/common/const/colors.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 
 class RootTab extends StatelessWidget {
   const RootTab({super.key, required this.child});
+
   final Widget child;
 
   static const _paths = ['/', '/recipe', '/shopping', '/community', '/maps'];
@@ -26,17 +28,44 @@ class RootTab extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         type: BottomNavigationBarType.fixed,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700),
+        selectedItemColor: primaryColor,
+        unselectedItemColor: Colors.black,
+        selectedFontSize: 11,
+        unselectedFontSize: 11,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
         unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
         onTap: (i) => context.go(_paths[i]),
         items: [
-          _navItem('asset/img/Union.png',          'asset/img/house-color.png',        '홈',   currentIndex == 0),
-          _navItem('asset/img/Subtract.png',       'asset/img/chef-hat.png',           '레시피', currentIndex == 1),
-          _navItem('asset/img/local_mall.png',     'asset/img/local_mall-color.png',   '쇼핑', currentIndex == 2),
-          _navItem('asset/img/messages-square.png','asset/img/messages-square-color.png','커뮤', currentIndex == 3),
-          _navItem('asset/img/map.png',            'asset/img/map-color.png',          '주변', currentIndex == 4),
+          _navItem(
+            'asset/img/Union.png',
+            'asset/img/house-color.png',
+            '홈',
+            currentIndex == 0,
+          ),
+          _navItem(
+            'asset/img/Subtract.png',
+            'asset/img/chef-hat.png',
+            '레시피',
+            currentIndex == 1,
+          ),
+          _navItem(
+            'asset/img/local_mall.png',
+            'asset/img/local_mall-color.png',
+            '쇼핑',
+            currentIndex == 2,
+          ),
+          _navItem(
+            'asset/img/messages-square.png',
+            'asset/img/messages-square-color.png',
+            '커뮤',
+            currentIndex == 3,
+          ),
+          _navItem(
+            'asset/img/map.png',
+            'asset/img/map-color.png',
+            '주변',
+            currentIndex == 4,
+          ),
         ],
       ),
       child: child,
@@ -44,7 +73,11 @@ class RootTab extends StatelessWidget {
   }
 
   BottomNavigationBarItem _navItem(
-      String off, String on, String label, bool selected) {
+    String off,
+    String on,
+    String label,
+    bool selected,
+  ) {
     return BottomNavigationBarItem(
       icon: Image.asset(selected ? on : off),
       label: label,

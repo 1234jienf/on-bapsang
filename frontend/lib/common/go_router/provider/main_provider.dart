@@ -77,7 +77,7 @@ class MainProvider extends ChangeNotifier {
         GoRoute(
           path: '/',
           name: 'home',
-          builder: (_, state) => const HomePageScreen(),
+          pageBuilder: (_, state) => const NoTransitionPage(child: HomePageScreen()),
           routes: [
             GoRoute(
               path: 'menu',
@@ -92,7 +92,7 @@ class MainProvider extends ChangeNotifier {
             GoRoute(
               path: 'recipe',
               name: 'RecipeRootScreen',
-              builder: (_, state) => const RecipeRootScreen(),
+              pageBuilder: (_, state) => const NoTransitionPage(child: RecipeRootScreen()),
               routes: [
                 GoRoute(
                   path: 'season',
@@ -112,17 +112,17 @@ class MainProvider extends ChangeNotifier {
             GoRoute(
               path: 'shopping',
               name: 'shopping',
-              builder: (_, state) => const ShoppingRootScreen(),
+              pageBuilder: (_, state) => const NoTransitionPage(child: ShoppingRootScreen()),
             ),
             GoRoute(
               path: 'community',
               name: 'community',
-              builder: (_, state) => const CommunityRootScreen(),
+              pageBuilder: (_, state) => const NoTransitionPage(child: CommunityRootScreen()),
             ),
             GoRoute(
               path: 'maps',
               name: 'maps',
-              builder: (_, state) => MapsRootScreen(),
+              pageBuilder: (_, state) => const NoTransitionPage(child: MapsRootScreen()),
               routes: [
                 GoRoute(
                   path: 'location',
