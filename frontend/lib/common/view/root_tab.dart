@@ -37,32 +37,32 @@ class RootTab extends StatelessWidget {
         onTap: (i) => context.go(_paths[i]),
         items: [
           _navItem(
-            'asset/img/Union.png',
-            'asset/img/house-color.png',
+            'asset/img/home.png',
+            'asset/img/home_color.png',
             '홈',
             currentIndex == 0,
           ),
           _navItem(
-            'asset/img/Subtract.png',
-            'asset/img/chef-hat.png',
+            'asset/img/recipe.png',
+            'asset/img/recipe_color.png',
             '레시피',
             currentIndex == 1,
           ),
           _navItem(
-            'asset/img/local_mall.png',
-            'asset/img/local_mall-color.png',
+            'asset/img/shopping.png',
+            'asset/img/shopping_color.png',
             '쇼핑',
             currentIndex == 2,
           ),
           _navItem(
-            'asset/img/messages-square.png',
-            'asset/img/messages-square-color.png',
+            'asset/img/community.png',
+            'asset/img/community_color.png',
             '커뮤',
             currentIndex == 3,
           ),
           _navItem(
             'asset/img/map.png',
-            'asset/img/map-color.png',
+            'asset/img/map_color.png',
             '주변',
             currentIndex == 4,
           ),
@@ -79,7 +79,11 @@ class RootTab extends StatelessWidget {
     bool selected,
   ) {
     return BottomNavigationBarItem(
-      icon: Image.asset(selected ? on : off),
+      icon: Image.asset(
+        selected ? on : off,
+        width: 24,
+        height: 24
+      ),
       label: label,
     );
   }

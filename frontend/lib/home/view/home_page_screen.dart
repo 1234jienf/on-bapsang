@@ -20,6 +20,20 @@ import '../../community/component/community_card.dart';
 import '../../community/view/community_detail_screen.dart';
 import '../../search/view/search_main_screen.dart';
 
+// 언어에 따른 배너 세팅
+String bannerAsset(BuildContext ctx) {
+  switch (ctx.locale.languageCode) {
+    case 'ko':
+      return 'asset/img/home_AI_recipe_banner_ko.png';
+    case 'ja':
+      return 'asset/img/home_AI_recipe_banner_ja.png';
+    case 'zh':
+      return 'asset/img/home_AI_recipe_banner_zh.png';
+    default:
+      return 'asset/img/home_AI_recipe_banner_en.png';
+  }
+}
+
 class HomePageScreen extends ConsumerStatefulWidget {
   const HomePageScreen({super.key});
 
@@ -82,16 +96,22 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                 delegate: SliverChildListDelegate([
                   const SizedBox(height: 10.0),
         
-                  GestureDetector(onTap : () {
-                    context.pushNamed(SearchMainScreen.routeName);
-                  },child: Image.asset('asset/img/home_AI_recipe_banner.png')),
+                  GestureDetector(
+                    onTap : () {
+                      context.pushNamed(SearchMainScreen.routeName);
+                    },
+                    child: Image.asset(
+                      bannerAsset(context),
+                      fit: BoxFit.cover,
+                    )
+                  ),
         
                   SizedBox(height: componentGap),
         
                   // Recipe Icon
                   CategoryIcons(type: 'recipe'),
         
-                  SizedBox(height: 50.0,),
+                  SizedBox(height: componentGap),
         
                   // 인기 레시피
                   titleWidget(
