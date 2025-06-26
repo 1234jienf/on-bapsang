@@ -30,8 +30,10 @@ public class PostDetailWithScrap {
     private final Double y;
     private final LocalDateTime createdAt;
     private final boolean isScrapped;
+    private final boolean isAuthor;
 
-    public PostDetailWithScrap(Post post, boolean isScrapped, String imageUrl, String recipeImageUrl, String profileImageUrl) {
+    public PostDetailWithScrap(Post post, boolean isScrapped, boolean isAuthor,
+                               String imageUrl, String recipeImageUrl, String profileImageUrl) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.content = post.getContent();
@@ -47,5 +49,6 @@ public class PostDetailWithScrap {
         this.y = post.getY();
         this.createdAt = post.getCreatedAt();
         this.isScrapped = isScrapped;
+        this.isAuthor = isAuthor;
     }
 }

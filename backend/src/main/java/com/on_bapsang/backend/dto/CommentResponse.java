@@ -20,13 +20,15 @@ public class CommentResponse {
     private final String profileImage;
     private final LocalDateTime createdAt;
     private final List<CommentResponse> children;
+    private final boolean isAuthor;
 
-    public CommentResponse(Comment comment, String profileImageUrl, List<CommentResponse> childResponses) {
+    public CommentResponse(Comment comment, String profileImageUrl, List<CommentResponse> childResponses, boolean isAuthor) {
         this.id = comment.getId();
         this.content = comment.getContent();
         this.nickname = comment.getUser().getNickname();
         this.profileImage = profileImageUrl;
         this.createdAt = comment.getCreatedAt();
         this.children = childResponses;
+        this.isAuthor = isAuthor;
     }
 }

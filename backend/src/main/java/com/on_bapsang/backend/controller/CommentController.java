@@ -39,9 +39,11 @@ public class CommentController {
 
     // 댓글 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<?> getComments(@PathVariable Long postId) {
-        return ResponseEntity.ok(ApiResponse.success("댓글 목록 조회 성공", commentService.getComments(postId)));
-
+    public ResponseEntity<?> getComments(@PathVariable Long postId,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(
+                ApiResponse.success("댓글 목록 조회 성공", commentService.getComments(postId, userDetails.getUser()))
+        );
     }
 
 }
