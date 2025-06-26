@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/const/securetoken.dart';
 import 'package:frontend/common/dio/dio.dart';
 import 'package:frontend/common/model/int/pagination_int_params.dart';
-import 'package:frontend/common/model/int/simple_cursor_pagination_model.dart';
-import 'package:frontend/recipe/model/recipe_model.dart';
 import 'package:frontend/recipe/model/recipe_pagination_params_model.dart';
 import 'package:retrofit/dio.dart';
 import 'package:retrofit/error_logger.dart';
@@ -24,6 +22,7 @@ abstract class MypageRecipeRepository {
 
   @GET('/scrap-recipes')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<dynamic> paginate({
     @Queries() PaginationIntParams paginationIntParams = const PaginationWithNameParams(),
   });

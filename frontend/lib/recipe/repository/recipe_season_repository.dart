@@ -5,6 +5,7 @@ import 'package:frontend/common/dio/dio.dart';
 import 'package:frontend/recipe/model/recipe_season_ingredient_model.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
+import 'package:retrofit/dio.dart';
 
 part 'recipe_season_repository.g.dart';
 
@@ -19,6 +20,7 @@ abstract class RecipeSeasonRepository {
 
   @GET('')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<List<RecipeSeasonIngredientModel>> getSeasonIngredients(
     @Query('month') int month,
   );

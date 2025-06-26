@@ -5,6 +5,7 @@ import 'package:frontend/community/model/community_comment_model.dart';
 import 'package:frontend/community/model/community_detail_model.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
 
 import '../../common/const/securetoken.dart';
 import '../../common/model/int/single_int_one_page_model.dart';
@@ -30,12 +31,14 @@ abstract class CommunityDetailRepository {
 
   @GET('/posts/{id}')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<SingleIntOnePageModel<CommunityDetailModel>> fetchData({
     @Path() required String id,
   });
 
   @GET('/comments/{id}')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<SingleIntOnePageModel<List<CommunityCommentModel>>> fetchComment({
     @Path() required String id,
   });

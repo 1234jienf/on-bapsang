@@ -6,8 +6,7 @@ import 'package:frontend/common/model/int/cursor_pagination_int_model.dart';
 import 'package:frontend/common/model/int/pagination_int_params.dart';
 import 'package:frontend/common/repository/base_pagination_int_repository.dart';
 import 'package:frontend/mypage/model/mypage_community_model.dart';
-import 'package:retrofit/error_logger.dart';
-import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
 
 part 'mypage_community_repository.g.dart';
 
@@ -25,6 +24,7 @@ abstract class MypageCommunityRepository
   @override
   @GET('/posts')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<CursorIntPagination<MypageCommunityModel>> paginate({
     @Queries() PaginationIntParams paginationIntParams = const PaginationIntParams()
   });
@@ -36,8 +36,9 @@ abstract class MypageScrapCommunityRepository
   factory MypageScrapCommunityRepository(Dio dio, {String baseUrl}) = _MypageScrapCommunityRepository;
 
   @override
-  @GET('/scraps') // ✅ 여기만 바뀜!
+  @GET('/scraps')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<CursorIntPagination<MypageCommunityModel>> paginate({
     @Queries() PaginationIntParams paginationIntParams = const PaginationIntParams(),
   });

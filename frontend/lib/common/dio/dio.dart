@@ -1,16 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:frontend/common/dio/language_interceptor.dart';
 import 'package:frontend/common/go_router/provider/main_provider.dart';
 import 'package:frontend/common/secure_storage/secure_storage.dart';
 
 import '../const/securetoken.dart';
 
-final dioProvider = Provider<Dio>((ref) {
+final dioProvider = Provider.autoDispose<Dio>((ref) {
   final dio = Dio();
 
   final storage = ref.watch(secureStorageProvider);
 
+
+  dio.interceptors.add(LanguageInterceptor(ref, storage));
   dio.interceptors.add(CustomInterceptor(ref: ref, storage: storage));
 
   return dio;

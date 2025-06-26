@@ -21,7 +21,7 @@ class _MypageRecipeRepository implements MypageRecipeRepository {
   Future<dynamic> paginate({
     PaginationIntParams paginationIntParams = const PaginationWithNameParams(),
   }) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(paginationIntParams.toJson());
     final _headers = <String, dynamic>{r'accessToken': 'true'};

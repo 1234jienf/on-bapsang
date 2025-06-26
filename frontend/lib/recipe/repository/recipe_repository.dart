@@ -25,14 +25,17 @@ abstract class RecipeRepository {
 
   @GET('/popular')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<List<RecipeModel>> getPopularRecipes();
 
   @GET('/recommend')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<List<RecipeModel>> getRecommendRecipes();
 
   @GET('/foreign/{id}')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<RecipeDetailModel> getRecipeDetail(@Path('id') int id);
 
   @POST('/scrap/{id}')
@@ -45,6 +48,7 @@ abstract class RecipeRepository {
 
   @GET('/ingredient')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<CursorSimplePagination<RecipeModel>> paginate({
     @Queries() PaginationIntParams paginationIntParams = const PaginationWithNameParams(),
   });
@@ -53,6 +57,7 @@ abstract class RecipeRepository {
   // 메인화면에서 페이지네이션 빼고 앞에꺼만 가져오기
   @GET('/ingredient')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<HttpResponse<dynamic>> getSeasonRecipeMainRaw(
       @Query('name') String ingredientName,
       @Query('page') int page,
@@ -69,10 +74,9 @@ Future<CursorStringPagination<RecipeModel>> getCategoryRecipesWithRawDio({
   required int size,
 }) async {
   try {
-    print('getCategoryRecipesWithRawDio 진입');
     final response = await dio.get(
       '$ip/api/recipe?category=$category&page=$page&size=$size',
-      options: Options(headers: {'accessToken': 'true'}),
+      options: Options(headers: {'accessToken': 'true'}, extra:  {'useLang': true},),
     );
 
     print(response.data);

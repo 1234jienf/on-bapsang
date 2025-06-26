@@ -21,7 +21,7 @@ class _CommunityRepository implements CommunityRepository {
   Future<CursorIntPagination<CommunityModel>> paginate({
     PaginationIntParams paginationIntParams = const PaginationIntParams(),
   }) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(paginationIntParams.toJson());
     final _headers = <String, dynamic>{r'accessToken': 'true'};
