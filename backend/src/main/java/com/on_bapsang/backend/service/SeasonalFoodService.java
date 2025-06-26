@@ -1,5 +1,6 @@
 package com.on_bapsang.backend.service;
 
+import com.on_bapsang.backend.dto.seasonal.SeasonalFoodDto;
 import com.on_bapsang.backend.dto.seasonal.SeasonalFoodItem;
 import com.on_bapsang.backend.dto.seasonal.SeasonalFoodResponse;
 import com.on_bapsang.backend.entity.SeasonalFood;
@@ -29,9 +30,10 @@ public class SeasonalFoodService {
         String monthStr = month + "월";
 
         String url = String.format(
-                "http://211.237.50.150:7080/openapi/sample/xml/Grid_20171128000000000572_1/%d/%d?API_KEY=%s&TYPE=%s&M_DISTCTNS=%s",
-                start, end, apiKey, type, monthStr
+                "http://211.237.50.150:7080/openapi/%s/xml/Grid_20171128000000000572_1/%d/%d?M_DISTCTNS=%s",
+                apiKey, start, end, monthStr
         );
+
 
         try {
             String xml = restTemplate.getForObject(url, String.class);
@@ -70,7 +72,17 @@ public class SeasonalFoodService {
         }
     }
 
-    public List<SeasonalFood> getFoodsByMonth(String month) {
-        return foodRepository.findBymDistctns(month + "월");
+    public List<SeasonalFoodDto> getFoodsByMonth(String month) {
+        return foodRepository.findBymDistctns(month + "월").stream()
+                .map(food -> new SeasonalFoodDto(
+                        food.getIdntfcNo(),
+                        food.getPrdlstNm(),
+                        food.getMDistctns(),
+                        food.getEffect(),
+                        food.getPurchaseMth(),
+                        food.getCookMth(),
+                        food.getImgUrl()
+                ))
+                .collect(Collectors.toList());
     }
 }
