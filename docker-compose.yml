@@ -51,8 +51,12 @@ services:
       - PINECONE_ENVIRONMENT=${PINECONE_ENVIRONMENT}
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
       - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - DEEPL_API_KEY=${DEEPL_API_KEY}
+      - KAKAO_API_KEY=${KAKAO_API_KEY}
     env_file:
       - ./.env
     depends_on:
