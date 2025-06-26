@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/recipe/component/recipe_season_ingredient_card.dart';
@@ -40,7 +41,7 @@ class _RecipeSeasonListScreenState extends ConsumerState<RecipeSeasonListScreen>
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
-          '${DateTime.now().month}월의 제철 재료 레시피',
+          "recipe.season_title".tr(namedArgs: {"month": DateTime.now().month.toString()}),
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
       ),

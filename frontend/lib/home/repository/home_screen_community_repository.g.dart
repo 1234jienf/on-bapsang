@@ -19,7 +19,7 @@ class _HomeScreenCommunityRepository implements HomeScreenCommunityRepository {
 
   @override
   Future<CursorIntPagination<CommunityModel>> fetchData({int size = 6}) async {
-    final _extra = <String, dynamic>{};
+    final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{r'size': size};
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);

@@ -25,6 +25,7 @@ class CommunityStateNotifier
     super.sort,
   });
 
+
   void updateScrapStatus(int id, bool scrapped) {
     print(state);
     if (state is CursorIntPagination) {

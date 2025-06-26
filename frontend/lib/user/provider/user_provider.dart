@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/common/const/securetoken.dart';
 import 'package:frontend/common/dio/dio.dart';
 import 'package:frontend/common/secure_storage/secure_storage.dart';
+import 'package:frontend/home/provider/home_screen_community_provider.dart';
 import 'package:frontend/mypage/provider/mypage_provider.dart';
 import 'package:frontend/recipe/provider/recipe_provider.dart';
 import 'package:frontend/recipe/provider/recipe_season_provider.dart';
@@ -48,11 +49,11 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
   Future<void> _applyLanguage(String? lang) async {
     if (lang == null || lang.isEmpty) return;
 
-    await storage.write(key: LANGUAGE_KEY, value: lang);
-    _ref.read(languageProvider.notifier).state = lang;
-
     final dio = _ref.read(dioProvider);
     dio.options.headers['X-Language'] = lang;
+
+    await storage.write(key: LANGUAGE_KEY, value: lang);
+    _ref.read(languageProvider.notifier).state = lang;
   }
 
   Future<void> getMe() async {
@@ -97,6 +98,8 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       _ref.invalidate(popularRecipesProvider); // 메인페이지 정보도 새로 고침
       _ref.invalidate(recommendRecipesProvider);
       _ref.invalidate(seasonIngredientProvider);
+      final communityNotifier = _ref.refresh(homeScreenCommunityProvider.notifier);
+      communityNotifier.fetchData();
 
       return userResp;
     } catch (e) {
@@ -123,6 +126,8 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
     _ref.invalidate(popularRecipesProvider); // 메인페이지 정보도 새로 고침
     _ref.invalidate(recommendRecipesProvider);
     _ref.invalidate(seasonIngredientProvider);
+    final communityNotifier = _ref.refresh(homeScreenCommunityProvider.notifier);
+    communityNotifier.fetchData();
   }
 
   Future<void> signup({

@@ -1,0 +1,112 @@
+{
+  "common": {
+    "more": "もっと見る",
+    "next": "次へ",
+    "no_result": "検索結果がありません。",
+    "category": {
+      "beef": "牛肉",
+      "pork": "豚肉",
+      "seafood": "海産物",
+      "egg_dairy": "卵・乳製品",
+      "vegetables": "野菜類",
+      "rice": "お米",
+      "grains": "穀類",
+      "flour": "小麦粉",
+      "processed": "加工食品",
+      "dried": "乾物類",
+      "etc": "その他"
+    },
+    "home": "ホーム",
+    "recipe": "レシピ",
+    "shopping": "ショッピング",
+    "community": "コミュニティ",
+    "map": "周辺",
+    "error_message": "データの取得中に問題が発生しました。"
+  },
+  "home": {
+    "main_popular_recipe": "今人気のレシピ",
+    "main_season_recipe": "今食べたい旬のレシピ",
+    "main_recommend_recipe": "AIおすすめレシピ",
+    "main_community": "コミュニティ",
+    "main_menu_title": "全メニュー"
+  },
+  "recipe": {
+    "season_title": "{month}月の旬の食材レシピ",
+    "season_card_title": "旬の{ingredient}レシピ",
+    "season_effect": "効果",
+    "season_purchase_tip": "購入のヒント",
+    "season_cook_tip": "調理のヒント",
+    "season_recipe": "{ingredient}を使ったレシピ",
+    "portion": "分量",
+    "time": "時間",
+    "difficulty": "難易度",
+    "ingredient": "材料",
+    "instruction": "作り方",
+    "review": "レシピレビュー",
+    "review_write": "レビューを書く",
+    "buy_ingredients": "材料を購入",
+    "ingredient_price_title": "{ingredient}の市場価格",
+    "ingredient_time_price": "{ingredient}の日別価格",
+    "ingredient_market_price": "市場別の{ingredient}卸売価格",
+    "search_hint": "レシピを検索してみましょう！",
+    "recipe_error": "登録されたレシピがありません！",
+    "no_review": "まだレビューがありません。"
+  },
+  "shopping": {
+    "special_price_title": "onbapsangマーケット特価",
+    "recommend_title": "{user}さんへのおすすめ商品",
+    "recipe_title": "レシピにぴったりの材料",
+    "category_title": "カテゴリ別人気食材",
+    "cart": {
+      "title": "カート",
+      "select_all": "すべて選択",
+      "select_undo": "選択解除",
+      "whole_price": "商品合計金額",
+      "whole_delivery": "配送料合計",
+      "whole_discount": "割引金額合計",
+      "payment_amount": "お支払い金額",
+      "won": "ウォン"
+    }
+  },
+  "community": {
+    "post": "投稿",
+    "comments": "コメント",
+    "no_comments": "コメントはまだありません。",
+    "comment_hint": "コメントを入力してください",
+    "new_post": "コミュニティ投稿",
+    "recipe_tag_hint": "必要な箇所にレシピをタグ付けしてください",
+    "recipe_search_hint": "レシピを検索してください",
+    "upload_title": "コミュニティに投稿",
+    "upload": "アップロード",
+    "post_title_hint": "タイトルは最大20文字までです。",
+    "post_hint": "料理の紹介を書いてみましょう。",
+    "post_error_hint": "すべての項目を入力してください。",
+    "post_success": "投稿完了しました"
+  },
+  "map": {
+    "loading_message": "位置情報を取得中…",
+    "selected_location": "選択した位置",
+    "search_title": "位置を検索",
+    "search_hint": "場所を検索してください",
+    "now_location": "現在地を使用",
+    "no_result": "該当する場所が見つかりませんでした"
+  },
+  "search": {
+    "search_hint": "何でも検索してみよう！",
+    "recent": "最近の検索",
+    "popular": "人気の検索ワード",
+    "recommend": "onbapsangおすすめ検索ワード",
+    "filter": "フィルター",
+    "latest": "新着順",
+    "no_result_community": "該当するコミュニティ投稿がありません。"
+  },
+  "mypage": {
+    "title": "{user}のマイページ",
+    "scrap_recipe": "保存したレシピ",
+    "community": "自分の投稿一覧",
+    "scrap_community": "保存した投稿",
+    "setting_info": "会員情報の編集",
+    "setting_language": "言語設定の変更",
+    "withdraw": "退会する"
+  }
+}

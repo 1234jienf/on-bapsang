@@ -3,6 +3,7 @@ import 'package:frontend/home/component/category_icons.dart';
 import 'package:frontend/recipe/provider/recipe_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/recipe/component/recipe_appbar.dart';
@@ -46,7 +47,7 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
     final double sideGap = 5.0;
 
     return DefaultLayout(
-        appBar: RecipeAppbar(isImply: false, searchMessage: '레시피를 검색해보세요!',),
+        appBar: RecipeAppbar(isImply: false, searchMessage: "recipe.search_hint",),
         backgroundColor: Colors.white,
         child: RefreshIndicator(
           onRefresh: () async {
@@ -86,7 +87,7 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
 
                     // 인기 레시피
                     titleWidget(
-                      title: '요즘 핫한 인기 레시피',
+                      title: "home.main_popular_recipe".tr(),
                       fontSize: 20,
                       sidePadding: sideGap,
                     ),
@@ -96,7 +97,7 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
 
                     // AI 추천 레시피
                     titleWidget(
-                      title: 'AI 추천 레시피',
+                      title: "home.main_recommend_recipe".tr(),
                       fontSize: 20,
                       sidePadding: sideGap,
                     ),

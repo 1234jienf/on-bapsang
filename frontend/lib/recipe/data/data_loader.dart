@@ -16,7 +16,7 @@ Future<int?> getMarketItemIdFromIngredient(int ingredientId) async {
 }
 
 Future<List<DiscountedIngredient>> loadDiscountedIngredients() async {
-  final jsonString = await rootBundle.loadString('lib/recipe/data/dummy_ingredient_prices.json');
+  final jsonString = await rootBundle.loadString('lib/recipe/data/dummy_ingredient_prices_with_type.json');
   final List<dynamic> jsonList = jsonDecode(jsonString);
   return jsonList.map((e) => DiscountedIngredient.fromJson(e)).toList();
 }
