@@ -140,6 +140,8 @@
     "scrap_community": "保存した投稿",
     "setting_info": "会員情報の編集",
     "setting_language": "言語設定の変更",
-    "withdraw": "退会する"
+    "withdraw": "退会する",
+    "confirm_withdrawal": "本当に退会しますか？\\nすべての情報が削除されます。"
+
   }
 }

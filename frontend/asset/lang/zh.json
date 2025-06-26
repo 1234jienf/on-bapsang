@@ -141,6 +141,8 @@
     "scrap_community": "我收藏的帖子",
     "setting_info": "编辑个人信息",
     "setting_language": "更改语言设置",
-    "withdraw": "注销账户"
+    "withdraw": "注销账户",
+    "confirm_withdrawal": "您确定要注销账户吗？\\n所有信息将被删除。"
+
   }
 }

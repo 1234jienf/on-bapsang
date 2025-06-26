@@ -8,6 +8,7 @@ import 'package:frontend/mypage/view/mypage_community_screen.dart';
 import 'package:frontend/mypage/view/mypage_fix_info_screen.dart';
 import 'package:frontend/mypage/view/mypage_scrap_community_screen.dart';
 import 'package:frontend/mypage/view/mypage_scrap_recipe_screen.dart';
+import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';
 
 class MypageRootScreen extends ConsumerStatefulWidget {
@@ -124,10 +125,35 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
                 child: Text("mypage.setting_language".tr(), style: TextStyle(fontSize: 17),),
               ),
               SizedBox(height: componentGap,),
-              SizedBox(
-                width: double.infinity,
-                height: 40,
-                child: Text("mypage.withdraw".tr(), style: TextStyle(fontSize: 17, color: Colors.grey),),
+              GestureDetector(
+                onTap: () async {
+                  final bool? ok = await showDialog<bool>(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (ctx) => AlertDialog(
+                      title: Text("mypage.withdraw".tr()),
+                      content: Text("mypage.confirm_withdrawal".tr()),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: Text("search.no".tr()),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, true),
+                          child: Text("search.yes".tr()),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (ok == true) {
+                    await ref.read(userProvider.notifier).withdraw();
+                  }
+                },
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: Text("mypage.withdraw".tr(), style: TextStyle(fontSize: 17, color: Colors.grey),),
+                ),
               ),
             ],
           ),

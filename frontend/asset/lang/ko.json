@@ -140,6 +140,7 @@
     "scrap_community": "내가 스크랩한 글",
     "setting_info": "회원정보 수정",
     "setting_language": "언어 설정 변경",
-    "withdraw": "회원 탈퇴"
+    "withdraw": "회원 탈퇴",
+    "confirm_withdrawal": "정말로 탈퇴하시겠습니까?\\n모든 정보가 삭제됩니다."
   }
 }
