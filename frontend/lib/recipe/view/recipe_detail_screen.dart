@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/community/view/community_create_screen.dart';
 import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/recipe/repository/recipe_repository.dart';
 import 'package:frontend/recipe/view/recipe_ingredient_price_screen.dart';
@@ -273,7 +274,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                           ),
                           TextButton(
                               onPressed: (){
-                                // 커뮤니티 글 쓰는 페이지로 보내주기
+                                context.pushNamed(CommunityCreateScreen.routeName, extra: recipe.name);
                               },
                               style: TextButton.styleFrom(
                                 backgroundColor: Colors.black,

@@ -39,7 +39,7 @@ class _CommunityRootScreenState extends State<CommunityRootScreen> {
       appBar: HomeAppbar(isImply: false),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.pushNamed(CommunityCreateScreen.routeName);
+          context.pushNamed(CommunityCreateScreen.routeName, extra: "");
         },
         heroTag: "actionButton",
         backgroundColor: Colors.orange,
