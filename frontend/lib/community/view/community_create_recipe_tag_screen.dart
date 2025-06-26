@@ -77,7 +77,6 @@ class _ConsumerCommunityCreateRecipeTagScreenState
             );
             return;
           }
-          ref.read(tagSearchKeywordProvider.notifier).state = '';
           context.pushNamed(
             CommunityCreateUploadScreen.routeName,
             extra: CommunityUploadRecipeFinalListModel(
@@ -366,22 +365,15 @@ class _ConsumerCommunityCreateRecipeTagScreenState
         padding: const EdgeInsets.symmetric(vertical: 10.0),
         child: SizedBox(
           height: 30,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                children: [
-                  Text(
-                    '레시피 태그는 한 개만 등록 가능합니다.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
+          child: Center(
+            child: Text(
+              textAlign : TextAlign.center,
+              '레시피 태그는 한 개만 등록 가능합니다.',
+              style: TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w700,
               ),
-            ],
+            ),
           ),
         ),
       ),

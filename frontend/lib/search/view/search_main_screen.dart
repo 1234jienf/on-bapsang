@@ -20,15 +20,6 @@ class SearchMainScreen extends ConsumerStatefulWidget {
 class _ConsumerSearchMainScreenState extends ConsumerState<SearchMainScreen> {
 
   @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      ref.read(searchKeywordRemainProvider.notifier).clear();
-    });
-  }
-
-
-  @override
   Widget build(BuildContext context) {
     final state = ref.watch(searchKeywordProvider);
 
@@ -48,7 +39,7 @@ class _ConsumerSearchMainScreenState extends ConsumerState<SearchMainScreen> {
 
     if (state.popular == null || state.recent == null) {
       return DefaultLayout(
-        appBar: SearchAppBar(hintText: '레시피를 검색해주세요'),
+        appBar: SearchAppBar(hintText: ''),
         child: Center(child: CircularProgressIndicator()),
       );
     }
@@ -94,7 +85,7 @@ Padding _recommandSearch({required List<String> items, required BuildContext con
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: ConstrainedBox(
-              constraints: BoxConstraints(minWidth: 66, maxWidth: 80),
+              constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width / 4 - 20, maxWidth: MediaQuery.of(context).size.width / 4 - 20),
               child: GestureDetector(
                 onTap: () {
                   ref.read(searchKeywordRemainProvider.notifier).setKeyword(items[index]);
