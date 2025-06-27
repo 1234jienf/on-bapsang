@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/maps/model/maps_address_parser.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../common/layout/default_layout.dart';
@@ -100,7 +101,9 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('Placecoordinates : ${placeFromCoordinates.results?[0].formattedAddress}');
+    if (placeFromCoordinates.results?[0].formattedAddress == null ) return SizedBox();
+    MapsAddressParser.parseAddress(placeFromCoordinates.results![0].formattedAddress!);
+    // print('Placecoordinates : ${placeFromCoordinates.results?[0].formattedAddress}');
     return DefaultLayout(
       appBar: AppBar(
         backgroundColor: Colors.white,
