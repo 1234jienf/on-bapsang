@@ -54,8 +54,8 @@ public class TranslationService {
                 return cachedTranslation;
             }
 
-            // 캐시에 없으면 DeepL API 호출 (최대 3회 재시도)
-            String translated = callDeepLApiWithRetry(text, targetLang, 3);
+            // 캐시에 없으면 DeepL API 호출 (최대 2회 재시도로 단축)
+            String translated = callDeepLApiWithRetry(text, targetLang, 2);
 
             // 결과를 캐시에 저장 (24시간)
             if (translated != null && !translated.equals(text)) {
@@ -125,14 +125,14 @@ public class TranslationService {
                     return result; // 번역 성공
                 }
                 if (attempt < maxRetries) {
-                    Thread.sleep(1000 * attempt); // 재시도 간격 증가
+                    Thread.sleep(500 * attempt); // 재시도 간격 단축 (0.5초, 1초)
                 }
             } catch (Exception e) {
                 if (attempt == maxRetries) {
                     return text; // 최종 실패 시 원문 반환
                 }
                 try {
-                    Thread.sleep(1000 * attempt);
+                    Thread.sleep(500 * attempt); // 재시도 간격 단축
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                     return text;
@@ -312,6 +312,23 @@ public class TranslationService {
                 // 마지막 대안으로 hashCode 사용
                 return String.valueOf(Math.abs(text.hashCode()));
             }
+        }
+    }
+
+    // 응답 레벨 캐싱 메서드들
+    public String getCachedResponse(String cacheKey) {
+        try {
+            return redisTemplate.opsForValue().get(cacheKey);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public void cacheResponse(String cacheKey, String serializedResponse, long ttlMinutes) {
+        try {
+            redisTemplate.opsForValue().set(cacheKey, serializedResponse, ttlMinutes, TimeUnit.MINUTES);
+        } catch (Exception e) {
+            // 캐시 저장 실패는 무시 (성능에만 영향)
         }
     }
 }
