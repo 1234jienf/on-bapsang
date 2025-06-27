@@ -77,6 +77,7 @@ public class SeasonalFoodService {
                 .map(food -> new SeasonalFoodDto(
                         food.getIdntfcNo(),
                         food.getPrdlstNm(),
+                        food.getPrdlstNm(),
                         food.getMDistctns(),
                         food.getEffect(),
                         food.getPurchaseMth(),

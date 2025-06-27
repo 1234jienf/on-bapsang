@@ -12,9 +12,10 @@ import lombok.NoArgsConstructor;
 public class SeasonalFoodDto {
 
     private Long idntfcNo;
+    private String prdlstNm;
 
     @Translatable
-    private String prdlstNm;
+    private String prdlstNmTranslated;
 
     private String mDistctns;
 
