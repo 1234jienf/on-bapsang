@@ -78,6 +78,22 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("회원정보가 수정되었습니다."));
     }
 
+    @GetMapping("/check-username")
+    public ResponseEntity<ApiResponse<Boolean>> checkUsername(@RequestParam String username) {
+        boolean isDuplicate = userService.isUsernameDuplicate(username);
+        return ResponseEntity.ok(ApiResponse.success("아이디 중복 여부 확인", isDuplicate));
+    }
+
+    @PatchMapping("/language")
+    public ResponseEntity<ApiResponse<Void>> updateLanguage(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody UpdateLanguageRequest request) {
+
+        userService.updateLanguage(userDetails.getUser(), request.getCountry());
+        return ResponseEntity.ok(ApiResponse.success("언어 설정이 변경되었습니다."));
+    }
+
+
 
 
 }

@@ -96,6 +96,16 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public boolean isUsernameDuplicate(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Transactional
+    public void updateLanguage(User user, String country) {
+        user.setCountry(country);
+        userRepository.save(user);
+    }
+
     @Transactional
     public void updateUserInfo(User user, UpdateUserRequest request) {
         if (request.getNickname() != null) user.setNickname(request.getNickname());
