@@ -29,7 +29,9 @@ final recipeDetailProvider = FutureProvider.family<RecipeDetailModel, int>((ref,
   return await repository.getRecipeDetail(id);
 });
 
-final categoryPaginationProvider = StateNotifierProvider.family<CategoryPaginationNotifier, CursorStringPaginationBase, String>((ref, category) {
+final categoryPaginationProvider = StateNotifierProvider.autoDispose.family<CategoryPaginationNotifier, CursorStringPaginationBase, String>((ref, category) {
+  ref.keepAlive();
+
   final repository = ref.read(recipeRepositoryProvider);
   final dio = ref.read(dioProvider);
 

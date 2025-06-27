@@ -60,7 +60,7 @@ class _RecipeSeasonIngredientCardState extends State<RecipeSeasonIngredientCard>
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              "recipe.season_card_title".tr(namedArgs: {"ingredient": widget.seasonIngredientInfo.prdlstNm}),
+              "recipe.season_card_title".tr(namedArgs: {"ingredient": widget.seasonIngredientInfo.prdlstNmTranslated}),
               style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
             ),
           ),

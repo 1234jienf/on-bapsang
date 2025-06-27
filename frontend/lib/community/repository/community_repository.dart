@@ -33,5 +33,4 @@ abstract class CommunityRepository
   Future<CursorIntPagination<CommunityModel>> paginate({
     @Queries() PaginationIntParams paginationIntParams = const PaginationIntParams()
   });
-
 }

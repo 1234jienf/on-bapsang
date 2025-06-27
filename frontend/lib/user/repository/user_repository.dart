@@ -2,6 +2,7 @@ import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/const/securetoken.dart';
 import 'package:frontend/common/dio/dio.dart';
+import 'package:frontend/user/model/user_patch_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../model/user_model.dart';
@@ -21,6 +22,18 @@ abstract class UserRepository {
   @GET('/me')
   @Headers({'accessToken': 'true'})
   Future<UserModel> getMe();
+
+  @PATCH('/me')
+  @Headers({'accessToken': 'true'})
+  Future<void> patchUserInfo(
+    @Body() UserPatchModel body
+  );
+
+  @PATCH('/language')
+  @Headers({'accessToken': 'true'})
+  Future<void> patchLanguage(
+    @Body() Map<String, String> body
+  );
 
   @DELETE('/withdraw')
   @Headers({'accessToken': 'true'})

@@ -16,7 +16,7 @@ class RecipeSeasonIngredientMainComponent extends ConsumerStatefulWidget {
 
 class _RecipeSeasonIngredientMainComponentState
     extends ConsumerState<RecipeSeasonIngredientMainComponent> {
-  String selectedIngredient = '';
+  String? selectedIngredient;
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +54,13 @@ class _RecipeSeasonIngredientMainComponentState
                 itemCount: seasonIngredients.length,
                 itemBuilder: (context, index) {
                   final ingredient = seasonIngredients[index].prdlstNm;
+                  final ingredientTranslated = seasonIngredients[index].prdlstNmTranslated;
                   final isSelected = selectedIngredient == ingredient;
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2.0),
                     child: ChoiceChip(
-                      label: Text(ingredient),
+                      label: Text(ingredientTranslated),
                       selected: isSelected,
                       onSelected: (_) {
                         setState(() {
@@ -101,7 +102,7 @@ class _RecipeSeasonIngredientMainComponentState
                           SizedBox(height: 50.0,),
                           Text(
                             "recipe.no_season_recipe1".tr(namedArgs: {
-                              "ingredient" : selectedIngredient
+                              "ingredient" : selectedIngredient!
                             }),
                             style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                           ),

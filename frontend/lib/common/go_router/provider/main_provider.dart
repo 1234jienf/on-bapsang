@@ -10,6 +10,7 @@ import 'package:frontend/community/view/community_root_screen.dart';
 import 'package:frontend/home/view/home_alarm_screen.dart';
 import 'package:frontend/home/view/home_menu_screen.dart';
 import 'package:frontend/maps/view/maps_root_screen.dart';
+import 'package:frontend/mypage/model/mypage_userInfo_model.dart';
 import 'package:frontend/mypage/view/mypage_community_screen.dart';
 import 'package:frontend/mypage/view/mypage_fix_info_screen.dart';
 import 'package:frontend/mypage/view/mypage_root_screen.dart';
@@ -163,7 +164,13 @@ class MainProvider extends ChangeNotifier {
                 GoRoute(
                   path: 'fix',
                   name: 'MypageFixInfoScreen',
-                  builder: (_, state) => const MypageFixInfoScreen(),
+                  builder: (context, state) {
+                    final jsonMap = state.extra as Map<String, dynamic>?;
+                    final info = jsonMap == null
+                        ? null
+                        : MypageUserInfoModel.fromJson(jsonMap);
+                    return MypageFixInfoScreen(info: info);
+                  },
                 ),
               ],
             ),

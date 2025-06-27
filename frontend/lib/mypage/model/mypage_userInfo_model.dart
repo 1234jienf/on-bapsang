@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'mypage_userInfo_model.g.dart';
+
+@JsonSerializable()
 class MypageUserInfoModel {
   final int userId;
   final String username;
@@ -19,24 +24,30 @@ class MypageUserInfoModel {
     required this.favoriteIngredients
   });
 
-  factory MypageUserInfoModel.fromJson(Map<String, dynamic> json) {
-    return MypageUserInfoModel(
-        userId: int.parse(json['userId'].toString()),
-        username: json['username'],
-        nickname: json['nickname'],
-        country: json['country'],
-        age: int.parse(json['age'].toString()),
-        favoriteDishes: (json['favoriteDishes'] as List<dynamic>)
-            .map((item) => item.toString())
-            .toList(),
-        favoriteTastes: (json['favoriteTastes'] as List<dynamic>)
-        .map((item) => item.toString())
-        .toList(),
-        favoriteIngredients: (json['favoriteIngredients'] as List<dynamic>)
-        .map((item) => item.toString())
-        .toList(),
-    );
-  }
+  factory MypageUserInfoModel.fromJson(Map<String, dynamic> json)
+  => _$MypageUserInfoModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MypageUserInfoModelToJson(this);
+
+
+// factory MypageUserInfoModel.fromJson(Map<String, dynamic> json) {
+  //   return MypageUserInfoModel(
+  //       userId: int.parse(json['userId'].toString()),
+  //       username: json['username'],
+  //       nickname: json['nickname'],
+  //       country: json['country'],
+  //       age: int.parse(json['age'].toString()),
+  //       favoriteDishes: (json['favoriteDishes'] as List<dynamic> ?? [])
+  //           .map((item) => item.toString())
+  //           .toList(),
+  //       favoriteTastes: (json['favoriteTastes'] as List<dynamic> ?? [])
+  //       .map((item) => item.toString())
+  //       .toList(),
+  //       favoriteIngredients: (json['favoriteIngredients'] as List<dynamic>)
+  //       .map((item) => item.toString())
+  //       .toList(),
+  //   );
+  // }
 }
 
 class MypageResponseModel {
