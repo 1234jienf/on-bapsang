@@ -33,6 +33,7 @@ public class UserInfoResponse {
         this.location = user.getLocation();
         this.profileImage = profileImagePresignedUrl;
 
+
         this.favoriteTastes = user.getFavoriteTastes().stream()
                 .map(userTaste -> userTaste.getTaste().getName())
                 .collect(Collectors.toList());
