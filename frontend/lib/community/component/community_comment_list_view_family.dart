@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../common/model/int/single_int_one_page_model.dart';
@@ -56,7 +57,7 @@ class _CommunityCommentListViewFamilyState<T>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('데이터를 불러올 수 없습니다'),
+                  Text("common.error_message".tr()),
                   const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () {
@@ -64,7 +65,7 @@ class _CommunityCommentListViewFamilyState<T>
                           .read(widget.provider(widget.id).notifier)
                           .fetchFunction();
                     },
-                    child: const Text('다시 시도'),
+                    child: Text("common.again".tr()),
                   ),
                 ],
               ),
@@ -77,7 +78,7 @@ class _CommunityCommentListViewFamilyState<T>
     if (items.isEmpty) {
       return SliverToBoxAdapter(child: Padding(
         padding: EdgeInsets.symmetric(vertical: 80.0, horizontal: 16.0),
-        child: Center(child: Text('아직 댓글이 없습니다')),
+        child: Center(child: Text("community.no_comments".tr())),
       ));
     }
 

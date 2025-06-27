@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
@@ -26,7 +27,7 @@ class SearchRootScreen extends ConsumerStatefulWidget {
 class _SearchRootScreenState extends ConsumerState<SearchRootScreen> {
   late PageController _pageController = PageController();
   final double menuGap = 10.0;
-  final List<String> tabs = ['레시피', '상품', '커뮤니티'];
+  final List<String> tabs = ["common.recipe".tr(), "search.goods".tr(), "common.community".tr()];
 
   @override
   void initState() {

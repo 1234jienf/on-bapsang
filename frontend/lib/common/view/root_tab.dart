@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/common/const/colors.dart';
 import 'package:go_router/go_router.dart';
@@ -37,33 +38,33 @@ class RootTab extends StatelessWidget {
         onTap: (i) => context.go(_paths[i]),
         items: [
           _navItem(
-            'asset/img/Union.png',
-            'asset/img/house-color.png',
-            '홈',
+            'asset/img/home.png',
+            'asset/img/home_color.png',
+            "common.home",
             currentIndex == 0,
           ),
           _navItem(
-            'asset/img/Subtract.png',
-            'asset/img/chef-hat.png',
-            '레시피',
+            'asset/img/recipe.png',
+            'asset/img/recipe_color.png',
+            "common.recipe",
             currentIndex == 1,
           ),
           _navItem(
-            'asset/img/local_mall.png',
-            'asset/img/local_mall-color.png',
-            '쇼핑',
+            'asset/img/shopping.png',
+            'asset/img/shopping_color.png',
+            "common.shopping",
             currentIndex == 2,
           ),
           _navItem(
-            'asset/img/messages-square.png',
-            'asset/img/messages-square-color.png',
-            '커뮤',
+            'asset/img/community.png',
+            'asset/img/community_color.png',
+            "common.community",
             currentIndex == 3,
           ),
           _navItem(
             'asset/img/map.png',
-            'asset/img/map-color.png',
-            '주변',
+            'asset/img/map_color.png',
+            "common.map",
             currentIndex == 4,
           ),
         ],
@@ -79,8 +80,12 @@ class RootTab extends StatelessWidget {
     bool selected,
   ) {
     return BottomNavigationBarItem(
-      icon: Image.asset(selected ? on : off),
-      label: label,
+      icon: Image.asset(
+        selected ? on : off,
+        width: 24,
+        height: 24
+      ),
+      label: label.tr(),
     );
   }
 }

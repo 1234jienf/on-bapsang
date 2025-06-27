@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/home/view/home_menu_screen.dart';
 import 'package:frontend/mypage/view/mypage_root_screen.dart';
@@ -41,7 +42,7 @@ class RecipeAppbar extends StatelessWidget implements PreferredSizeWidget {
               SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  searchMessage,
+                  searchMessage.tr(),
                   style: TextStyle(color: Colors.grey, fontSize: 15),
                 ),
               ),
@@ -50,15 +51,7 @@ class RecipeAppbar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       actions: [
-        const SizedBox(width: 7),
-        // 알림 들어가는지 확인필요
-        // GestureDetector(
-        //   onTap: () {
-        //     context.pushNamed(HomeAlarmScreen.routeName);
-        //   },
-        //   child: Icon(Icons.notifications_none_outlined, size: 29)
-        // ),
-        const SizedBox(width: 7),
+        const SizedBox(width: 14),
         GestureDetector(
             onTap: () {
               context.pushNamed(ShoppingCartScreen.routeName);

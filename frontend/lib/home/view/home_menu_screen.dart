@@ -3,6 +3,8 @@ import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/home/component/category_icons.dart';
 import 'package:frontend/recipe/view/recipe_root_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 
 class HomeMenuScreen extends StatefulWidget {
   const HomeMenuScreen({super.key});
@@ -25,7 +27,7 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
-        title: Text('전체 메뉴'),
+        title: Text("home.main_menu_title".tr()),
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: sideGap),
@@ -43,7 +45,7 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '레시피',
+                      'common.recipe'.tr(),
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     Icon(Icons.chevron_right, size: 30),
@@ -62,7 +64,7 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '쇼핑',
+                      "common.shopping".tr(),
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     Icon(Icons.chevron_right, size: 30),
@@ -81,7 +83,7 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '커뮤니티',
+                      "common.community".tr(),
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     Icon(Icons.chevron_right, size: 30)
@@ -98,7 +100,7 @@ class _HomeMenuScreenState extends State<HomeMenuScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      '주변',
+                      "common.map".tr(),
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     Icon(Icons.chevron_right, size: 30),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/recipe/model/recipe_discounted_ingredient_model.dart';
@@ -25,7 +26,7 @@ class _RecipeIngredientShoppingScreenState extends State<RecipeIngredientShoppin
     return DefaultLayout(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('재료 보기', style: TextStyle(color: Colors.black)),
+        title: Text("recipe.buy_ingredients".tr(), style: TextStyle(color: Colors.black)),
         iconTheme: const IconThemeData(color: Colors.black),
         elevation: 0,
       ),

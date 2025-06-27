@@ -1,9 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/community/component/community_comment_list_view_family.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
 import '../../common/const/colors.dart';
 import '../../recipe/view/recipe_detail_screen.dart';
@@ -173,7 +173,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
         SliverPadding(
           sliver: SliverToBoxAdapter(
             child: Text(
-              '댓글',
+              "community.comments".tr(),
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
             ),
           ),
@@ -194,8 +194,8 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
         icon: const Icon(Icons.close_outlined),
         tooltip: '닫기',
       ),
-      title: const Text(
-        '게시물',
+      title: Text(
+        "community.post".tr(),
         style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
       ),
     );
@@ -239,7 +239,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
               Icon(Icons.reply, size: 16, color: gray700),
               const SizedBox(width: 8),
               Text(
-                '$_replyToNickname님에게 답글',
+                "community.reply_info".tr(namedArgs: {"replyTo": _replyToNickname}),
                 style: TextStyle(fontSize: 14, color: gray700),
               ),
             ],
@@ -259,7 +259,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
     return SizedBox(
       height: _commentInputHeight,
       child: CommunityCommentInputbox(
-        contentWord: _parentCommentId != null ? '대댓글을 입력하세요' : '댓글을 달아주세요',
+        contentWord: _parentCommentId != null ? "community.reply_hint".tr() : "community.comment_hint".tr(),
         commentId: _parentCommentId,
         replyFocusNode: _replyFocusNode,
         id: widget.id,
@@ -311,6 +311,11 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
   }
 
   Widget _buildUserInfo(CommunityDetailModel data) {
+    // 날짜 번역
+    final locale   = context.locale.toString();
+    final formatted = DateFormat.yMMMMd(locale)
+        .format(data.createdAt);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -319,7 +324,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
         Text(
-          DateFormat('yy년 M월 d일').format(data.createdAt),
+          formatted,
           style: TextStyle(fontSize: 12, color: Colors.grey[600]),
         ),
       ],
@@ -518,7 +523,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  scrapStatus.scrapped ? '스크랩 취소' : '스크랩 성공',
+                  scrapStatus.scrapped ? "community.success_scrap".tr() : "community.fail_scrap".tr(),
                   style: TextStyle(
                     fontSize: 16.0,
                     color: Colors.white,

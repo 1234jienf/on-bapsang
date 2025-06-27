@@ -2,6 +2,7 @@ import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/dio/dio.dart';
 import 'package:frontend/community/model/community_model.dart';
+import 'package:retrofit/dio.dart';
 import 'package:retrofit/error_logger.dart';
 import 'package:retrofit/http.dart';
 
@@ -29,6 +30,7 @@ abstract class HomeScreenCommunityRepository {
 
   @GET('/posts')
   @Headers({'accessToken': 'true'})
+  @Extra({'useLang': true})
   Future<CursorIntPagination<CommunityModel>> fetchData({
     @Query('size') int size = 6,
   });

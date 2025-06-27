@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -46,8 +47,8 @@ class _SearchAppBarState extends ConsumerState<SearchAppBar> {
 
     final isFocused = focusNode.hasFocus;
     final hint = isFocused
-        ? '아무거나 검색해 보세요!'
-        : (keyword.isEmpty ? '아무거나 검색해 보세요!' : keyword);
+        ? "search.search_hint".tr()
+        : (keyword.isEmpty ? "search.search_hint".tr() : keyword);
 
     return AppBar(
       leading: GestureDetector(onTap: () {

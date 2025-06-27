@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/user/provider/user_provider.dart';
@@ -21,7 +22,7 @@ class MypageAppbar extends StatelessWidget implements PreferredSizeWidget {
         elevation: 0,
         centerTitle: true,
         scrolledUnderElevation: 0,
-        title: Text('$name님의 마이페이지'),
+        title: Text("mypage.title".tr(namedArgs: {"user": name})),
         actions: [
           IconButton(
             onPressed: () async {

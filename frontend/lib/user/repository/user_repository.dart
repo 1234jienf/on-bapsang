@@ -21,4 +21,8 @@ abstract class UserRepository {
   @GET('/me')
   @Headers({'accessToken': 'true'})
   Future<UserModel> getMe();
+
+  @DELETE('/withdraw')
+  @Headers({'accessToken': 'true'})
+  Future<void> withdraw();
 }

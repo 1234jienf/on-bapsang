@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/component/pagination_int_grid_view.dart';
@@ -23,7 +24,7 @@ class _MypageScrapCommunityScreenState extends ConsumerState<MypageScrapCommunit
   Widget build(BuildContext context) {
     return DefaultLayout(
         appBar: AppBar(
-          title: Text('내가 스크랩한 글'),
+          title: Text("mypage.scrap_community".tr()),
           backgroundColor: Colors.white,
         ),
         child: PaginationIntGridView(

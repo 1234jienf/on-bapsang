@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/maps/model/maps_auto_complete_model.dart';
 import 'package:frontend/maps/provider/maps_api_service_provider.dart';
@@ -50,8 +51,8 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
             ),
             child: Row(
               children: [
-                const Text(
-                  '위치 검색',
+                Text(
+                  "map.search_title".tr(),
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
@@ -70,7 +71,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
               onChanged: _onSearchChanged,
               controller: searchPlaceController,
               decoration: InputDecoration(
-                hintText: '위치를 검색하세요',
+                hintText: "map.search_hint".tr(),
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon:
                     searchPlaceController.text.trim().isNotEmpty
@@ -136,7 +137,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
                 child: ElevatedButton.icon(
                   onPressed: _getCurrentLocation,
                   icon: const Icon(Icons.my_location),
-                  label: const Text("현재 위치 사용"),
+                  label: Text("map.now_location".tr()),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
@@ -202,7 +203,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
       if (mounted) {
         setState(() {
           isLoading = false;
-          errorMessage = '검색 중 오류가 발생했습니다. 다시 시도해주세요.';
+          errorMessage = "common.error_message2".tr();
         });
       }
     }
@@ -230,7 +231,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
     } catch (error) {
       if (mounted) {
         setState(() {
-          errorMessage = '현재 위치를 가져올 수 없습니다. 위치 권한을 확인해주세요.';
+          errorMessage = "map.location_get_error".tr();
         });
       }
     }
@@ -258,7 +259,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
               Icon(Icons.search_off, size: 48, color: Colors.grey[400]),
               const SizedBox(height: 16),
               Text(
-                '검색 결과가 없습니다',
+                "map.no_result".tr(),
                 style: TextStyle(fontSize: 16, color: Colors.grey[600]),
               ),
             ],
@@ -272,7 +273,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
       itemCount: predictions.length,
       itemBuilder: (context, index) {
         final prediction = predictions[index];
-        final description = prediction.description ?? '위치 정보 없음';
+        final description = prediction.description ?? "map.no_location".tr();
 
         List<String> addressParts = description.split(',');
         String mainAddress =
@@ -371,7 +372,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
       final placeId = prediction?.placeId ?? "";
       if (placeId.isEmpty) {
         setState(() {
-          errorMessage = '선택한 위치의 정보를 가져올 수 없습니다.';
+          errorMessage = "map.fail_get_location".tr();
         });
         return;
       }
@@ -387,7 +388,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
 
       if (lat == null || lng == null) {
         setState(() {
-          errorMessage = '선택한 위치의 좌표를 가져올 수 없습니다.';
+          errorMessage = "map.fail_get_point".tr();
         });
         return;
       }
@@ -396,10 +397,10 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
       router.pushNamed('location', extra: {'lat': lat, 'lng': lng});
 
     } catch (error) {
-      debugPrint('위치 선택 에러: $error');
+      debugPrint('${"map.error_hint".tr()}: $error');
       if (mounted) {
         setState(() {
-          errorMessage = '위치 정보를 가져오는 중 오류가 발생했습니다.';
+          errorMessage = "map.error_message".tr();
         });
       }
     }

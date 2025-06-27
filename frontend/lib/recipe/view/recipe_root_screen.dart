@@ -3,12 +3,27 @@ import 'package:frontend/home/component/category_icons.dart';
 import 'package:frontend/recipe/provider/recipe_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/recipe/component/recipe_appbar.dart';
 import 'package:frontend/recipe/component/recipe_popular_list.dart';
 import 'package:frontend/recipe/component/recipe_recommend_list.dart';
 import 'package:frontend/recipe/view/recipe_season_list_screen.dart';
+
+// 언어에 따른 배너 세팅
+String bannerAsset(BuildContext ctx) {
+  switch (ctx.locale.languageCode) {
+    case 'ko':
+      return 'asset/img/season_recipe_ko.png';
+    case 'ja':
+      return 'asset/img/season_recipe_ja.png';
+    case 'zh':
+      return 'asset/img/season_recipe_zh.png';
+    default:
+      return 'asset/img/season_recipe_en.png';
+  }
+}
 
 class RecipeRootScreen extends ConsumerStatefulWidget {
   static String get routeName => 'RecipeRootScreen';
@@ -46,7 +61,7 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
     final double sideGap = 5.0;
 
     return DefaultLayout(
-        appBar: RecipeAppbar(isImply: false, searchMessage: '레시피를 검색해보세요!',),
+        appBar: RecipeAppbar(isImply: false, searchMessage: "recipe.search_hint",),
         backgroundColor: Colors.white,
         child: RefreshIndicator(
           onRefresh: () async {
@@ -72,7 +87,7 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
                         child: Container(
                           decoration: BoxDecoration(color: Colors.grey),
                           child: Image.asset(
-                            'asset/img/season_recipe_banner.png',
+                            bannerAsset(context),
                             width: double.infinity,
                             fit: BoxFit.fitWidth,
                           ),
@@ -86,7 +101,7 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
 
                     // 인기 레시피
                     titleWidget(
-                      title: '요즘 핫한 인기 레시피',
+                      title: "home.main_popular_recipe".tr(),
                       fontSize: 20,
                       sidePadding: sideGap,
                     ),
@@ -96,7 +111,7 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
 
                     // AI 추천 레시피
                     titleWidget(
-                      title: 'AI 추천 레시피',
+                      title: "home.main_recommend_recipe".tr(),
                       fontSize: 20,
                       sidePadding: sideGap,
                     ),

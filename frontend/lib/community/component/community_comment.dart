@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/community/model/community_comment_model.dart';
 import 'package:intl/intl.dart';
@@ -35,6 +36,7 @@ class CommunityComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 14.0),
       child: Column(
@@ -84,7 +86,7 @@ class CommunityComment extends StatelessWidget {
           ),
           if (children.isNotEmpty) ...[
             const SizedBox(height: 10),
-            ...children.map((reply) => _childrenComments(reply)),
+            ...children.map((reply) => _childrenComments(context, reply)),
           ],
         ],
       ),
@@ -92,7 +94,12 @@ class CommunityComment extends StatelessWidget {
   }
 
   // 대댓글
-  Widget _childrenComments(CommunityCommentModel reply) {
+  Widget _childrenComments(BuildContext context, CommunityCommentModel reply) {
+    // 날짜 번역
+    final locale   = context.locale.toString();
+    final formatted = DateFormat.yMMMMd(locale)
+        .format(createdAt);
+
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: Row(
@@ -134,7 +141,8 @@ class CommunityComment extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      DateFormat('yy년 M월 d일').format(reply.createdAt),
+                      formatted,
+                      // DateFormat('yy년 M월 d일').format(reply.createdAt),
                       style: TextStyle(fontSize: 10, color: Colors.grey),
                     ),
                   ],

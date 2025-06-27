@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
@@ -56,15 +57,15 @@ class _ConsumerCommunityCreateRecipeTagScreenState
     return DefaultLayout(
       appBar: CommunityAppBar(
         index: 1,
-        next: '다음',
-        title: '레시피 태그',
+        next: "common.next".tr(),
+        title: "community.recipe_tag".tr(),
         isFirst: false,
         function: () async {
           if (tags.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  '레시피 태그를 추가해주세요.',
+                  "community.recipe_tag_notice".tr(),
                   style: TextStyle(
                     fontSize: 16.0,
                     color: Colors.black,
@@ -152,7 +153,7 @@ class _ConsumerCommunityCreateRecipeTagScreenState
                 Padding(
                   padding: const EdgeInsets.all(35.0),
                   child: Text(
-                    "원하는 위치에 레시피를 태그하세요",
+                    "community.recipe_tag_hint".tr(),
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.w600,
@@ -285,7 +286,7 @@ class _ConsumerCommunityCreateRecipeTagScreenState
                       },
                       controller: _searchController,
                       decoration: InputDecoration(
-                        hintText: '레시피를 검색하세요',
+                        hintText: "community.recipe_search_hint".tr(),
                         prefixIcon: const Icon(Icons.search),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -307,7 +308,7 @@ class _ConsumerCommunityCreateRecipeTagScreenState
                           ? result.when(
                         data: (recipes) {
                           if (recipes.isEmpty) {
-                            return Center(child: Text('검색 결과가 없습니다.'));
+                            return Center(child: Text("map.no_result".tr()));
                           }
 
                           return ListView.builder(
@@ -338,12 +339,12 @@ class _ConsumerCommunityCreateRecipeTagScreenState
                             },
                           );
                         },
-                        error: (e, _) => Center(child: Text('에러 발생')),
+                        error: (e, _) => Center(child: Text("common.error_message2".tr())),
                         loading: () => Center(child: CircularProgressIndicator()),
                       )
                           : Center(
                         child: Text(
-                          '레시피를 검색해주세요',
+                          "community.recipe_search_hint".tr(),
                           style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
                         ),
                       ),
@@ -368,7 +369,7 @@ class _ConsumerCommunityCreateRecipeTagScreenState
           child: Center(
             child: Text(
               textAlign : TextAlign.center,
-              '레시피 태그는 한 개만 등록 가능합니다.',
+              "community.recipe_tag_one".tr(),
               style: TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w700,

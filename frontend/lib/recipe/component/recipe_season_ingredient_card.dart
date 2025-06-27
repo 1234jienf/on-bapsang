@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/recipe/model/recipe_season_ingredient_model.dart';
 import 'package:frontend/recipe/view/recipe_season_detail_screen.dart';
@@ -59,7 +60,7 @@ class _RecipeSeasonIngredientCardState extends State<RecipeSeasonIngredientCard>
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              '제철 ${widget.seasonIngredientInfo.prdlstNm} 레시피',
+              "recipe.season_card_title".tr(namedArgs: {"ingredient": widget.seasonIngredientInfo.prdlstNm}),
               style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
             ),
           ),

@@ -1,9 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/component/pagination_int_grid_view.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/community/component/community_card.dart';
-import 'package:frontend/community/provider/community_provider.dart' hide CommunityParams;
 import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/mypage/provider/mypage_community_provider.dart';
 import 'package:go_router/go_router.dart';
@@ -34,7 +34,7 @@ class _MypageCommunityScreenState extends ConsumerState<MypageCommunityScreen> {
   Widget build(BuildContext context) {
     return DefaultLayout(
       appBar: AppBar(
-        title: Text('내가 쓴 글'),
+        title: Text("mypage.community".tr()),
         backgroundColor: Colors.white,
       ),
       child: PaginationIntGridView(

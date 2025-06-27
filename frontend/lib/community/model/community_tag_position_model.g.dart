@@ -16,3 +16,12 @@ CommunityTagPositionModel _$CommunityTagPositionModelFromJson(
   recipeId: json['recipeId'] as String,
 );
 
+Map<String, dynamic> _$CommunityTagPositionModelToJson(
+  CommunityTagPositionModel instance,
+) => <String, dynamic>{
+  'x': instance.x,
+  'y': instance.y,
+  'name': instance.name,
+  'imageUrl': instance.imageUrl,
+  'recipeId': instance.recipeId,
+};
