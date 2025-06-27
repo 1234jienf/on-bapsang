@@ -161,12 +161,77 @@ class _ConsumerMapScreenState extends ConsumerState<MapScreen> {
             icon: BitmapDescriptor.defaultMarkerWithHue(
               BitmapDescriptor.hueBlue,
             ),
-            infoWindow: InfoWindow(
-              title: restaurant['name'] ?? '',
-              snippet:
-                  '${restaurant['gubunDetail']} • ${(restaurant['distance'] as double).toStringAsFixed(1)}km',
-            ),
-            onTap: () {}
+            consumeTapEvents: true,
+            onTap: () {
+              final overlay = Overlay.of(context);
+              late OverlayEntry overlayEntry;
+
+              overlayEntry = OverlayEntry(
+                builder: (context) => Stack(
+                  children: [
+                    GestureDetector(
+                      onTap: () => overlayEntry.remove(),
+                    ),
+                    Positioned(
+                      top: 140,
+                      left: 16,
+                      right: 16,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 8,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.restaurant, color: Colors.blue, size: 24),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        restaurant['name'] ?? '',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        '${restaurant['gubunDetail']} • ${(restaurant['distance'] as double).toStringAsFixed(1)}km',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
+              overlay.insert(overlayEntry);
+            },
           ),
         );
       }
