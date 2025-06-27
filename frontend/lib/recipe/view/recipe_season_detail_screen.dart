@@ -85,7 +85,7 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
         backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
-          "recipe.season_card_title".tr(namedArgs: {'ingredient': widget.seasonIngredientInfo.prdlstNm}),
+          "recipe.season_card_title".tr(namedArgs: {'ingredient': widget.seasonIngredientInfo.prdlstNmTranslated}),
           style: TextStyle(fontWeight: FontWeight.w700),
         ),
       ),
@@ -175,7 +175,7 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
 
                   SizedBox(height: 20.0,),
                   Text(
-                    "recipe.season_recipe".tr(namedArgs: {"ingredient": widget.seasonIngredientInfo.prdlstNm}),
+                    "recipe.season_recipe".tr(namedArgs: {"ingredient": widget.seasonIngredientInfo.prdlstNmTranslated}),
                     style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20),
                   ),
                   // 여기에 제철 레시피

@@ -34,27 +34,45 @@ class RecipeCategoryListScreen extends ConsumerStatefulWidget {
 
 class _RecipeCategoryListScreenState extends ConsumerState<RecipeCategoryListScreen> {
   final ScrollController controller = ScrollController();
+  bool _isFetchingMore = false;
+
+  late final ProviderSubscription<CursorStringPaginationBase> _sub;
+
 
   @override
   void initState() {
     super.initState();
     controller.addListener(_scrollListener);
 
-    Future.microtask(() {
-      ref.read(categoryPaginationProvider(widget.categoryName).notifier);
-    });
+    _sub = ref.listenManual<CursorStringPaginationBase>(
+      categoryPaginationProvider(widget.categoryName),
+          (prev, next) {
+        _isFetchingMore =
+            next is! CursorStringPagination && next is! CursorStringPaginationError;
+      },
+    );
   }
 
   void _scrollListener() {
-    if (controller.position.pixels >= controller.position.maxScrollExtent - 300) {
-      final notifier = ref.read(categoryPaginationProvider(widget.categoryName).notifier);
-      notifier.paginate(fetchMore: true); // 내부에서 isLoading 처리됨
+    if (_isFetchingMore) return;
+
+    if (controller.position.pixels >=
+        controller.position.maxScrollExtent - 300) {
+      _isFetchingMore = true;
+      ref
+          .read(categoryPaginationProvider(widget.categoryName).notifier)
+          .paginate(fetchMore: true)
+          .then((_) => _isFetchingMore = false);
     }
   }
 
+
   @override
   void dispose() {
-    controller.dispose();
+    _sub.close();
+    controller
+      ..removeListener(_scrollListener)
+      ..dispose();
     super.dispose();
   }
 

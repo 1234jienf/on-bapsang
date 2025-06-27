@@ -12,8 +12,8 @@
       "rice": "Rice",
       "grains": "Grains",
       "flour": "Flour",
-      "processed": "Processed Foods",
-      "dried": "Dried Goods",
+      "processed": "Processed",
+      "dried": "Dried",
       "etc": "Others"
     },
     "home": "Home",
@@ -31,7 +31,7 @@
   },
   "home": {
     "main_popular_recipe": "Trending Popular Recipes",
-    "main_season_recipe": "Seasonal Recipes You Must Try Now",
+    "main_season_recipe": "Seasonal Recipes",
     "main_recommend_recipe": "AI Recommended Recipes",
     "main_community": "Community",
     "main_menu_title": "All Menu"

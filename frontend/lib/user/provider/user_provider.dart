@@ -7,6 +7,7 @@ import 'package:frontend/home/provider/home_screen_community_provider.dart';
 import 'package:frontend/mypage/provider/mypage_provider.dart';
 import 'package:frontend/recipe/provider/recipe_provider.dart';
 import 'package:frontend/recipe/provider/recipe_season_provider.dart';
+import 'package:frontend/user/model/user_patch_model.dart';
 import 'package:frontend/user/repository/auth_repository.dart';
 import 'package:frontend/user/repository/user_repository.dart';
 
@@ -142,6 +143,43 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
     } catch (e) {
       state = UserModelError(message: '회원가입에 실패했습니다.');
       print(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<void> patchUserInfo(UserPatchModel inputInfo) async {
+    try {
+      await userRepository.patchUserInfo(inputInfo);
+
+      await getMe(); // 수정하고 사용자 정보 업데이트 해주자
+
+      _ref.invalidate(recommendRecipesProvider);
+    } catch (e, st) {
+      state = UserModelError(message: "회원 정보를 수정하면서 문제가 생겼습니다.");
+      rethrow;
+    }
+  }
+
+  Future<void> patchLanguage(String lan) async {
+    try {
+      await userRepository.patchLanguage({"country": lan});
+      if (!mounted) return;
+
+      await _applyLanguage(lan);
+
+      _ref.invalidate(dioProvider);
+      _ref.invalidate(mypageInfoProvider);
+      _ref.invalidate(popularRecipesProvider);
+      _ref.invalidate(recommendRecipesProvider);
+      _ref.invalidate(seasonIngredientProvider);
+      final communityNotifier =
+        _ref.refresh(homeScreenCommunityProvider.notifier);
+      communityNotifier.fetchData();
+
+      await getMe();
+    } catch (e, st) {
+      if (!mounted) return;
+      state = UserModelError(message: "회원 정보를 수정하면서 문제가 생겼습니다.");
       rethrow;
     }
   }

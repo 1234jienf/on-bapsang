@@ -50,8 +50,8 @@ class AuthRepository {
     try {
       final String jsonData = jsonEncode(userInfo.toJson());
       print('[회원가입 요청 데이터]');
-      print(jsonData);
-      print(userInfo.profileImage!.path);
+      // print(jsonData);
+      // print(userInfo.profileImage!.path);
       final file = userInfo.profileImage!;
       final int fileSizeInBytes = await file.length();
       final double fileSizeInMB = fileSizeInBytes / (1024 * 1024);
@@ -70,7 +70,7 @@ class AuthRepository {
         '$ip/api/users/signup',
         data: formData,
         options: Options(
-          contentType: 'multipart/form-data', // 생략해도 되지만 명시해도 무방
+          contentType: 'multipart/form-data',
         ),
       );
     } catch (e) {
@@ -85,8 +85,8 @@ Future<File> compressImage(File file) async {
 
   if (originalImage == null) throw Exception('이미지 디코딩 실패');
 
-  final resized = img.copyResize(originalImage, width: 600); // 리사이즈
-  final jpg = img.encodeJpg(resized, quality: 85); // 압축률 조절
+  final resized = img.copyResize(originalImage, width: 600);
+  final jpg = img.encodeJpg(resized, quality: 85);  // 프로필 사진 압축
 
   final dir = await getTemporaryDirectory();
   final compressed = File('${dir.path}/compressed.jpg');
