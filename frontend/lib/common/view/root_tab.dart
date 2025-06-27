@@ -27,6 +27,7 @@ class RootTab extends StatelessWidget {
 
     return DefaultLayout(
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         currentIndex: currentIndex,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: primaryColor,
