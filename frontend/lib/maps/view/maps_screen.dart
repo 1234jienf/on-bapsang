@@ -120,6 +120,7 @@ class _ConsumerMapScreenState extends ConsumerState<MapScreen> {
     final model = MapsAddressParser.parseAddress(
       value.results![0].formattedAddress!,
     );
+
     final state = ref.read(mapAhnsimRestaurantProvider);
 
     final response = await state.find(city: model.city, gu: model.gu);
@@ -165,6 +166,7 @@ class _ConsumerMapScreenState extends ConsumerState<MapScreen> {
               snippet:
                   '${restaurant['gubunDetail']} • ${(restaurant['distance'] as double).toStringAsFixed(1)}km',
             ),
+            onTap: () {}
           ),
         );
       }
