@@ -16,7 +16,7 @@
         android:maxSdkVersion="28" />
 
     <application
-        android:name="${applicationName}"
+        android:name="$Onbapsang"
         android:icon="@mipmap/ic_launcher"
         android:label="frontend"
         android:enableOnBackInvokedCallback="true">
