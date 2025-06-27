@@ -190,6 +190,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
       final result = await MapsApiServiceProvider().autoComplete(
         query,
         widget.apiKey,
+        Language.korean
       );
 
       if (mounted) {
@@ -348,7 +349,6 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
                       ),
                     ),
 
-                    // 화살표 아이콘
                     Icon(
                       Icons.arrow_forward_ios,
                       size: 16,
@@ -379,6 +379,7 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
       final result = await MapsApiServiceProvider().getCoordinatesFromPlaceId(
         placeId,
         widget.apiKey,
+        Language.korean
       );
 
       final lat = result.result?.geometry?.location?.lat;

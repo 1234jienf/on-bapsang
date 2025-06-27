@@ -2,15 +2,21 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/common/secure_storage/secure_storage.dart';
+import 'package:frontend/maps/model/maps_address_parser.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../common/const/securetoken.dart';
 import '../../common/layout/default_layout.dart';
 import '../common/config.dart';
 import '../model/maps_place_from_coordinates_model.dart';
+import '../provider/maps_ahnsim_restaurant_finder_provider.dart';
+import '../provider/maps_ahnsim_restaurant_provider.dart';
 import '../provider/maps_api_service_provider.dart';
 import 'maps_location_screen.dart';
 
-class MapScreen extends StatefulWidget {
+class MapScreen extends ConsumerStatefulWidget {
   static String get routeName => 'MapScreen';
   final double lat;
   final double lng;
@@ -24,10 +30,10 @@ class MapScreen extends StatefulWidget {
   });
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  ConsumerState<MapScreen> createState() => _ConsumerMapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _ConsumerMapScreenState extends ConsumerState<MapScreen> {
   late double defaultLat;
   late double defaultLng;
   Timer? _moveDebounce;
@@ -35,7 +41,10 @@ class _MapScreenState extends State<MapScreen> {
   String apiKey = '';
   bool isLoadingAddress = false;
 
-  MapsPlaceFromCoordinatesModel placeFromCoordinates = MapsPlaceFromCoordinatesModel();
+  Set<Marker> markers = {};
+
+  MapsPlaceFromCoordinatesModel placeFromCoordinates =
+      MapsPlaceFromCoordinatesModel();
 
   Future<void> _loadApiKey() async {
     final accessApiKey = await Config.getGoogleMapsApiKey();
@@ -56,14 +65,41 @@ class _MapScreenState extends State<MapScreen> {
         defaultLat,
         defaultLng,
         apiKey,
+        Language.korean,
       );
 
-      if (!mounted) return;
+      final userInfo = ref.read(secureStorageProvider);
+      final lang = await userInfo.read(key: LANGUAGE_KEY);
 
-      setState(() {
-        placeFromCoordinates = value;
-        isLoadingAddress = false;
-      });
+      late final Language targetLang;
+
+      switch (lang) {
+        case 'JA':
+          targetLang = Language.japanese;
+          break;
+        case 'ZH':
+          targetLang = Language.chinese;
+          break;
+        case 'EN':
+          targetLang = Language.english;
+          break;
+        default:
+          targetLang = Language.korean;
+          break;
+      }
+
+      if (targetLang != Language.korean) {
+        final translateValue = await MapsApiServiceProvider()
+            .placeFromCoordinates(
+              defaultLat,
+              defaultLng,
+              apiKey,
+              targetLang
+            );
+        transLateLocation(targetLang: targetLang, value: value, translateValue: translateValue);
+      } else {
+        transLateLocation(targetLang: targetLang, value: value);
+      }
     } catch (e) {
       if (mounted) {
         setState(() {
@@ -73,6 +109,72 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  Future<void> transLateLocation({
+    required Language targetLang,
+    required value,
+    translateValue,
+  }) async {
+    if (!mounted) return;
+    if (value.results?[0].formattedAddress == null) return;
+
+    final model = MapsAddressParser.parseAddress(
+      value.results![0].formattedAddress!,
+    );
+    final state = ref.read(mapAhnsimRestaurantProvider);
+
+    final response = await state.find(city: model.city, gu: model.gu);
+
+    final data = response.data['rows'] as List<dynamic>;
+
+    final finder = MapsAhnsimRestaurantFinderProvider().findNearbyRestaurants(
+      currentLat: defaultLat,
+      currentLng: defaultLng,
+      restaurants: data,
+    );
+
+    _createRestaurantMarkers(finder);
+
+    setState(() {
+      if (targetLang == Language.korean) {
+        placeFromCoordinates = value;
+      } else {
+        placeFromCoordinates = translateValue;
+      }
+      isLoadingAddress = false;
+    });
+  }
+
+  void _createRestaurantMarkers(List<Map<String, dynamic>> restaurants) {
+    Set<Marker> newMarkers = {};
+
+    for (int i = 0; i < restaurants.length; i++) {
+      final restaurant = restaurants[i];
+      final lat = restaurant['latitude']?.toDouble() ?? 0.0;
+      final lng = restaurant['longitude']?.toDouble() ?? 0.0;
+
+      if (lat != 0.0 && lng != 0.0) {
+        newMarkers.add(
+          Marker(
+            markerId: MarkerId('restaurant_${restaurant['seq']}'),
+            position: LatLng(lat, lng),
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueBlue,
+            ),
+            infoWindow: InfoWindow(
+              title: restaurant['name'] ?? '',
+              snippet:
+                  '${restaurant['gubunDetail']} • ${(restaurant['distance'] as double).toStringAsFixed(1)}km',
+            ),
+          ),
+        );
+      }
+    }
+
+    setState(() {
+      markers = newMarkers;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -80,7 +182,7 @@ class _MapScreenState extends State<MapScreen> {
     defaultLng = widget.lng;
 
     _loadApiKey().then((_) {
-      getAddress(); // API 키 로드 후 주소 가져오기
+      getAddress();
     });
   }
 
@@ -94,7 +196,9 @@ class _MapScreenState extends State<MapScreen> {
   void _debouncedGetAddress() {
     _addressDebounce?.cancel();
     _addressDebounce = Timer(const Duration(milliseconds: 500), () {
-      getAddress();
+      if (mounted) {
+        getAddress();
+      }
     });
   }
 
@@ -111,10 +215,11 @@ class _MapScreenState extends State<MapScreen> {
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
-                builder: (context) => SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.75,
-                  child: MapsLocationScreen(apiKey: apiKey),
-                ),
+                builder:
+                    (context) => SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.75,
+                      child: MapsLocationScreen(apiKey: apiKey),
+                    ),
               );
             },
             child: const Padding(
@@ -127,6 +232,7 @@ class _MapScreenState extends State<MapScreen> {
       child: Stack(
         children: [
           GoogleMap(
+            markers: markers,
             mapType: MapType.normal,
             minMaxZoomPreference: const MinMaxZoomPreference(14, 18),
             initialCameraPosition: CameraPosition(
@@ -139,13 +245,10 @@ class _MapScreenState extends State<MapScreen> {
             },
             onCameraMove: (CameraPosition position) {
               _moveDebounce?.cancel();
-              _moveDebounce = Timer(
-                const Duration(milliseconds: 100),
-                    () {
-                  defaultLat = position.target.latitude;
-                  defaultLng = position.target.longitude;
-                },
-              );
+              _moveDebounce = Timer(const Duration(milliseconds: 100), () {
+                defaultLat = position.target.latitude;
+                defaultLng = position.target.longitude;
+              });
             },
           ),
           const Center(
@@ -157,10 +260,11 @@ class _MapScreenState extends State<MapScreen> {
               left: 16,
               right: 16,
               child: Card(
-                elevation: 4,
+                elevation: 1,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
+                color: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -171,13 +275,14 @@ class _MapScreenState extends State<MapScreen> {
                         "map.selected_location".tr(),
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey,
+                          color: Colors.black,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        placeFromCoordinates.results?[0].formattedAddress ?? "map.loading_message".tr(),
+                        placeFromCoordinates.results?[0].formattedAddress ??
+                            "map.loading_message".tr(),
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
