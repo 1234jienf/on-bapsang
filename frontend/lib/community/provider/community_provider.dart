@@ -32,7 +32,6 @@ class CommunityStateNotifier
       final currentState = state as CursorIntPagination<CommunityModel>;
 
       final updatedContent = currentState.data.content.map((community) {
-        print(community);
         if (community.id == id) {
           return community.copyWith(scrapped: scrapped);
         }

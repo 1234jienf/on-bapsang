@@ -126,7 +126,7 @@
     "filter": "필터",
     "latest": "최신순",
     "no_result_community": "검색된 커뮤니티가 없습니다.",
-    "no_result_recipe": "검색된 레시피가 없습니다. \\n\\n {food}와 유사한 레시피를 추천해드릴까요?",
+    "no_result_recipe": "검색된 레시피가 없습니다. \n\n {food}와 유사한 레시피를 추천해드릴까요?",
     "yes": "예",
     "no": "아니요",
     "type": "종류",

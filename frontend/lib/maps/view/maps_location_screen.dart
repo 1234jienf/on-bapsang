@@ -349,7 +349,6 @@ class _MapsLocationScreenState extends State<MapsLocationScreen> {
                       ),
                     ),
 
-                    // 화살표 아이콘
                     Icon(
                       Icons.arrow_forward_ios,
                       size: 16,

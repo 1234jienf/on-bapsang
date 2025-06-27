@@ -16,8 +16,6 @@ enum Language {
   final String code;
 }
 
-
-
 class MapsApiServiceProvider {
 
   Language defaultLanguage = Language.korean;
@@ -42,7 +40,6 @@ class MapsApiServiceProvider {
   Future<MapsAutoCompleteModel> autoComplete(String placeName, String apiKey, Language language) async {
     final Uri url = Uri.parse('https://maps.googleapis.com/maps/api/place/autocomplete/json?key=$apiKey&input=$placeName&language=${language.code}&region=kr');
     final response = await http.get(url);
-    print("1 $response");
 
     if (response.statusCode == 200) {
       return MapsAutoCompleteModel.fromJson(jsonDecode(response.body));
@@ -57,7 +54,6 @@ class MapsApiServiceProvider {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      print("2 $response");
       return MapsGetCoordinatesFromPlaceIdModel.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('API ERROR');
