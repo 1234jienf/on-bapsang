@@ -25,6 +25,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**", // 로그인, 토큰 재발급
                                 "/api/users/signup", // 회원가입
+                                "/api/users/check-username",
                                 "/api/seasonal/**", // 제철농산물 조회는 비회원 허용
                                 "/api/market/**")
                         .permitAll()
