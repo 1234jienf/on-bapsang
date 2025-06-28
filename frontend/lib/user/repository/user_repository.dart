@@ -2,6 +2,7 @@ import 'package:dio/dio.dart' hide Headers;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/const/securetoken.dart';
 import 'package:frontend/common/dio/dio.dart';
+import 'package:frontend/signup/model/sign_up_username_check_model.dart';
 import 'package:frontend/user/model/user_patch_model.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -27,6 +28,11 @@ abstract class UserRepository {
   @Headers({'accessToken': 'true'})
   Future<void> patchUserInfo(
     @Body() UserPatchModel body
+  );
+
+  @GET('/check-username')
+  Future<UsernameCheckResponse> checkUsername(
+    @Query('username') String username,
   );
 
   @PATCH('/language')
