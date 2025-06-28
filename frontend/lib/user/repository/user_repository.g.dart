@@ -67,6 +67,33 @@ class _UserRepository implements UserRepository {
   }
 
   @override
+  Future<UsernameCheckResponse> checkUsername(String username) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'username': username};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<UsernameCheckResponse>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/check-username',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late UsernameCheckResponse _value;
+    try {
+      _value = UsernameCheckResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<void> patchLanguage(Map<String, String> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
