@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/const/colors.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/shopping/view/shopping_detail/view/shopping_payment.dart';
 import 'package:go_router/go_router.dart';
 
-class ShoppingCartScreen extends StatefulWidget {
+import '../provider/shopping_cart_provider.dart';
+
+class ShoppingCartScreen extends ConsumerStatefulWidget {
   static String get routeName => 'ShoppingCartScreen';
 
   const ShoppingCartScreen({super.key});
 
   @override
-  State<ShoppingCartScreen> createState() => _ShoppingCartScreenState();
+  ConsumerState<ShoppingCartScreen> createState() => _ConsumerShoppingCartScreenState();
 }
 
-class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
+class _ConsumerShoppingCartScreenState extends ConsumerState<ShoppingCartScreen> {
   int count = 1;
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(shoppingCartProvider.notifier).loadCart();
     return DefaultLayout(
       backgroundColor: Colors.white,
       appBar: AppBar(

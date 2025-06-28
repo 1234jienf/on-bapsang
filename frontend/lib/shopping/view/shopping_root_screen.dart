@@ -1,24 +1,27 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/appbar/home_appbar.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/shopping/component/shopping_recipe_category.dart';
 import 'package:frontend/shopping/view/shopping_detail/view/shopping_detail_screen.dart';
+import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../common/const/colors.dart';
 import '../../home/component/recipe_icon.dart';
+import '../../mypage/provider/mypage_provider.dart';
 import '../component/shopping_recipe_component.dart';
 
-class ShoppingRootScreen extends StatefulWidget {
+class ShoppingRootScreen extends ConsumerStatefulWidget {
   const ShoppingRootScreen({super.key});
 
   @override
-  State<ShoppingRootScreen> createState() => _ShoppingRootScreenState();
+  ConsumerState<ShoppingRootScreen> createState() => _ConsumerShoppingRootScreenState();
 }
 
-class _ShoppingRootScreenState extends State<ShoppingRootScreen> {
+class _ConsumerShoppingRootScreenState extends ConsumerState<ShoppingRootScreen> {
   final ScrollController controller = ScrollController();
 
   @override
@@ -34,6 +37,7 @@ class _ShoppingRootScreenState extends State<ShoppingRootScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(mypageInfoProvider);
     final screenWidth = MediaQuery.of(context).size.width;
 
     return DefaultLayout(
@@ -62,7 +66,7 @@ class _ShoppingRootScreenState extends State<ShoppingRootScreen> {
             ),
           ),
           _shoppingComponent(count: 10, title: '온밥 마켓 특가'),
-          _shoppingComponent(count: 10, title: 'ㅇㅇㅇ 님에게 추천하는 상품'),
+          _shoppingComponent(count: 10, title: '${state.value?.data.nickname} 님에게 추천하는 상품'),
           ShoppingRecipeComponent(price: 9900, percentage: 36),
           SliverToBoxAdapter(child: const SizedBox(height: 26)),
           ShoppingRecipeCategory(percentage: 9900, price: 9900),
@@ -88,9 +92,12 @@ class _ShoppingRootScreenState extends State<ShoppingRootScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   Row(
                     children: [
@@ -111,7 +118,7 @@ class _ShoppingRootScreenState extends State<ShoppingRootScreen> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: SizedBox(
                   height: 210,
                   child: ListView.builder(
