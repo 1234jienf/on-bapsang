@@ -16,13 +16,9 @@ public class UserInfoResponse {
     private Integer age;
     private String location;
     private String profileImage;
-
-    @Translatable
-    private List<String> favoriteTastes;
-    @Translatable
-    private List<String> favoriteDishes;
-    @Translatable
-    private List<String> favoriteIngredients;
+    private List<Long> favoriteTastes;
+    private List<Long> favoriteDishes;
+    private List<Long> favoriteIngredients;
 
     public UserInfoResponse(User user, String profileImagePresignedUrl) {
         this.userId = user.getUserId();
@@ -35,15 +31,15 @@ public class UserInfoResponse {
 
 
         this.favoriteTastes = user.getFavoriteTastes().stream()
-                .map(userTaste -> userTaste.getTaste().getName())
+                .map(userTaste -> userTaste.getTaste().getTasteId())
                 .collect(Collectors.toList());
 
         this.favoriteDishes = user.getFavoriteDishes().stream()
-                .map(userDish -> userDish.getDish().getName())
+                .map(userDish -> userDish.getDish().getDishId())
                 .collect(Collectors.toList());
 
         this.favoriteIngredients = user.getFavoriteIngredients().stream()
-                .map(userIngredient -> userIngredient.getIngredient().getName())
+                .map(userIngredient -> userIngredient.getIngredient().getIngredientId())
                 .collect(Collectors.toList());
     }
 }
