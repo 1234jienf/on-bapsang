@@ -19,9 +19,9 @@ class UserModel extends UserModelBase {
   final String country;
   final int age;
   final String location;
-  final List<String> favoriteTastes;
-  final List<String> favoriteDishes;
-  final List<String> favoriteIngredients;
+  final List<int> favoriteTastes;
+  final List<int> favoriteDishes;
+  final List<int> favoriteIngredients;
 
   UserModel({
     required this.id,
@@ -45,9 +45,9 @@ class UserModel extends UserModelBase {
       country: raw['country'] as String,
       age: raw['age'] as int,
       location: raw['location'] as String,
-      favoriteTastes: (raw['favoriteTastes'] as List<dynamic>? ?? []).cast<String>(),
-      favoriteDishes: (raw['favoriteDishes'] as List<dynamic>? ?? []).cast<String>(),
-      favoriteIngredients: (raw['favoriteIngredients'] as List<dynamic>? ?? []).cast<String>(),
+      favoriteTastes: (raw['favoriteTastes'] as List<dynamic>? ?? []).map((e) => e as int).toList(),
+      favoriteDishes: (raw['favoriteDishes'] as List<dynamic>? ?? []).map((e) => e as int).toList(),
+      favoriteIngredients: (raw['favoriteIngredients'] as List<dynamic>? ?? []).map((e) => e as int).toList(),
     );
   }
 }

@@ -15,15 +15,15 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   location: json['location'] as String,
   favoriteTastes:
       (json['favoriteTastes'] as List<dynamic>)
-          .map((e) => e as String)
+          .map((e) => (e as num).toInt())
           .toList(),
   favoriteDishes:
       (json['favoriteDishes'] as List<dynamic>)
-          .map((e) => e as String)
+          .map((e) => (e as num).toInt())
           .toList(),
   favoriteIngredients:
       (json['favoriteIngredients'] as List<dynamic>)
-          .map((e) => e as String)
+          .map((e) => (e as num).toInt())
           .toList(),
 );
 
