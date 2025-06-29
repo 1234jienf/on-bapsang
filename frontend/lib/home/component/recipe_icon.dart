@@ -13,44 +13,21 @@ class RecipeIcon extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Column(
-                children: [
-                  Image.asset('asset/img/rice.png'),
-                  Text('쌀/곡류', style: TextStyle(fontSize: fontSize)),
-                ],
-              ),
+              child: iconField(assetString: 'asset/img/rice.png', title: '쌀/곡류', fontSize: fontSize)
             ),
             Expanded(
-              child: Column(
-                children: [
-                  Image.asset('asset/img/vege.png'),
-                  Text('채소류', style: TextStyle(fontSize: fontSize)),
-                ],
-              ),
+              child: iconField(assetString: 'asset/img/vege.png', title: '채소류', fontSize: fontSize)
             ),
             Expanded(
-              child: Column(
-                children: [
-                  Image.asset('asset/img/so.png'),
-                  Text('가공식품류', style: TextStyle(fontSize: fontSize)),
-                ],
-              ),
+              child: iconField(fontSize: fontSize, title: '가공식품류', assetString: 'asset/img/so.png')
             ),
             Expanded(
-              child: Column(
-                children: [
-                  Image.asset('asset/img/egg.png'),
-                  Text('달걀/유제품', style: TextStyle(fontSize: fontSize)),
-                ],
-              ),
+              child: iconField(assetString: 'asset/img/egg.png', title: '달걀/유제품', fontSize: fontSize)
             ),
             Expanded(
-              child: Column(
-                children: [
-                  Image.asset('asset/img/meat.png'),
-                  Text('고기류', style: TextStyle(fontSize: fontSize)),
-                ],
-              ),
+              child: iconField(assetString: 'asset/img/meat.png', title: '고기류', fontSize: fontSize)
+
+
             ),
           ],
         ),
@@ -59,40 +36,45 @@ class RecipeIcon extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Column(
-                children: [
-                  Image.asset('asset/img/fish.png'),
-                  Text('해물류', style: TextStyle(fontSize: fontSize)),
-                ],
+              child: iconField(assetString: 'asset/img/fish.png', title: '해물류', fontSize: fontSize)
+            ),
+            Expanded(
+              child: iconField(
+                fontSize: fontSize,
+                assetString: 'asset/img/fruit.png',
+                title: '과일류',
               ),
             ),
             Expanded(
-              child: Column(
-                children: [
-                  Image.asset('asset/img/fruit.png'),
-                  Text('과일류', style: TextStyle(fontSize: fontSize)),
-                ],
+              child: iconField(
+                assetString: 'asset/img/dried.png',
+                title: '건어물류',
+                fontSize: fontSize,
               ),
             ),
             Expanded(
-              child: Column(
-                children: [
-                  Image.asset('asset/img/dried.png'),
-                  Text('건어물류', style: TextStyle(fontSize: fontSize)),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Column(
-                children: [
-                  Image.asset('asset/img/etc.png'),
-                  Text('기타', style: TextStyle(fontSize: fontSize)),
-                ],
+              child: iconField(
+                assetString: 'asset/img/etc.png',
+                title: '기타',
+                fontSize: fontSize,
               ),
             ),
             Expanded(child: Column(children: [])),
           ],
         ),
+      ],
+    );
+  }
+
+  Widget iconField({
+    required String assetString,
+    required String title,
+    required double fontSize,
+  }) {
+    return Column(
+      children: [
+        Image.asset(assetString, fit: BoxFit.cover, width: 48, height: 48),
+        Text(title, style: TextStyle(fontSize: fontSize)),
       ],
     );
   }
