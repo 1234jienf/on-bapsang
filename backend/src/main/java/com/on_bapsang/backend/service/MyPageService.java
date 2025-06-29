@@ -67,6 +67,7 @@ public class MyPageService {
                                         ? imageUploader.generatePresignedUrl(post.getProfileImage(), 120)
                                         : null;
                         post.setProfileImage(profileImageUrl);
+                        post.setScrapped(true);
 
                         return post;
                 }).toList();
