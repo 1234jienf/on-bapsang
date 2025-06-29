@@ -99,6 +99,7 @@ class _PaginationStringListViewState<T extends IModelWithStringId>
                     ref.invalidate(searchKeywordProvider);
                     ref.read(searchKeywordRemainProvider.notifier).clear();
                     context.pop();
+
                   },
                   child: Text("search.no".tr(), style: TextStyle(fontSize: 16)),
                 ),
