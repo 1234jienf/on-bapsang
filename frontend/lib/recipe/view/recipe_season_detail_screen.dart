@@ -127,7 +127,7 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
                 delegate: SliverChildListDelegate([
                   SizedBox(height: 20.0,),
                   Text(
-                    "recipe.season_card_title".tr(namedArgs: {'ingredient': widget.seasonIngredientInfo.prdlstNm}),
+                    "recipe.season_card_title".tr(namedArgs: {'ingredient': widget.seasonIngredientInfo.prdlstNmTranslated}),
                     style: TextStyle(fontWeight: FontWeight.w800, fontSize: 25),
                   ),
                   SizedBox(height: 5.0,),
