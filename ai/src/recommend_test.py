@@ -8,6 +8,7 @@ from upstage_chat_llm import UpstageChatLLM
 from langchain.schema import HumanMessage
 import re
 from pinecone import Pinecone, ServerlessSpec
+from mysql.connector import pooling
 
 # 환경변수 로드
 dotenv_path = os.path.join(os.path.dirname(__file__), "..", "..", ".env")
