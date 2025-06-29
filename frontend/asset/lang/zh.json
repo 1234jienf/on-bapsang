@@ -27,7 +27,47 @@
     "image_error2": "无法获取图片大小。",
     "image_error3": "图片大小为 {fileSize}MB。请将其压缩至15MB以下。",
     "image_hint": "请选择图片。",
-    "again": "请再试一次"
+    "again": "请再试一次",
+    "nickname": "昵称",
+    "age": "年龄",
+    "favoriteIngredient": "喜欢的食材",
+    "ingredients": {
+      "pork": "猪肉",
+      "chicken": "鸡肉",
+      "beef": "牛肉",
+      "tomato": "番茄",
+      "onion": "洋葱",
+      "cucumber": "黄瓜",
+      "cabbage": "卷心菜",
+      "carrot": "胡萝卜",
+      "eggplant": "茄子",
+      "chili_pepper": "辣椒",
+      "lettuce": "生菜",
+      "potato": "土豆",
+      "spinach": "菠菜"
+    },
+    "favoriteTaste": "喜欢的口味",
+    "tastes": {
+      "spicy": "辣味",
+      "salty": "咸味",
+      "sweet": "甜味",
+      "bitter": "苦味",
+      "sour": "酸味",
+      "umami": "鲜味"
+    },
+    "favoriteDishes": "喜欢的菜肴",
+    "dishes": {
+      "kimchi_stew": "泡菜汤",
+      "soybean_paste_stew": "大酱汤",
+      "bibimbap": "拌饭",
+      "bulgogi": "烤牛肉",
+      "galbi": "排骨",
+      "samgyetang": "参鸡汤",
+      "japchae": "杂菜粉丝",
+      "gimbap": "紫菜包饭",
+      "galbitang": "排骨汤",
+      "kalguksu": "刀削面"
+    }
   },
   "home": {
     "main_popular_recipe": "当前热门食谱",
@@ -142,7 +182,19 @@
     "setting_info": "编辑个人信息",
     "setting_language": "更改语言设置",
     "withdraw": "注销账户",
-    "confirm_withdrawal": "您确定要注销账户吗？\\n所有信息将被删除。"
+    "confirm_withdrawal": "您确定要注销账户吗？\\n所有信息将被删除。",
+    "nicknameRequired": "请输入昵称",
+    "nicknameLength": "请输入2~10个字符",
+    "enterNickname": "请输入2~10字符的昵称",
 
+    "ageRequired": "请输入年龄",
+    "ageNumberOnly": "只能输入数字",
+    "ageInvalid": "请输入有效年龄",
+    "enterAge": "请仅输入数字年龄",
+
+    "selectAtLeastOne": "请至少选择一项",
+    "patch_failed": "修改个人信息失败。",
+
+    "save": "保存"
   }
 }

@@ -12,7 +12,6 @@ final dioProvider = Provider.autoDispose<Dio>((ref) {
 
   final storage = ref.watch(secureStorageProvider);
 
-
   dio.interceptors.add(LanguageInterceptor(ref, storage));
   dio.interceptors.add(CustomInterceptor(ref: ref, storage: storage));
 

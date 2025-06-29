@@ -142,14 +142,25 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                       SizedBox(height: componentGap),
 
                       // 레시피 정보
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                      Wrap(
+                        spacing: 16,   // 아이템 간 가로 간격
+                        runSpacing: 8, // 줄 바뀔 때 세로 간격
                         children: [
-                          infoWidget(title: "recipe.portion".tr(), content: recipe.portion == 'nan' ? '-' : recipe.portion),
-                          infoWidget(title: "recipe.time".tr(), content: recipe.time == 'nan' ? '-' : recipe.time),
-                          infoWidget(title: "recipe.difficulty".tr(), content: recipe.difficulty),
+                          infoWidget(
+                            title: "recipe.portion".tr(),
+                            content: recipe.portion == 'nan' ? '-' : recipe.portion,
+                          ),
+                          infoWidget(
+                            title: "recipe.time".tr(),
+                            content: recipe.time == 'nan' ? '-' : recipe.time,
+                          ),
+                          infoWidget(
+                            title: "recipe.difficulty".tr(),
+                            content: recipe.difficulty,
+                          ),
                         ],
                       ),
+
                       SizedBox(height: componentGap),
                     ]),
                   ),
@@ -423,22 +434,25 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
 
 Widget infoWidget({
   required String title,
-  required String content
+  required String content,
 }) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        title,
-        style: TextStyle(fontSize: 16, color: Colors.black45),
-      ),
-      SizedBox(width: 10.0,),
-      Text(
-        content,
-        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-      ),
-      SizedBox(width: 15.0,),
-    ],
+  return Padding(
+    padding: const EdgeInsets.only(right: 12.0),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 13, color: Colors.black54),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          content,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+        ),
+      ],
+    ),
   );
 }
 

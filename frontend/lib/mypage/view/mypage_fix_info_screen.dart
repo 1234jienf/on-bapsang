@@ -8,19 +8,6 @@ import 'package:frontend/mypage/provider/mypage_provider.dart';
 import 'package:frontend/user/model/user_patch_model.dart';
 import 'package:frontend/user/provider/user_provider.dart';
 
-// 이름이랑 인덱스 매핑용
-extension OptionIdMapper on List<String> {
-  int? idOf(String name) {
-    final idx = indexOf(name);
-    return idx >= 0 ? idx + 1 : null;
-  }
-
-  String? nameOf(int id) {
-    final idx = id - 1;
-    return (idx >= 0 && idx < length) ? this[idx] : null;
-  }
-}
-
 // 회원 정보 수정
 class MypageFixInfoScreen extends ConsumerStatefulWidget {
   static String get routeName => 'MypageFixInfoScreen';
@@ -41,9 +28,41 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
   List<int> selectedTasteIds = [];
   List<int> selectedDishIds = [];
 
-  final ingredientOptions = ['돼지고기', '닭고기', '소고기', '토마토', '양파', '오이', '양배추', '당근', '가지', '고추', '상추', '감자', '시금치'];
-  final tasteOptions = ['매운맛', '짠맛', '단맛', '쓴맛', '신맛', '감칠맛'];
-  final dishOptions = ['김치찌개', '된장찌개', '비빔밥', '불고기', '갈비', '삼계탕', '잡채', '김밥', '갈비탕', '칼국수'];
+  final ingredientOptions = [
+    'common.ingredients.pork',
+    'common.ingredients.chicken',
+    'common.ingredients.beef',
+    'common.ingredients.tomato',
+    'common.ingredients.onion',
+    'common.ingredients.cucumber',
+    'common.ingredients.cabbage',
+    'common.ingredients.carrot',
+    'common.ingredients.eggplant',
+    'common.ingredients.chili_pepper',
+    'common.ingredients.lettuce',
+    'common.ingredients.potato',
+    'common.ingredients.spinach',
+  ];
+  final tasteOptions = [
+    'common.tastes.spicy',
+    'common.tastes.salty',
+    'common.tastes.sweet',
+    'common.tastes.bitter',
+    'common.tastes.sour',
+    'common.tastes.umami',
+  ];
+  final dishOptions = [
+    'common.dishes.kimchi_stew',
+    'common.dishes.soybean_paste_stew',
+    'common.dishes.bibimbap',
+    'common.dishes.bulgogi',
+    'common.dishes.galbi',
+    'common.dishes.samgyetang',
+    'common.dishes.japchae',
+    'common.dishes.gimbap',
+    'common.dishes.galbitang',
+    'common.dishes.kalguksu',
+  ];
 
   String? nicknameError;
   String? ageError;
@@ -57,21 +76,13 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
     nicknameController.text = widget.info?.nickname ?? '';
     ageController.text = widget.info?.age.toString() ?? '';
 
-    selectedIngredientIds = widget.info?.favoriteIngredients
-        .map((e) => ingredientOptions.idOf(e))
-        .whereType<int>()
-        .toList() ??
-        [];
-    selectedTasteIds = widget.info?.favoriteTastes
-        .map((e) => tasteOptions.idOf(e))
-        .whereType<int>()
-        .toList() ??
-        [];
-    selectedDishIds = widget.info?.favoriteDishes
-        .map((e) => dishOptions.idOf(e))
-        .whereType<int>()
-        .toList() ??
-        [];
+    // print(widget.info?.favoriteIngredients);
+    // print(widget.info?.favoriteDishes);
+    // print(widget.info?.favoriteTastes);
+
+    selectedIngredientIds = widget.info?.favoriteIngredients ?? [];
+    selectedTasteIds = widget.info?.favoriteTastes ?? [];
+    selectedDishIds = widget.info?.favoriteDishes ?? [];
   }
 
   @override
@@ -82,21 +93,21 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
   }
 
   String? _validateNickname(String v) {
-    if (v.isEmpty) return '닉네임을 입력해주세요';
-    if (v.length < 2 || v.length > 10) return '2~10자리로 입력해주세요';
+    if (v.isEmpty) return "mypage.nicknameRequired".tr();
+    if (v.length < 2 || v.length > 10) return "mypage.nicknameLength".tr();
     return null;
   }
 
   String? _validateAge(String v) {
-    if (v.isEmpty) return '나이를 입력해주세요';
+    if (v.isEmpty) return "mypage.ageRequired".tr();
     final n = int.tryParse(v);
-    if (n == null) return '숫자만 입력해주세요';
-    if (n < 1 || n > 100) return '올바른 나이를 입력해주세요';
+    if (n == null) return "mypage.ageNumberOnly".tr();
+    if (n < 1 || n > 100) return "mypage.ageInvalid".tr();
     return null;
   }
 
   String? _validateIds(List<int> ids) =>
-      ids.isEmpty ? '적어도 하나를 선택해주세요' : null;
+      ids.isEmpty ? "mypage.selectAtLeastOne".tr() : null;
 
   bool _validateAll() {
     setState(() {
@@ -134,7 +145,7 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('회원 정보 수정에 실패했습니다.')),
+          SnackBar(content: Text("mypage.patch_failed".tr())),
         );
       }
     } finally {
@@ -180,8 +191,8 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
                     children: [
                       const SizedBox(height: 16),
                       _buildTextField(
-                        title: '닉네임',
-                        hintText: '2~10자리의 닉네임을 입력해주세요',
+                        title: "common.nickname",
+                        hintText: "mypage.enterNickname".tr(),
                         controller: nicknameController,
                         errorText: nicknameError,
                         onChanged: (_) {
@@ -192,8 +203,8 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
                         },
                       ),
                       _buildTextField(
-                        title: '나이',
-                        hintText: '나이를 숫자로만 입력해주세요',
+                        title: "common.age",
+                        hintText: "mypage.enterAge".tr(),
                         controller: ageController,
                         errorText: ageError,
                         keyboardType: TextInputType.number,
@@ -205,7 +216,7 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
                         },
                       ),
                       _buildSelectField(
-                        title: '좋아하는 재료',
+                        title: "common.favoriteIngredient",
                         options: ingredientOptions,
                         selectedIds: selectedIngredientIds,
                         errorText: ingredientError,
@@ -217,12 +228,12 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
                         },
                       ),
                       _buildSelectField(
-                        title: '좋아하는 맛',
+                        title: "common.favoriteTaste",
                         options: tasteOptions,
                         selectedIds: selectedTasteIds,
                       ),
                       _buildSelectField(
-                        title: '좋아하는 요리',
+                        title: "common.favoriteDishes",
                         options: dishOptions,
                         selectedIds: selectedDishIds,
                       ),
@@ -244,9 +255,9 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        '저장',
+                        "mypage.save".tr(),
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
@@ -276,7 +287,7 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title,
+        Text(title.tr(),
             style:
             const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
         const SizedBox(height: 4),
@@ -317,7 +328,7 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title,
+        Text(title.tr(),
             style:
             const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
         const SizedBox(height: 4),
@@ -331,7 +342,7 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
             final isSelected = selectedIds.contains(id);
 
             return ChoiceChip(
-              label: Text(label),
+              label: Text(label.tr()),
               selected: isSelected,
               onSelected: (sel) {
                 setState(() {

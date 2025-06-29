@@ -27,7 +27,47 @@
     "image_error2": "Unable to determine the image size.",
     "image_error3": "The image size is {fileSize}MB. Please reduce it to under 15MB.",
     "image_hint": "Please select an image.",
-    "again": "Try again"
+    "again": "Try again",
+    "nickname": "Nickname",
+    "age": "Age",
+    "favoriteIngredient": "Favorite Ingredient",
+    "ingredients": {
+      "pork": "Pork",
+      "chicken": "Chicken",
+      "beef": "Beef",
+      "tomato": "Tomato",
+      "onion": "Onion",
+      "cucumber": "Cucumber",
+      "cabbage": "Cabbage",
+      "carrot": "Carrot",
+      "eggplant": "Eggplant",
+      "chili_pepper": "Chili Pepper",
+      "lettuce": "Lettuce",
+      "potato": "Potato",
+      "spinach": "Spinach"
+    },
+    "favoriteTaste": "Favorite Taste",
+    "tastes": {
+      "spicy": "Spicy",
+      "salty": "Salty",
+      "sweet": "Sweet",
+      "bitter": "Bitter",
+      "sour": "Sour",
+      "umami": "Umami"
+    },
+    "favoriteDishes": "Favorite Dishes",
+    "dishes": {
+      "kimchi_stew": "Kimchi Stew",
+      "soybean_paste_stew": "Soybean Paste Stew",
+      "bibimbap": "Bibimbap",
+      "bulgogi": "Bulgogi",
+      "galbi": "Galbi",
+      "samgyetang": "Samgyetang",
+      "japchae": "Japchae",
+      "gimbap": "Gimbap",
+      "galbitang": "Galbitang",
+      "kalguksu": "Kalguksu"
+    }
   },
   "home": {
     "main_popular_recipe": "Trending Popular Recipes",
@@ -141,7 +181,16 @@
     "setting_info": "Edit Profile",
     "setting_language": "Change Language",
     "withdraw": "Delete Account",
-    "confirm_withdrawal": "Are you sure you want to withdraw?\\nAll information will be deleted."
-
+    "confirm_withdrawal": "Are you sure you want to withdraw?\\nAll information will be deleted.",
+    "nicknameRequired": "Please enter a nickname",
+    "nicknameLength": "Please enter 2–10 characters",
+    "enterNickname": "Enter a 2–10 character nickname",
+    "ageRequired": "Please enter your age",
+    "ageNumberOnly": "Numbers only, please",
+    "ageInvalid": "Please enter a valid age",
+    "enterAge": "Enter your age in numbers only",
+    "selectAtLeastOne": "Please select at least one",
+    "patch_failed": "Failed to update your information.",
+    "save": "Save"
   }
 }
