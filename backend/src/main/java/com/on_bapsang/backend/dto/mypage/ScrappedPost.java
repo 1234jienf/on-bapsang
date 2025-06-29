@@ -28,5 +28,6 @@ public class ScrappedPost {
     private LocalDateTime createdAt;
     private Double x;
     private Double y;
+    private boolean scrapped;
 }
 
