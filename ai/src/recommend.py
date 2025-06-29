@@ -81,7 +81,7 @@ def fetch_recipes_bulk(ids: list[str]) -> dict[str, dict]:
             rid = str(rid)
             rec = recipes.setdefault(rid, {
                 "recipe_id": rid, "name": name, "ingredients": [],
-                "description": desc, "review": review, "time": time,
+                "descriptions": desc, "review": review, "time": time,
                 "difficulty": diff, "portion": portion, "method": method,
                 "material_type": mat_type, "image_url": img
             })
