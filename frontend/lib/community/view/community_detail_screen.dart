@@ -14,6 +14,7 @@ import '../model/community_detail_model.dart';
 import '../model/community_tag_position_model.dart';
 import '../provider/community_comment_provider.dart';
 import '../provider/community_detail_provider.dart';
+import '../provider/community_provider.dart';
 import '../provider/community_scrap_provider.dart';
 import '../provider/community_scrap_status_provider.dart';
 
@@ -190,7 +191,10 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
       surfaceTintColor: Colors.white,
       elevation: 0,
       leading: IconButton(
-        onPressed: () => context.pop(),
+        onPressed: () {
+          context.pop();
+          ref.invalidate(communityProvider);
+        },
         icon: const Icon(Icons.close_outlined),
         tooltip: '닫기',
       ),
@@ -239,7 +243,9 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
               Icon(Icons.reply, size: 16, color: gray700),
               const SizedBox(width: 8),
               Text(
-                "community.reply_info".tr(namedArgs: {"replyTo": _replyToNickname}),
+                "community.reply_info".tr(
+                  namedArgs: {"replyTo": _replyToNickname},
+                ),
                 style: TextStyle(fontSize: 14, color: gray700),
               ),
             ],
@@ -259,7 +265,10 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
     return SizedBox(
       height: _commentInputHeight,
       child: CommunityCommentInputbox(
-        contentWord: _parentCommentId != null ? "community.reply_hint".tr() : "community.comment_hint".tr(),
+        contentWord:
+            _parentCommentId != null
+                ? "community.reply_hint".tr()
+                : "community.comment_hint".tr(),
         commentId: _parentCommentId,
         replyFocusNode: _replyFocusNode,
         id: widget.id,
@@ -312,9 +321,8 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
 
   Widget _buildUserInfo(CommunityDetailModel data) {
     // 날짜 번역
-    final locale   = context.locale.toString();
-    final formatted = DateFormat.yMMMMd(locale)
-        .format(data.createdAt);
+    final locale = context.locale.toString();
+    final formatted = DateFormat.yMMMMd(locale).format(data.createdAt);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -523,7 +531,9 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  scrapStatus.scrapped ? "community.success_scrap".tr() : "community.fail_scrap".tr(),
+                  scrapStatus.scrapped
+                      ? "community.fail_scrap".tr()
+                      : "community.success_scrap".tr(),
                   style: TextStyle(
                     fontSize: 16.0,
                     color: Colors.white,

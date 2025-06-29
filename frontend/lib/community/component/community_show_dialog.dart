@@ -32,7 +32,7 @@ Future<void> communityShowDialog(BuildContext context, WidgetRef ref, bool isNav
   );
 
   if (isNavigate && context.mounted) {
-    ref.read(communityProvider);
+    ref.invalidate(communityProvider);
     context.go('/community');
   }
 }
