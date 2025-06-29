@@ -3,12 +3,14 @@ package com.on_bapsang.backend.dto.mypage;
 import com.on_bapsang.backend.i18n.Translatable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 public class MyPost {
     private Long postId;
@@ -21,12 +23,29 @@ public class MyPost {
     @Translatable
     private String content;
 
-    @Setter
     private String imageUrl;
-
     private int scrapCount;
     private int commentCount;
     private LocalDateTime createdAt;
     private Double x;
     private Double y;
+    private boolean scrapped;
+
+    // JPQL용 생성자 명시적으로 추가
+    public MyPost(Long postId, String nickname, String profileImage, String title, String content,
+                  String imageUrl, int scrapCount, int commentCount, LocalDateTime createdAt,
+                  Double x, Double y) {
+        this.postId = postId;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.title = title;
+        this.content = content;
+        this.imageUrl = imageUrl;
+        this.scrapCount = scrapCount;
+        this.commentCount = commentCount;
+        this.createdAt = createdAt;
+        this.x = x;
+        this.y = y;
+        this.scrapped = false;
+    }
 }
