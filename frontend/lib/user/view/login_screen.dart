@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/user/model/user_model.dart';
 import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -55,17 +56,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 16.0),
                     ElevatedButton(
-                      onPressed:
-                          (username.isNotEmpty && password.isNotEmpty)
-                              ? () async {
-                                ref
-                                    .read(userProvider.notifier)
-                                    .login(
-                                      username: username,
-                                      password: password,
-                                    );
-                              }
-                              : null,
+                      onPressed: (username.isNotEmpty && password.isNotEmpty)
+                        ? () async {
+                          final result = await ref
+                              .read(userProvider.notifier)
+                              .login(username: username, password: password);
+
+                          if (result is UserModelError && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(result.message)),
+                            );
+                          }
+                        }
+                        : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,

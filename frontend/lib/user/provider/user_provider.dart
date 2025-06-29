@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/common/const/securetoken.dart';
@@ -99,11 +100,19 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       _ref.invalidate(popularRecipesProvider); // 메인페이지 정보도 새로 고침
       _ref.invalidate(recommendRecipesProvider);
       _ref.invalidate(seasonIngredientProvider);
+
       final communityNotifier = _ref.refresh(homeScreenCommunityProvider.notifier);
       communityNotifier.fetchData();
 
       return userResp;
-    } catch (e) {
+    } on DioException catch (e) {
+      final msg = (e.response?.data is Map && e.response?.data['message'] != null)
+          ? e.response!.data['message'] as String
+          : '로그인에 실패했습니다';
+
+      state = UserModelError(message: msg);
+      return Future.value(state);      // UI 쪽에서 메시지 읽도록 반환
+    } catch (_) {
       state = UserModelError(message: '로그인에 실패했습니다');
       return Future.value(state);
     }

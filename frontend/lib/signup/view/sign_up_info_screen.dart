@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/signup/model/sign_up_request_model.dart';
+import 'package:frontend/user/repository/user_repository.dart';
 
-class SignUpInfoScreen extends StatefulWidget {
+class SignUpInfoScreen extends ConsumerStatefulWidget {
   final Function({
   required String username,
   required String password,
@@ -19,10 +21,10 @@ class SignUpInfoScreen extends StatefulWidget {
   });
 
   @override
-  State<SignUpInfoScreen> createState() => _SignUpInfoScreenState();
+  ConsumerState<SignUpInfoScreen> createState() => _SignUpInfoScreenState();
 }
 
-class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
+class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController = TextEditingController();
@@ -31,28 +33,46 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
   final TextEditingController locationController = TextEditingController();
   String? selectedCountry;
 
-
   String? usernameError;
   String? passwordError;
   String? passwordConfirmError;
   String? nicknameError;
   String? ageError;
-  String? locationError;
   String? countryError;
+  String? usernameCheckMessage;
 
+  bool isCheckingUsername = false;
+  bool isUsernameChecked = false;
+  bool isUsernameAvailable = false;
+
+  final RegExp _emailRegex = RegExp(
+      r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
+  );
   @override
   void initState() {
     super.initState();
     if (widget.initialData != null) {
-      usernameController.text = widget.initialData!.username ?? '';
-      passwordController.text = widget.initialData!.password ?? '';
+      usernameController.text = widget.initialData!.username;
+      passwordController.text = widget.initialData!.password;
       nicknameController.text = widget.initialData!.nickname ?? '';
       locationController.text = widget.initialData!.location ?? '';
       selectedCountry = widget.initialData!.country;
       if (widget.initialData!.age != null) {
         ageController.text = widget.initialData!.age.toString();
       }
+      isUsernameChecked = true;
+      isUsernameAvailable = true;
     }
+
+    usernameController.addListener(() {
+      if (isUsernameChecked) {
+        setState(() {
+          isUsernameChecked = false;
+          isUsernameAvailable = false;
+          usernameCheckMessage = null;
+        });
+      }
+    });
   }
 
   @override
@@ -66,11 +86,17 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
     super.dispose();
   }
 
-  String? validateUsername(String value) {
+  String? _emailFormatValidator(String value) {
     if (value.isEmpty) return '이메일을 입력해주세요';
-    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-      return '올바른 이메일 형식이 아닙니다';
-    }
+    if (!_emailRegex.hasMatch(value)) return '올바른 이메일 형식이 아닙니다';
+    return null;
+  }
+
+  String? validateUsername(String value) {
+    final formatErr = _emailFormatValidator(value);
+    if (formatErr != null) return formatErr;
+    if (!isUsernameChecked)   return '이메일 중복검사를 완료해주세요';
+    if (!isUsernameAvailable) return '이미 사용 중인 이메일입니다';
     return null;
   }
 
@@ -82,7 +108,7 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
     if (RegExp(r'[A-Z]').hasMatch(value)) count++;
     if (RegExp(r'[a-z]').hasMatch(value)) count++;
     if (RegExp(r'\d').hasMatch(value)) count++;
-    if (RegExp(r'[@$!%*?&]').hasMatch(value)) count++;
+    if (RegExp(r'[@\$!%*?&]').hasMatch(value)) count++;
 
     if (count < 2) return '영문 대소문자, 숫자, 특수문자 중 2가지 이상 조합이어야 합니다';
     return null;
@@ -95,8 +121,9 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
   }
 
   String? validateNickname(String value) {
-    if (value.isEmpty) return '닉네임을 입력해주세요';
-    if (value.length < 2 || value.length > 10) return '2~10자리로 입력해주세요';
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) return '닉네임을 입력해주세요';
+    if (trimmed.length < 2 || value.length > 10) return '2~10자리로 입력해주세요';
     return null;
   }
 
@@ -111,6 +138,34 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
   String? validateCountry(String? value) {
     if (value == null || value.isEmpty) return '언어를 선택해주세요';
     return null;
+  }
+
+  Future<void> checkUsername() async {
+    final email = usernameController.text.trim();
+    final formatError = _emailFormatValidator(email);
+    if (formatError != null) {
+      setState(() => usernameError = formatError);
+      return;
+    }
+
+    setState(() => isCheckingUsername = true);
+    try {
+      final repo = ref.read(userRepositoryProvider);
+      final resp = await repo.checkUsername(email);
+
+      setState(() {
+        isUsernameChecked   = true;
+        isUsernameAvailable = !resp.available;
+        usernameError       = !resp.available ? null : '이미 사용 중인 이메일입니다';
+        usernameCheckMessage= !resp.available ? '사용 가능한 이메일입니다' : null;
+      });
+    } catch (e) {
+      setState(() {
+        usernameError = '중복검사 중 오류가 발생했습니다';
+      });
+    } finally {
+      setState(() => isCheckingUsername = false);
+    }
   }
 
   bool validateAll() {
@@ -157,24 +212,28 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
             children: [
               Expanded(
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.only(bottom: 16.0),
+                  padding: const EdgeInsets.only(bottom: 16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 16.0),
-                      _buildTextField(
-                        title: '이메일',
-                        hintText: '이메일을 입력해주세요',
-                        controller: usernameController,
-                        errorText: usernameError,
-                        onChanged: (value) {
-                          if (usernameError != null) {
-                            setState(() {
-                              usernameError = validateUsername(value);
-                            });
-                          }
-                        },
+                      const Text('이메일', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 2),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(child: _emailTextField()),
+                          const SizedBox(width: 8),
+                          _dupCheckButton(),
+                        ],
                       ),
+                      if (usernameCheckMessage != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4.0),
+                          child: Text(usernameCheckMessage!, style: const TextStyle(color: Colors.green, fontSize: 12)),
+                        ),
+
+                      const SizedBox(height: 30.0),
                       _buildTextField(
                         title: '비밀번호',
                         hintText: '8~30자, 영문/숫자/특수문자 중 2종 이상 필수',
@@ -230,50 +289,42 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
                           }
                         },
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            '언어 선택',
-                            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(height: 2),
-                          DropdownButtonFormField<String>(
-                            value: selectedCountry,
-                            hint: const Text('언어를 선택해주세요', style: TextStyle(fontSize: 14.0),),
-                            items: const [
-                              DropdownMenuItem(value: 'KO', child: Text('한국어')),
-                              DropdownMenuItem(value: 'EN', child: Text('영어')),
-                              DropdownMenuItem(value: 'ZH', child: Text('중국어')),
-                              DropdownMenuItem(value: 'JA', child: Text('일본어')),
-                            ],
-                            onChanged: (value) {
-                              setState(() {
-                                selectedCountry = value;
-                              });
-                            },
-                            decoration: InputDecoration(
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 5),
-                              enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: countryError != null ? Colors.red : Colors.black,
-                                  width: 1,
-                                ),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: countryError != null ? Colors.red : Colors.blue,
-                                  width: 2,
-                                ),
-                              ),
-                              errorText: countryError,
-                              errorStyle: const TextStyle(fontSize: 12.0),
+                      const Text('언어 선택', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 2),
+                      DropdownButtonFormField<String>(
+                        value: selectedCountry,
+                        hint: const Text('언어를 선택해주세요', style: TextStyle(fontSize: 14.0)),
+                        items: const [
+                          DropdownMenuItem(value: 'KO', child: Text('한국어')),
+                          DropdownMenuItem(value: 'EN', child: Text('English')),
+                          DropdownMenuItem(value: 'ZH', child: Text('中文')),
+                          DropdownMenuItem(value: 'JA', child: Text('日本語')),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            selectedCountry = value;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 5),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: countryError != null ? Colors.red : Colors.black,
+                              width: 1,
                             ),
                           ),
-                          const SizedBox(height: 24.0),
-                        ],
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: countryError != null ? Colors.red : Colors.blue,
+                              width: 2,
+                            ),
+                          ),
+                          errorText: countryError,
+                          errorStyle: const TextStyle(fontSize: 12.0),
+                        ),
                       ),
+                      const SizedBox(height: 24.0),
                     ],
                   ),
                 ),
@@ -309,6 +360,7 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
     );
   }
 
+
   Widget _buildTextField({
     required String title,
     required String hintText,
@@ -321,10 +373,7 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-        ),
+        Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
         const SizedBox(height: 2),
         TextField(
           controller: controller,
@@ -337,16 +386,10 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(vertical: 5),
             enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: errorText != null ? Colors.red : Colors.black,
-                width: 1,
-              ),
+              borderSide: BorderSide(color: errorText != null ? Colors.red : Colors.black, width: 1),
             ),
             focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: errorText != null ? Colors.red : Colors.blue,
-                width: 2,
-              ),
+              borderSide: BorderSide(color: errorText != null ? Colors.red : Colors.blue, width: 2),
             ),
             errorText: errorText,
             errorStyle: const TextStyle(fontSize: 12.0),
@@ -356,4 +399,47 @@ class _SignUpInfoScreenState extends State<SignUpInfoScreen> {
       ],
     );
   }
+
+  Widget _emailTextField() {
+    return TextField(
+      controller: usernameController,
+      decoration: InputDecoration(
+        hintText: '이메일을 입력해주세요',
+        hintStyle: const TextStyle(fontSize: 14.0),
+        isDense: true,
+        contentPadding: const EdgeInsets.symmetric(vertical: 5),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: usernameError != null ? Colors.red : Colors.black,
+            width: 1,
+          ),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: usernameError != null ? Colors.red : Colors.blue,
+            width: 2,
+          ),
+        ),
+        errorText: usernameError,
+        errorStyle: const TextStyle(fontSize: 12.0),
+      ),
+    );
+  }
+
+  Widget _dupCheckButton() {
+    return SizedBox(
+      height: 36,
+      child: ElevatedButton(
+        onPressed: isCheckingUsername ? null : checkUsername,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.black,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+        ),
+        child: isCheckingUsername
+            ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
+            : const Text('중복검사', style: TextStyle(color: Colors.white)),
+      ),
+    );
+  }
+
 }
