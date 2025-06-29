@@ -6,7 +6,6 @@ import 'package:frontend/common/appbar/home_appbar.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/shopping/component/shopping_recipe_category.dart';
 import 'package:frontend/shopping/view/shopping_detail/view/shopping_detail_screen.dart';
-import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../common/const/colors.dart';

@@ -4,25 +4,47 @@ part 'shopping_items_model.g.dart';
 
 @JsonSerializable()
 class ShoppingItemsModel {
-  final int cart_item_id;
-  final int ingredient_id;
+  final int cartItemId;
+  final int ingredientId;
   final String category;
-  final String ingredient_name;
-  final String image_url;
+  final String ingredientName;
+  final String imageUrl;
   final int price;
-  final int quantity;
-  final int total_price;
+  late final int quantity;
+  final int totalPrice;
 
   ShoppingItemsModel({
-    required this.cart_item_id,
+    required this.cartItemId,
     required this.category,
-    required this.image_url,
-    required this.ingredient_id,
-    required this.ingredient_name,
+    required this.ingredientId,
+    required this.ingredientName,
+    required this.imageUrl,
     required this.price,
     required this.quantity,
-    required this.total_price,
+    required this.totalPrice,
   });
+
+  ShoppingItemsModel copyWith({
+    int? cartItemId,
+    int? ingredientId,
+    String? category,
+    String? ingredientName,
+    String? imageUrl,
+    int? price,
+    int? quantity,
+    int? totalPrice,
+  }) {
+    return ShoppingItemsModel(
+      cartItemId: cartItemId ?? this.cartItemId,
+      ingredientId: ingredientId ?? this.ingredientId,
+      category: category ?? this.category,
+      ingredientName: ingredientName ?? this.ingredientName,
+      imageUrl: imageUrl ?? this.imageUrl,
+      price: price ?? this.price,
+      quantity: quantity ?? this.quantity,
+      totalPrice: totalPrice ?? this.totalPrice,
+    );
+  }
   
   factory ShoppingItemsModel.fromJson(Map<String, dynamic> json) => _$ShoppingItemsModelFromJson(json);
 

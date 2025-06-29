@@ -16,9 +16,8 @@
         android:maxSdkVersion="28" />
 
     <application
-        android:name="$Onbapsang"
         android:icon="@mipmap/ic_launcher"
-        android:label="frontend"
+        android:label="Onbapsang"
         android:enableOnBackInvokedCallback="true">
 
         <!-- Google Maps API 키 -->
