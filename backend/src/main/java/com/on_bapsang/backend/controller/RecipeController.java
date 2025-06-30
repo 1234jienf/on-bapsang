@@ -43,8 +43,11 @@ public class RecipeController {
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<List<PopularRecipeDto>> getPopularRecipes() {
-        return ResponseEntity.ok(popularRecipeService.getPopularRecipes());
+    public ResponseEntity<List<PopularRecipeDto>> getPopularRecipes(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {   // ← 로그인 사용자 받기
+        return ResponseEntity.ok(
+                popularRecipeService.getPopularRecipes(userDetails.getUser())   // ← 그대로 전달
+        );
     }
 
     @GetMapping("/ingredient")
