@@ -16,6 +16,7 @@ class CommunityDetailModel extends CommunityModel implements IModelWithIntId {
   @JsonKey(fromJson: DataUtils.dateTimeFromJson)
   final DateTime createdAt;
   final String recipeId;
+  final bool author;
 
   CommunityDetailModel({
     required this.recipeId,
@@ -33,6 +34,7 @@ class CommunityDetailModel extends CommunityModel implements IModelWithIntId {
     required super.content,
     required super.profileImage,
     required super.scrapped,
+    required this.author,
   });
 
   factory CommunityDetailModel.fromJson(Map<String, dynamic> json) =>

@@ -18,6 +18,7 @@ CommunityCommentModel _$CommunityCommentModelFromJson(
       (json['children'] as List<dynamic>)
           .map((e) => CommunityCommentModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+  author: json['author'] as bool,
 );
 
 Map<String, dynamic> _$CommunityCommentModelToJson(
@@ -29,4 +30,5 @@ Map<String, dynamic> _$CommunityCommentModelToJson(
   'profileImage': instance.profileImage,
   'createdAt': instance.createdAt.toIso8601String(),
   'children': instance.children,
+  'author': instance.author,
 };
