@@ -12,6 +12,7 @@ class CommunityCommentModel {
   @JsonKey(fromJson: DataUtils.dateTimeFromJson)
   final DateTime createdAt;
   final List<CommunityCommentModel> children;
+  final bool author;
 
   CommunityCommentModel({
     required this.id,
@@ -20,6 +21,7 @@ class CommunityCommentModel {
     required this.createdAt,
     required this.nickname,
     required this.children,
+    required this.author,
   });
 
   factory CommunityCommentModel.fromJson(Map<String, dynamic> json) =>

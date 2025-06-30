@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/community/component/community_comment_list_view_family.dart';
+import 'package:frontend/community/provider/community_detail_id_provider.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../common/const/colors.dart';
@@ -53,6 +54,9 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
     super.initState();
     _loadCommunityData();
     WidgetsBinding.instance.addObserver(this);
+    Future.microtask(() {
+      ref.read(communityDetailIdProvider.notifier).setId(widget.id);
+    });
   }
 
   @override
