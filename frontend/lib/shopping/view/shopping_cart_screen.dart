@@ -218,7 +218,8 @@ class _ConsumerShoppingCartScreenState
                   ),
                   const SizedBox(height: 16.0),
                   GestureDetector(
-                    onTap: () { _deleteItems('주문 완료!');
+                    onTap: () {
+                      _deleteItems('주문 완료!');
                       context.goNamed('home');
                     },
                     child: Container(
@@ -266,7 +267,10 @@ class _ConsumerShoppingCartScreenState
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.check_circle),
+                              GestureDetector(
+                                onTap: () {toggleAll();},
+                                child: isAllSelected ? Icon(Icons.check_circle) : Icon(Icons.check_circle_outline),
+                              ),
                               SizedBox(width: 8),
                               Text(
                                 '전체 선택(${selectedItems.where((isSelected) => isSelected).length}/${cartItems.items.length})',

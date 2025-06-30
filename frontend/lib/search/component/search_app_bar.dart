@@ -56,6 +56,7 @@ class _SearchAppBarState extends ConsumerState<SearchAppBar> {
         context.pop();
         ref.invalidate(searchKeywordProvider);
         ref.read(searchKeywordRemainProvider.notifier).clear();
+        ref.read(searchSwitchComponentProvider.notifier).clear();
       }, child : Icon(Icons.arrow_back_ios_new_outlined)),
       backgroundColor: Colors.white,
       elevation: 0,
