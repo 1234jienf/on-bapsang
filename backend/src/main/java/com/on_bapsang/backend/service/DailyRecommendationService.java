@@ -141,17 +141,16 @@ public class DailyRecommendationService {
     }
 
     public List<RecipeSummaryDto> convertToSummaryDtos(User user, List<Recipe> recipes) {
+
+        Set<String> scrappedIds = (user == null)
+                ? Collections.emptySet()
+                : new HashSet<>(recipeScrapRepository
+                .findRecipeIdsByUserId(user.getUserId()));   // ★ ID 기반
+
         return recipes.stream().map(r -> {
-            Set<String> scrappedIds = recipeScrapRepository
-                    .findAllByUser(user)
-                    .stream()
-                    .map(scrap -> scrap.getRecipe().getRecipeId())
-                    .collect(Collectors.toSet());
 
-            List<String> ingrNames = recipeIngredientRepository
-                    .findIngredientNamesByRecipeId(r.getRecipeId());
-
-            boolean isScrapped = scrappedIds.contains(r.getRecipeId());
+            List<String> ingrNames =
+                    recipeIngredientRepository.findIngredientNamesByRecipeId(r.getRecipeId());
 
             return new RecipeSummaryDto(
                     r.getRecipeId(),
@@ -165,7 +164,7 @@ public class DailyRecommendationService {
                     r.getMethod(),
                     r.getMaterialType(),
                     r.getImageUrl(),
-                    isScrapped
+                    scrappedIds.contains(r.getRecipeId())   // ★ O(1) 체크
             );
         }).collect(Collectors.toList());
     }

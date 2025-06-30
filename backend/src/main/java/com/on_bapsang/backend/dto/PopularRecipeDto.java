@@ -46,5 +46,5 @@ public class PopularRecipeDto {
     private String imageUrl;
 
     private int postCount;
+    private boolean isScrapped;
 }
-
