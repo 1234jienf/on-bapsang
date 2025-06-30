@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
@@ -57,8 +58,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "GROUP BY p.recipeId " +
             "ORDER BY cnt DESC")
     List<Object[]> findTopRecipeIdsByPostCount(Pageable pageable);
-
-
 
     @Query("SELECT new com.on_bapsang.backend.dto.PostSummary(" +
             "p.id, p.title, p.imageUrl, p.scrapCount, p.commentCount, p.createdAt, u.nickname, p.x, p.y) " +

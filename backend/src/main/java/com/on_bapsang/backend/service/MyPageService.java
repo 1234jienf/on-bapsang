@@ -4,6 +4,7 @@ import com.on_bapsang.backend.dto.mypage.MyPost;
 import com.on_bapsang.backend.dto.mypage.ScrappedPost;
 import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.repository.PostRepository;
+import com.on_bapsang.backend.repository.ScrapRepository;
 import com.on_bapsang.backend.util.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,9 +32,11 @@ public class MyPageService {
         private final ImageUploader imageUploader;
         private final RecipeScrapRepository recipeScrapRepository;
         private final RecipeIngredientRepository recipeIngredientRepository;
+        private final ScrapRepository scrapRepository;
 
         public Page<MyPost> getMyPosts(User user, Pageable pageable) {
                 Page<MyPost> page = postRepository.findMyPostsByUser(user.getUserId(), pageable);
+                Set<Long> scrappedPostIds = scrapRepository.findScrappedPostIdsByUser(user.getUserId());
                 String profileImageUrl = user.getProfileImage() != null
                                 ? imageUploader.generatePresignedUrl(user.getProfileImage(), 120)
                                 : null;
@@ -45,6 +49,8 @@ public class MyPageService {
                                         ? imageUploader.generatePresignedUrl(post.getImageUrl(), 120)
                                         : null;
                         post.setImageUrl(imageUrl);
+
+                        post.setScrapped(scrappedPostIds.contains(post.getPostId()));
 
                         return post;
                 }).toList();
