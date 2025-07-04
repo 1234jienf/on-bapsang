@@ -54,7 +54,7 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
 
   Future<void> _loadPhotos() async {
     final result = await PhotoManager.requestPermissionExtend();
-    if (result.isAuth) {
+    if (result.hasAccess) {
       albums = await PhotoManager.getAssetPathList(
         type: RequestType.image,
         filterOption: FilterOptionGroup(
@@ -65,6 +65,11 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
         ),
       );
       await _pagingPhotos();
+
+      if (result == PermissionState.limited) {
+        // iOS 14+ / Android 14+에서만 동작
+        await PhotoManager.presentLimited();
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('사진 라이브러리 권한이 필요합니다.')),

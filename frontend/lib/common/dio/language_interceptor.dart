@@ -25,9 +25,9 @@ class LanguageInterceptor extends Interceptor {
       }
     }
     if (kDebugMode) {
-      debugPrint('[LanguageInterceptor] ${o.method} ${o.uri}');
+      // debugPrint('[LanguageInterceptor] ${o.method} ${o.uri}');
       debugPrint('→ X-Language: ${o.headers['X-Language']}');
-      debugPrint('→ All headers: ${o.headers}');
+      // debugPrint('→ All headers: ${o.headers}');
     }
     h.next(o);
   }
