@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/community/model/community_next_upload_model.dart';
 import 'package:frontend/community/model/community_upload_recipe_final_list_model.dart';
 import 'package:go_router/go_router.dart';
-import 'package:photo_manager/photo_manager.dart';
 
 import '../../common/const/colors.dart';
 import '../component/community_app_bar.dart';
@@ -168,38 +166,6 @@ class _ConsumerCommunityCreateRecipeTagScreenState
     );
   }
 
-  FutureBuilder<Uint8List?> _imageCreate(double width, double height) {
-    return FutureBuilder<Uint8List?>(
-      future: widget.nextModel.selectedImage.thumbnailDataWithSize(
-        ThumbnailSize(width.toInt(), height.toInt()),
-      ),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Image.memory(
-            snapshot.data!,
-            fit: BoxFit.cover,
-            width: width,
-            height: height,
-          );
-        } else if (snapshot.hasError) {
-          return Container(
-            width: width,
-            height: height,
-            color: Colors.grey[300],
-            child: Icon(Icons.error),
-          );
-        } else {
-          return Container(
-            width: width,
-            height: height,
-            color: Colors.grey[300],
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
-  }
-
   Widget _imageWithTags() {
     return GestureDetector(
       onTapDown: (details) async {
@@ -356,6 +322,15 @@ class _ConsumerCommunityCreateRecipeTagScreenState
           },
         );
       },
+    );
+  }
+
+  Widget _imageCreate(double width, double height) {
+    return Image.memory(
+      widget.nextModel.selectedImage,
+      fit: BoxFit.cover,
+      width: width,
+      height: height,
     );
   }
 

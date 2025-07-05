@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -8,7 +7,6 @@ import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/community/component/community_app_bar.dart';
 import 'package:frontend/community/component/community_build_tag.dart';
 import 'package:frontend/community/model/community_upload_recipe_final_list_model.dart';
-import 'package:photo_manager/photo_manager.dart';
 
 import '../../common/const/colors.dart';
 import '../component/community_show_dialog.dart';
@@ -78,7 +76,7 @@ class _ConsumerCommunityCreateUploadScreenState
               setState(() {
                 isLoading = true;
               });
-              final File? imageFile = await widget.data.imageFile.file;
+              final Uint8List? imageFile = await widget.data.imageFile;
               final model = CommunityUploadDataModel(
                 content: contentController.text,
                 title: titleController.text,
@@ -87,11 +85,11 @@ class _ConsumerCommunityCreateUploadScreenState
                 x: widget.data.x,
                 y: widget.data.y,
               );
+
               final response = await state.uploadPost(
-                imagefile: imageFile!,
+                imageData: imageFile!,
                 data: model,
               );
-
               if (response.statusCode == 200) {
                 if (context.mounted) {
                   communityShowDialog(context, ref, true, "community.post_success".tr());
@@ -217,35 +215,13 @@ class _ConsumerCommunityCreateUploadScreenState
     );
   }
 
-  FutureBuilder<Uint8List?> _imageCreate(double width, double height) {
-    return FutureBuilder<Uint8List?>(
-      future: widget.data.imageFile.thumbnailDataWithSize(
-        ThumbnailSize(width.toInt(), height.toInt()),
-      ),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Image.memory(
-            snapshot.data!,
-            fit: BoxFit.cover,
-            width: width,
-            height: height,
-          );
-        } else if (snapshot.hasError) {
-          return Container(
-            width: width,
-            height: height,
-            color: Colors.grey[300],
-            child: Icon(Icons.error),
-          );
-        } else {
-          return Container(
-            width: width,
-            height: height,
-            color: Colors.grey[300],
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
+  Widget _imageCreate(double width, double height) {
+    return Image.memory(
+      widget.data.imageFile,
+      fit: BoxFit.cover,
+      width: width,
+      height: height,
     );
   }
+
 }

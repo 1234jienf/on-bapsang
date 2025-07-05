@@ -19,7 +19,6 @@ class CommunityCommentUploadModel {
     required String content,
     required int? parentId,
   }) async {
-    print(id);
     try {
       final jsonData = {'content': content, 'parentId': parentId};
 
