@@ -25,7 +25,6 @@ class _SingleIntListViewState<T> extends ConsumerState<SingleIntListView<T>> {
   @override
   Widget build(BuildContext context) {
     final items = ref.watch(widget.provider);
-    print(items);
 
     return items.when(
       data: (item) => _buildGrid(item.data.content),

@@ -148,14 +148,13 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
   Widget build(BuildContext context) {
     final communityState = ref.watch(communityDetailProvider(widget.id));
     final data = communityState.value?.data;
+    final scrapStatus = ref.watch(communityScrapStatusProvider(widget.id));
 
     if (data == null) {
       return const DefaultLayout(
         child: Center(child: CircularProgressIndicator()),
       );
     }
-
-    final scrapStatus = ref.watch(communityScrapStatusProvider(widget.id));
 
     return DefaultLayout(
       appBar: _buildAppBar(context),

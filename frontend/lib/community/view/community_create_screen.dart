@@ -117,9 +117,11 @@ class _ConsumerCommunityCreateScreenState
         function: () async {
           if (selectedImage == null) return;
 
-          final file = await selectedImage!.file;
+          final imageData = await selectedImage!.thumbnailDataWithSize(
+            const ThumbnailSize(1024, 1024),
+          );
 
-          if (file == null || !(await file.exists())) {
+          if (imageData == null) {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("common.image_error".tr())),
@@ -128,26 +130,15 @@ class _ConsumerCommunityCreateScreenState
             }
           }
 
-          final fileSizeInBytes = await file?.length();
-
-          if (fileSizeInBytes == null) {
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("common.image_error2".tr())),
-              );
-              return;
-            }
-            return;
-          }
-
+          final fileSizeInBytes = imageData!.length;
           final fileSizeInMB = fileSizeInBytes / (1024 * 1024);
 
-          if (fileSizeInMB > 15.0) {
+          if (fileSizeInMB > 10.0) {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    "common.image_error3".tr(namedArgs: {"fileSize": fileSizeInMB.toStringAsFixed(2)})
+                      "common.image_error3".tr(namedArgs: {"fileSize": fileSizeInMB.toStringAsFixed(2)})
                   ),
                 ),
               );
@@ -155,11 +146,10 @@ class _ConsumerCommunityCreateScreenState
             }
           }
 
-
           if (context.mounted) {
             context.pushNamed(CommunityCreateRecipeTagScreen.routeName,
                 extra: CommunityNextUploadModel(
-                    selectedImage: selectedImage!,
+                    selectedImage: imageData,
                     recipe_name: widget.recipe_name
                 ));
           }

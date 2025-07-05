@@ -1,8 +1,8 @@
-import 'package:photo_manager/photo_manager.dart';
+import 'dart:typed_data';
 
 class CommunityNextUploadModel {
   final String recipe_name;
-  final AssetEntity selectedImage;
+  final Uint8List selectedImage;
 
   CommunityNextUploadModel({
     required this.recipe_name,
