@@ -25,13 +25,20 @@ class _SignUpFoodPreferListScreenState extends State<SignUpFoodPreferListScreen>
   List<int> selectedIndexes = [];
   bool isError = false;
 
+  @override
+  void initState() {
+    super.initState();
+    selectedIndexes = List<int>.from(widget.initialData?.favoriteTasteIds ?? []);
+  }
+
   // 다음 버튼 클릭 시
   void onNextPressed() {
     setState(() {
       if (selectedIndexes.isNotEmpty) {
         isError = false;
-        final updatedIndexes = selectedIndexes.map((index) => index + 1).toList();
-        widget.onComplete(updatedIndexes);
+        // final updatedIndexes = selectedIndexes.map((index) => index + 1).toList();
+        // widget.onComplete(updatedIndexes);
+        widget.onComplete(List<int>.from(selectedIndexes.map((i) => i + 1)));
       } else {
         isError = true;
       }

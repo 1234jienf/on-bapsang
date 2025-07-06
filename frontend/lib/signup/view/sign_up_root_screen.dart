@@ -38,6 +38,16 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
     });
   }
 
+  void previousStep() {
+    setState(() {
+      if (currentStep > 1) {
+        currentStep--;        // 이전 단계로만 이동
+      } else {
+        Navigator.of(context).pop(); // 1단계라면 실제 뒤로가기
+      }
+    });
+  }
+
   void updateStep1Data({
     required String username,
     required String password,
@@ -111,42 +121,49 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        DefaultLayout(
-          appBar: SignUpAppBar(),
-          resizeToAvoidBottomInset: true,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: currentStep == 1
-                ? SignUpInfoScreen(
-              onComplete: updateStep1Data,
-              initialData: signupData,
-            )
-                : currentStep == 2
-                ? SignUpFoodPreferListScreen(
-              onComplete: updateStep2Data,
-              initialData: signupData,
-            )
-                : currentStep == 3
-                ? SignUpTasteDishPreferListScreen(
-              onComplete: updateStep3Data,
-              initialData: signupData,
-            )
-                : SignUpProfileImageScreen(
-              onComplete: updateStep4Data,
-              initialData: signupData,
+    return PopScope(
+      canPop: currentStep == 1,
+      onPopInvokedWithResult: (bool didPop, _) {
+        if (!didPop) previousStep();   // pop 못 했으니 단계만 뒤로
+      },
+
+      child: Stack(
+        children: [
+          DefaultLayout(
+            appBar: SignUpAppBar(onBack: previousStep),
+            resizeToAvoidBottomInset: true,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: currentStep == 1
+                  ? SignUpInfoScreen(
+                onComplete: updateStep1Data,
+                initialData: signupData,
+              )
+                  : currentStep == 2
+                  ? SignUpFoodPreferListScreen(
+                onComplete: updateStep2Data,
+                initialData: signupData,
+              )
+                  : currentStep == 3
+                  ? SignUpTasteDishPreferListScreen(
+                onComplete: updateStep3Data,
+                initialData: signupData,
+              )
+                  : SignUpProfileImageScreen(
+                onComplete: updateStep4Data,
+                initialData: signupData,
+              ),
             ),
           ),
-        ),
-        if (isLoading)
-          Container(
-            color: Colors.black.withOpacity(0.5),
-            child: const Center(
-              child: CircularProgressIndicator(color: Colors.white),
+          if (isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

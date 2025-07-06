@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+
 import 'package:frontend/signup/model/sign_up_request_model.dart';
+import 'package:frontend/common/const/colors.dart';
+
 
 class SignUpProfileImageScreen extends StatefulWidget {
   final Function(File) onComplete;
@@ -18,9 +25,12 @@ class SignUpProfileImageScreen extends StatefulWidget {
   State<SignUpProfileImageScreen> createState() => _SignUpProfileImageScreenState();
 }
 
-class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
-  List<AssetPathEntity> albums = [];
-  List<AssetEntity> imageList = [];
+// 기본 이미지
+final List<String> sampleAssets = List.generate(7, (i) => 'asset/img/profile_sample${i + 1}.png',);
+
+class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> with WidgetsBindingObserver {
+  List<AssetPathEntity> albums = <AssetPathEntity>[];
+  List<AssetEntity> imageList = <AssetEntity>[];
   AssetEntity? selectedImage;
 
   final ScrollController _scrollController = ScrollController();
@@ -29,10 +39,13 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
   bool isLoading = false;
   bool hasMore = true;
   int pageSize = 30;
+  String? selectedSamplePath;
+
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadPhotos();
 
     _scrollController.addListener(() {
@@ -45,6 +58,7 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _scrollController.dispose();
     imageList.clear();
     albums.clear();
@@ -54,6 +68,7 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
 
   Future<void> _loadPhotos() async {
     final result = await PhotoManager.requestPermissionExtend();
+
     if (result.isAuth) {
       albums = await PhotoManager.getAssetPathList(
         type: RequestType.image,
@@ -61,14 +76,73 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
           imageOption: const FilterOption(
             sizeConstraint: SizeConstraint(minHeight: 100, minWidth: 100),
           ),
-          orders: [const OrderOption(type: OrderOptionType.createDate, asc: false)],
+          orders: [
+            const OrderOption(type: OrderOptionType.createDate, asc: false)
+          ],
         ),
       );
       await _pagingPhotos();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('사진 라이브러리 권한이 필요합니다.')),
+    } else if (result == PermissionState.limited) {
+      albums = await PhotoManager.getAssetPathList(
+        type: RequestType.image,
+        filterOption: FilterOptionGroup(
+          imageOption: const FilterOption(
+            sizeConstraint: SizeConstraint(minHeight: 100, minWidth: 100)
+          ),
+          orders: [
+            const OrderOption(type: OrderOptionType.createDate, asc: false)
+          ]
+        )
       );
+
+      await _pagingPhotos();
+      if (mounted) setState(() {});
+
+    } else if (result == PermissionState.denied) {
+      if (context.mounted) {
+        _showPermissionDialog(context);
+      }
+    }
+  }
+
+  void _showPermissionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: Text(
+          '사진 접근 권한 필요',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        ),
+        content: Text('사진 접근 권한이 필요합니다.\n설정에서 권한을 허용해주세요.'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              context.pop();
+            },
+            child: Text('취소'),
+          ),
+          TextButton(
+            onPressed: () async {
+              context.pop();
+              // 설정 화면으로 이동
+              await PhotoManager.openSetting();
+              // 설정에서 돌아온 후 다시 권한 확인
+              // _recheckPermission();
+            },
+            child: Text('설정으로 이동'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadPhotos();
     }
   }
 
@@ -110,6 +184,7 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
   void _selectImage(AssetEntity image) {
     setState(() {
       selectedImage = image;
+      selectedSamplePath = null;
     });
   }
 
@@ -129,12 +204,53 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  '프로필 이미지',
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                  '프로필 이미지를 선택해주세요.',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
               ),
               const SizedBox(height: 15),
               _selectedImagePreview(width),
+              const SizedBox(height: 15),
+
+              SizedBox(
+                height: width / 5,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: sampleAssets.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (_, index) {
+                    final path = sampleAssets[index];
+                    final isSelected = path == selectedSamplePath;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          selectedSamplePath = path;
+                          selectedImage = null;
+                        });
+                      },
+                      child: Container(
+                        width: width / 5,
+                        height: width / 5,
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isSelected ? primaryColor : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
+                        child: ClipOval(
+                          child: Image.asset(
+                            path,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
               const SizedBox(height: 15),
               Expanded(
                 child: GridView.builder(
@@ -156,6 +272,18 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
               const SizedBox(height: 16),
               GestureDetector(
                 onTap: () async {
+                  if (selectedSamplePath != null) {
+                    // 바이트 로드
+                    final bytes = await rootBundle.load(selectedSamplePath!);
+                    // 임시 파일 생성
+                    final dir  = await getTemporaryDirectory();
+                    final file = File(p.join(dir.path, p.basename(selectedSamplePath!)));
+                    await file.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
+
+                    widget.onComplete(file);
+                    return;
+                  }
+
                   if (selectedImage != null) {
                     final file = await selectedImage!.file;
 
@@ -210,16 +338,26 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> {
   }
 
   Widget _selectedImagePreview(double width) {
-    return Center(
-      child: Container(
-        width: width * 0.5,
-        height: width * 0.5,
-        color: Colors.grey,
-        child: selectedImage == null
-            ? const Center(child: Text('이미지를 선택하세요'))
-            : SelectedImageWidget(
-            asset: selectedImage!, size: (width * 0.5).round()),
-      ),
+    final size = width * 0.5;
+
+    if (selectedSamplePath != null) {
+      return Image.asset(
+        selectedSamplePath!,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+      );
+    }
+
+    if (selectedImage != null) {
+      return SelectedImageWidget(asset: selectedImage!, size: size.round());
+    }
+
+    return Container(
+      width: size,
+      height: size,
+      color: Colors.grey,
+      child: const Center(child: Text('이미지를 선택하세요')),
     );
   }
 }

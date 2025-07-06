@@ -45,6 +45,10 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
   bool isUsernameChecked = false;
   bool isUsernameAvailable = false;
 
+  bool _showPassword = false;
+  bool _showPasswordConfirm = false;
+  String _latestCheckedEmail = '';
+
   final RegExp _emailRegex = RegExp(
       r'^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$'
   );
@@ -54,6 +58,7 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
     if (widget.initialData != null) {
       usernameController.text = widget.initialData!.username;
       passwordController.text = widget.initialData!.password;
+      passwordConfirmController.text = widget.initialData!.password;
       nicknameController.text = widget.initialData!.nickname ?? '';
       locationController.text = widget.initialData!.location ?? '';
       selectedCountry = widget.initialData!.country;
@@ -65,7 +70,7 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
     }
 
     usernameController.addListener(() {
-      if (isUsernameChecked) {
+      if (isUsernameChecked && usernameController.text.trim() != _latestCheckedEmail) {
         setState(() {
           isUsernameChecked = false;
           isUsernameAvailable = false;
@@ -88,6 +93,8 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
 
   String? _emailFormatValidator(String value) {
     if (value.isEmpty) return '이메일을 입력해주세요';
+    if (value.length > 99) return '100자 이하로 입력해주세요';
+
     if (!_emailRegex.hasMatch(value)) return '올바른 이메일 형식이 아닙니다';
     return null;
   }
@@ -95,6 +102,7 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
   String? validateUsername(String value) {
     final formatErr = _emailFormatValidator(value);
     if (formatErr != null) return formatErr;
+
     if (!isUsernameChecked)   return '이메일 중복검사를 완료해주세요';
     if (!isUsernameAvailable) return '이미 사용 중인 이메일입니다';
     return null;
@@ -123,7 +131,7 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
   String? validateNickname(String value) {
     final trimmed = value.trim();
     if (trimmed.isEmpty) return '닉네임을 입력해주세요';
-    if (trimmed.length < 2 || value.length > 10) return '2~10자리로 입력해주세요';
+    if (trimmed.length < 2 || value.length > 15) return '2~15자리로 입력해주세요';
     return null;
   }
 
@@ -131,7 +139,7 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
     if (value.isEmpty) return '나이를 입력해주세요';
     final age = int.tryParse(value);
     if (age == null) return '숫자만 입력해주세요';
-    if (age < 1 || age > 100) return '올바른 나이를 입력해주세요';
+    if (age < 1 || age > 120) return '올바른 나이를 입력해주세요';
     return null;
   }
 
@@ -158,6 +166,7 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
         isUsernameAvailable = !resp.available;
         usernameError       = !resp.available ? null : '이미 사용 중인 이메일입니다';
         usernameCheckMessage= !resp.available ? '사용 가능한 이메일입니다' : null;
+        _latestCheckedEmail = email;
       });
     } catch (e) {
       setState(() {
@@ -239,7 +248,7 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
                         hintText: '8~30자, 영문/숫자/특수문자 중 2종 이상 필수',
                         controller: passwordController,
                         errorText: passwordError,
-                        obscureText: true,
+                        obscureText: !_showPassword,
                         onChanged: (value) {
                           if (passwordError != null) {
                             setState(() {
@@ -247,13 +256,27 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
                             });
                           }
                         },
+                        suffixIcon: GestureDetector(
+                          onTap: () => setState(() {
+                            _showPassword = !_showPassword;
+                          }),
+                          behavior: HitTestBehavior.translucent,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Icon(
+                              _showPassword ? Icons.visibility_off : Icons.visibility,
+                              size: 17,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        )
                       ),
                       _buildTextField(
                         title: '비밀번호 확인',
                         hintText: '비밀번호를 다시 입력해주세요',
                         controller: passwordConfirmController,
                         errorText: passwordConfirmError,
-                        obscureText: true,
+                        obscureText: !_showPasswordConfirm,
                         onChanged: (value) {
                           if (passwordConfirmError != null) {
                             setState(() {
@@ -261,6 +284,20 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
                             });
                           }
                         },
+                        suffixIcon: GestureDetector(
+                          onTap: () => setState(() {
+                            _showPasswordConfirm = !_showPasswordConfirm;
+                          }),
+                          behavior: HitTestBehavior.translucent,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Icon(
+                              _showPasswordConfirm ? Icons.visibility_off : Icons.visibility,
+                              size: 17,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        )
                       ),
                       _buildTextField(
                         title: '닉네임',
@@ -369,6 +406,7 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
     bool obscureText = false,
     TextInputType? keyboardType,
     Function(String)? onChanged,
+    Widget? suffixIcon,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,6 +431,8 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
             ),
             errorText: errorText,
             errorStyle: const TextStyle(fontSize: 12.0),
+            suffixIcon: suffixIcon,
+            suffixIconConstraints: BoxConstraints(minHeight: 0, minWidth: 32)
           ),
         ),
         const SizedBox(height: 30.0),

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class SignUpAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const SignUpAppBar({super.key});
+  final VoidCallback onBack;
+  const SignUpAppBar({super.key, required this.onBack});
 
   @override
   Widget build(BuildContext context) {
@@ -16,15 +17,12 @@ class SignUpAppBar extends StatelessWidget implements PreferredSizeWidget {
         style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17.0),
       ),
       leading: GestureDetector(
-        onTap: () {
-          context.pop();
-        },
+        onTap: onBack,
         child: Icon(Icons.arrow_back_ios_new_outlined, size: 23),
       ),
     );
   }
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
