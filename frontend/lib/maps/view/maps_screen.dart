@@ -315,6 +315,8 @@ class _ConsumerMapScreenState extends ConsumerState<MapScreen> {
       child: Stack(
         children: [
           GoogleMap(
+            myLocationButtonEnabled : false,
+            zoomControlsEnabled: false,
             markers: markers,
             mapType: MapType.normal,
             minMaxZoomPreference: const MinMaxZoomPreference(14, 18),

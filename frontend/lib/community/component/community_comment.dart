@@ -108,6 +108,7 @@ class CommunityComment extends ConsumerWidget {
                               }
                             });
                             return AlertDialog(
+                              backgroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
@@ -225,6 +226,7 @@ class CommunityComment extends ConsumerWidget {
                                 }
                               });
                               return AlertDialog(
+                                backgroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),

@@ -193,7 +193,7 @@ class _ShoppingRecipeAddComponentState
                             });
 
                             return AlertDialog(
-                              backgroundColor: gray000,
+                              backgroundColor: Colors.white,
                               alignment: Alignment.center,
                               contentPadding: const EdgeInsets.all(16.0),
                               content: Container(

@@ -21,7 +21,7 @@ class CommunityCreateScreen extends ConsumerStatefulWidget {
 }
 
 class _ConsumerCommunityCreateScreenState
-    extends ConsumerState<CommunityCreateScreen> {
+    extends ConsumerState<CommunityCreateScreen> with WidgetsBindingObserver {
   List<AssetPathEntity> albums = <AssetPathEntity>[];
   List<AssetEntity> imageList = <AssetEntity>[];
   AssetEntity? selectedImage;
@@ -41,10 +41,13 @@ class _ConsumerCommunityCreateScreenState
         _loadMorePhotos();
       }
     });
+
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     imageList.clear();
     albums.clear();
     selectedImage = null;
@@ -67,7 +70,57 @@ class _ConsumerCommunityCreateScreenState
         ),
       );
       _pagingPhotos();
-    } else {}
+    } else if (result == PermissionState.limited) {
+      albums = await PhotoManager.getAssetPathList(
+        type: RequestType.image,
+        filterOption: FilterOptionGroup(
+          imageOption: const FilterOption(
+            sizeConstraint: SizeConstraint(minHeight: 100, minWidth: 100),
+          ),
+          orders: [
+            const OrderOption(type: OrderOptionType.createDate, asc: false),
+          ],
+        ),
+      );
+    } else if (result == PermissionState.denied) {
+      if (context.mounted) {
+        _showPermissionDialog(context);
+      }
+    }
+  }
+
+  void _showPermissionDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        barrierDismissible: false, // 다이얼로그 외부 터치로 닫기 방지
+        builder:
+            (context) => AlertDialog(
+              backgroundColor: Colors.white,
+              title: Text(
+                '사진 접근 권한 필요',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              ),
+              content: Text('사진 접근 권한이 필요합니다.\n설정에서 권한을 허용해주세요.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    context.pop();
+                  },
+                  child: Text('취소'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    context.pop();
+                    // 설정 화면으로 이동
+                    await PhotoManager.openSetting();
+                    // 설정에서 돌아온 후 다시 권한 확인
+                    // _recheckPermission();
+                  },
+                  child: Text('설정으로 이동'),
+                ),
+              ],
+            ),
+      );
   }
 
   Future<void> _pagingPhotos() async {
@@ -138,7 +191,9 @@ class _ConsumerCommunityCreateScreenState
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                      "common.image_error3".tr(namedArgs: {"fileSize": fileSizeInMB.toStringAsFixed(2)})
+                    "common.image_error3".tr(
+                      namedArgs: {"fileSize": fileSizeInMB.toStringAsFixed(2)},
+                    ),
                   ),
                 ),
               );
@@ -147,11 +202,13 @@ class _ConsumerCommunityCreateScreenState
           }
 
           if (context.mounted) {
-            context.pushNamed(CommunityCreateRecipeTagScreen.routeName,
-                extra: CommunityNextUploadModel(
-                    selectedImage: imageData,
-                    recipe_name: widget.recipe_name
-                ));
+            context.pushNamed(
+              CommunityCreateRecipeTagScreen.routeName,
+              extra: CommunityNextUploadModel(
+                selectedImage: imageData,
+                recipe_name: widget.recipe_name,
+              ),
+            );
           }
         },
       ),
@@ -166,21 +223,18 @@ class _ConsumerCommunityCreateScreenState
   }
 
   Widget _content(BuildContext context) {
-    final double mediaQuerySize = MediaQuery
-        .of(context)
-        .size
-        .width;
+    final double mediaQuerySize = MediaQuery.of(context).size.width;
     return Container(
       width: mediaQuerySize,
       height: mediaQuerySize,
       color: Colors.grey,
       child:
-      selectedImage == null
-          ? Center(child: Text('이미지를 선택하세요'))
-          : SelectedImageWidget(
-        asset: selectedImage!,
-        size: mediaQuerySize.round(),
-      ),
+          selectedImage == null
+              ? Center(child: Text('이미지를 선택하세요'))
+              : SelectedImageWidget(
+                asset: selectedImage!,
+                size: mediaQuerySize.round(),
+              ),
     );
   }
 
@@ -195,8 +249,7 @@ class _ConsumerCommunityCreateScreenState
         childAspectRatio: 1,
       ),
       itemBuilder:
-          (_, index) =>
-          GridImageWidget(
+          (_, index) => GridImageWidget(
             asset: imageList[index],
             selectedAsset: selectedImage,
             onTap: () {
@@ -274,11 +327,11 @@ class _GridImageWidgetState extends State<GridImageWidget> {
       onTap: widget.onTap,
       child: FutureBuilder(
         future:
-        cachedImage != null
-            ? Future.value(cachedImage)
-            : widget.asset.thumbnailDataWithSize(
-          const ThumbnailSize(200, 200),
-        ),
+            cachedImage != null
+                ? Future.value(cachedImage)
+                : widget.asset.thumbnailDataWithSize(
+                  const ThumbnailSize(200, 200),
+                ),
         builder: (_, AsyncSnapshot snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
             cachedImage = snapshot.data;

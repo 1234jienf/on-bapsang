@@ -17,6 +17,7 @@ Future<void> communityShowDialog(BuildContext context, WidgetRef ref, bool isNav
         }
       });
       return AlertDialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

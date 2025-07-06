@@ -97,6 +97,7 @@ class _ConsumerRecipeIngredientShoppingScreenState
                                 }
                               });
                               return AlertDialog(
+                                backgroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
@@ -130,6 +131,7 @@ class _ConsumerRecipeIngredientShoppingScreenState
                                 }
                               });
                               return AlertDialog(
+                                backgroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16),
                                 ),
