@@ -280,6 +280,7 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
                     final file = File(p.join(dir.path, p.basename(selectedSamplePath!)));
                     await file.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
 
+                    print(file);
                     widget.onComplete(file);
                     return;
                   }
@@ -307,6 +308,7 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
                       return;
                     }
 
+                    print(file);
                     widget.onComplete(file);
                   }
                 },

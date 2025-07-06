@@ -69,7 +69,7 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
 
   void updateStep2Data(List<int> favoriteTasteIds) {
     setState(() {
-      signupData.favoriteTasteIds = favoriteTasteIds;
+      signupData.favoriteIngredientIds = favoriteTasteIds;
     });
     nextStep();
   }
@@ -80,7 +80,7 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
   }) async {
     setState(() {
       signupData.favoriteDishIds = favoriteDishIds;
-      signupData.favoriteIngredientIds = favoriteIngredientIds;
+      signupData.favoriteTasteIds = favoriteIngredientIds;
     });
     nextStep();
   }
@@ -93,6 +93,13 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
 
     // 회원가입
     try {
+      // print("[요청 아이디]${signupData.username}");
+      // print("[요청 비번]${signupData.password}");
+      // print("[요청 재료]${signupData.favoriteIngredientIds}");
+      // print("[요청 음식]${signupData.favoriteDishIds}");
+      // print("[요청 맛]${signupData.favoriteTasteIds}");
+      // print("[요청 닉네임]${signupData.nickname}");
+      // print("[요청 데이터 사진]${signupData.profileImage}");
       await ref.read(userProvider.notifier).signup(userInfo: signupData);
     } catch (e) {
       showDialog(
