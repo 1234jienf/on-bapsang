@@ -33,11 +33,13 @@ public class DailyRecommendationService {
         LocalDate today = LocalDate.now();
 
         // 1. 이미 저장된 추천 있으면 반환
-        Optional<UserDailyRecipe> saved = userDailyRecipeRepository.findByUserAndDate(user, today);
-        if (saved.isPresent()) {
-            List<String> recipeIds = saved.get().getRecipeIds();
+        List<UserDailyRecipe> savedList = userDailyRecipeRepository.findByUserAndDate(user, today);
+        if (!savedList.isEmpty()) {
+            UserDailyRecipe first = savedList.get(0); // 여러 개 있으면 첫 번째 것만 씀
+            List<String> recipeIds = first.getRecipeIds();
             return recipeRepository.findAllById(recipeIds);
         }
+
 
         // 2. 시작 ID 범위
         DailyIndex index = dailyIndexRepository.findById(1L).orElseGet(DailyIndex::new);
