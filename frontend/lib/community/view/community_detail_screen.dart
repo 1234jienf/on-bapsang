@@ -6,6 +6,7 @@ import 'package:frontend/community/component/community_comment_list_view_family.
 import 'package:frontend/community/provider/community_detail_id_provider.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../common/component/component_alert_dialog.dart';
 import '../../common/const/colors.dart';
 import '../../recipe/view/recipe_detail_screen.dart';
 import '../component/community_build_tag.dart';
@@ -14,6 +15,7 @@ import '../component/community_comment_inputbox.dart';
 import '../model/community_detail_model.dart';
 import '../model/community_tag_position_model.dart';
 import '../provider/community_comment_provider.dart';
+import '../provider/community_detail_delete_provider.dart';
 import '../provider/community_detail_provider.dart';
 import '../provider/community_provider.dart';
 import '../provider/community_scrap_provider.dart';
@@ -283,15 +285,72 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
   Widget _buildHeader(CommunityDetailModel data) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: _horizontalPadding,
-          vertical: 8.0,
+        padding: const EdgeInsets.only(
+          left: _horizontalPadding,
+          top: 8.0,
+          bottom: 8.0
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildProfileImage(data.profileImage),
-            const SizedBox(width: 10),
-            _buildUserInfo(data),
+            Row(
+              children: [
+                _buildProfileImage(data.profileImage),
+                const SizedBox(width: 10),
+                _buildUserInfo(data),
+              ],
+            ),
+            data.author
+                ? PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'edit') {
+                  // _handleEdit(data);
+                } else if (value == 'delete') {
+                  final resp = ref.read(communityDetailDeleteProvider).deleteDetail(data.id);
+                  resp.then((value) {
+                   if (value.statusCode == 200) {
+                     if (context.mounted) {
+                       componentAlertDialog(title: '삭제되었습니다', context: context);
+                       ref.invalidate(communityProvider);
+                     }
+                   } else {
+                     if (context.mounted) {
+                       componentAlertDialog(title: '다시 시도해주세요', context: context);
+                     }
+                   }
+                  });
+                }
+              },
+              color: Colors.white,
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'edit',
+                  height: 48,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.edit_outlined, size: 18, color: Colors.grey[700]),
+                      const SizedBox(width: 12),
+                      Text('수정', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                ),
+                PopupMenuItem(
+                  value: 'delete',
+                  height: 48,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.delete_outlined, size: 18, color: Colors.red[400]),
+                      const SizedBox(width: 12),
+                      Text('삭제', style: TextStyle(fontSize: 14, color: Colors.red[400])),
+                    ],
+                  ),
+                ),
+              ],
+              icon: Icon(Icons.more_vert),
+            )
+                : const SizedBox(),
           ],
         ),
       ),

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/common/component/component_alert_dialog.dart';
 import 'package:frontend/community/model/community_comment_model.dart';
 import 'package:go_router/go_router.dart';
 
@@ -99,31 +100,7 @@ class CommunityComment extends ConsumerWidget {
                   resp.then((res) {
                     if (res.statusCode == 200) {
                       if (context.mounted) {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            Timer(Duration(milliseconds: 800), () {
-                              if (context.mounted) {
-                                context.pop();
-                              }
-                            });
-                            return AlertDialog(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '댓글이 삭제되었습니다',
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
+                        componentAlertDialog(title: '삭제되었습니다', context: context);
                       }
                       final id = ref.watch(communityDetailIdProvider);
                       ref.read(communityDetailProvider(id).notifier).fetchData();

@@ -35,9 +35,6 @@ class CommunityUpload {
         'y': data.y,
       };
 
-      final jsonString = jsonEncode(jsonData);
-      print("🔍 JSON 데이터 크기: ${(jsonString.length / 1024).toStringAsFixed(2)}KB");
-
       final formData = FormData.fromMap({
         'image': MultipartFile.fromBytes(
           compressedData,
@@ -46,23 +43,19 @@ class CommunityUpload {
         'data': jsonEncode(jsonData),
       });
 
-      final totalSizeKB = (compressedData.length + jsonString.length) / 1024;
-      print("🔍 전체 요청 크기 (대략): ${totalSizeKB.toStringAsFixed(2)}KB");
-
       final response = await dio.post(
         '$ip/api/community/posts',
         data: formData,
         options: Options(
           headers: {'accessToken': 'true'},
           validateStatus: (status) {
-            return status != null && status < 500;
+            return status != null && status <= 500;
           },
         ),
       );
 
       return response;
     } on DioException catch (e) {
-      print(e);
       rethrow;
     }
   }

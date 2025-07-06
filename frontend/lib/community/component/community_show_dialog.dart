@@ -11,7 +11,7 @@ Future<void> communityShowDialog(BuildContext context, WidgetRef ref, bool isNav
   await showDialog(
     context: context,
     builder: (BuildContext context) {
-      Timer(Duration(milliseconds: 800), () {
+      Timer(Duration(milliseconds: 1000), () {
         if (context.mounted) {
           context.pop();
         }
