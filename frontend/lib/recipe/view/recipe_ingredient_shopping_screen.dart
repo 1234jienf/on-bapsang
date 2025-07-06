@@ -29,6 +29,7 @@ class _ConsumerRecipeIngredientShoppingScreenState
     extends ConsumerState<RecipeIngredientShoppingScreen> {
   // 각 상품 수량 저장
   late List<int> quantities;
+  bool isLoading = false;
 
   int get totalPrice {
     int total = 0;
@@ -45,7 +46,6 @@ class _ConsumerRecipeIngredientShoppingScreenState
     super.initState();
     quantities = List.generate(widget.discountedItems.length, (index) => 1);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -70,14 +70,19 @@ class _ConsumerRecipeIngredientShoppingScreenState
                   const SizedBox(height: 16),
                   GestureDetector(
                     onTap: () async {
+                      if (isLoading) return;
+                      isLoading = true;
                       final List<PostShoppingCartModel> model = List.generate(
                         widget.discountedItems.length,
-                            (index) => PostShoppingCartModel(
-                          ingredient_id: widget.discountedItems[index].ingredientId,
+                        (index) => PostShoppingCartModel(
+                          ingredient_id:
+                              widget.discountedItems[index].ingredientId,
                           quantity: quantities[index],
                         ),
                       );
-                      final resp = await ref.read(shoppingCartRepositoryProvider).postCart(model);
+                      final resp = await ref
+                          .read(shoppingCartRepositoryProvider)
+                          .postCart(model);
                       if (resp.statusCode == 200) {
                         if (context.mounted) {
                           showDialog(
@@ -86,7 +91,9 @@ class _ConsumerRecipeIngredientShoppingScreenState
                               Timer(Duration(milliseconds: 800), () {
                                 if (context.mounted) {
                                   context.pop();
-                                  context.pushNamed(ShoppingCartScreen.routeName);
+                                  context.pushNamed(
+                                    ShoppingCartScreen.routeName,
+                                  );
                                 }
                               });
                               return AlertDialog(
@@ -109,7 +116,41 @@ class _ConsumerRecipeIngredientShoppingScreenState
                             },
                           );
                         }
+                      } else {
+                        if (context.mounted) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              Timer(Duration(milliseconds: 800), () {
+                                if (context.mounted) {
+                                  context.pop();
+                                  context.pushNamed(
+                                    ShoppingCartScreen.routeName,
+                                  );
+                                }
+                              });
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '오류가 발생했습니다. 다시 시도해주세요',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }
                       }
+                      isLoading = false;
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width,
