@@ -4,7 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/model/string/cursor_pagination_normal_string_model.dart';
 import 'package:frontend/common/model/string/model_with_string_id.dart';
 import 'package:frontend/common/utils/pagination_string_utils.dart';
+import 'package:go_router/go_router.dart';
 
+import '../provider/search_keyword_provider.dart';
+import '../provider/search_keyword_remian_provider.dart';
 import '../provider/search_normal_pagination_list_view_provider.dart';
 import '../provider/search_switch_component_provider.dart';
 
@@ -91,13 +94,22 @@ class _PaginationStringListViewState<T extends IModelWithStringId>
                   borderRadius: BorderRadius.circular(20),
                 ),
                 alignment: Alignment.center,
-                // 텍스트 가운데 정렬
-                child: Text("search.no".tr(), style: TextStyle(fontSize: 16)),
+                child: GestureDetector(
+                  onTap: () {
+                    ref.invalidate(searchKeywordProvider);
+                    ref.read(searchKeywordRemainProvider.notifier).clear();
+                    context.pop();
+
+                  },
+                  child: Text("search.no".tr(), style: TextStyle(fontSize: 16)),
+                ),
               ),
               const SizedBox(width: 20),
               GestureDetector(
                 onTap: () {
-                  ref.read(searchSwitchComponentProvider.notifier).switchComponent();
+                  ref
+                      .read(searchSwitchComponentProvider.notifier)
+                      .switchComponent();
                 },
                 child: Container(
                   width: 100,
@@ -108,7 +120,10 @@ class _PaginationStringListViewState<T extends IModelWithStringId>
                   ),
                   alignment: Alignment.center,
                   // 텍스트 가운데 정렬
-                  child: Text("search.yes".tr(), style: TextStyle(fontSize: 16)),
+                  child: Text(
+                    "search.yes".tr(),
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ),
             ],

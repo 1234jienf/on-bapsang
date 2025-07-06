@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,8 +8,6 @@ import 'package:frontend/community/model/community_upload_data_model.dart';
 
 import '../../common/const/securetoken.dart';
 import 'package:image/image.dart' as img;
-
-//TODO : 에러나는 상황 판단
 
 final communityUploadProvider = Provider<CommunityUpload>((ref) {
   final dio = ref.watch(dioProvider);
@@ -22,11 +20,11 @@ class CommunityUpload {
   CommunityUpload(this.dio);
 
   Future<Response> uploadPost({
-    required File imagefile,
+    required Uint8List imageData,
     required CommunityUploadDataModel data,
   }) async {
     try {
-      final compressedFile = await _compressImage(imagefile);
+      final compressedData = await _compressImageData(imageData);
 
       final jsonData = {
         'title': data.title,
@@ -37,18 +35,29 @@ class CommunityUpload {
         'y': data.y,
       };
 
+      final jsonString = jsonEncode(jsonData);
+      print("🔍 JSON 데이터 크기: ${(jsonString.length / 1024).toStringAsFixed(2)}KB");
+
       final formData = FormData.fromMap({
-        'image': await MultipartFile.fromFile(
-          compressedFile.path,
+        'image': MultipartFile.fromBytes(
+          compressedData,
           filename: 'image.jpg',
         ),
         'data': jsonEncode(jsonData),
       });
 
+      final totalSizeKB = (compressedData.length + jsonString.length) / 1024;
+      print("🔍 전체 요청 크기 (대략): ${totalSizeKB.toStringAsFixed(2)}KB");
+
       final response = await dio.post(
         '$ip/api/community/posts',
         data: formData,
-        options: Options(headers: {'accessToken': 'true'}),
+        options: Options(
+          headers: {'accessToken': 'true'},
+          validateStatus: (status) {
+            return status != null && status < 500;
+          },
+        ),
       );
 
       return response;
@@ -59,32 +68,41 @@ class CommunityUpload {
   }
 }
 
-Future<File> _compressImage(File file) async {
+Future<Uint8List> _compressImageData(Uint8List imageData) async {
   try {
-    final bytes = await file.readAsBytes();
+    final image = img.decodeImage(imageData);
+    if (image == null) return imageData;
 
-    final image = img.decodeImage(bytes);
-    if (image == null) return file;
-
-    const maxSize = 1920;
+    const maxSize = 1200;
     img.Image resized = image;
 
     if (image.width > maxSize || image.height > maxSize) {
-      resized = img.copyResize(
-        image,
-        width: image.width > image.height ? maxSize : null,
-        height: image.height > image.width ? maxSize : null,
-      );
+      if (image.width > 3000 || image.height > 3000) {
+        final newWidth = image.width ~/ 2;
+        final newHeight = image.height ~/ 2;
+
+        resized = img.copyResize(image, width: newWidth, height: newHeight);
+      }
+
+      final aspectRatio = resized.width / resized.height;
+      int finalWidth, finalHeight;
+
+      if (resized.width > resized.height) {
+        finalWidth = maxSize;
+        finalHeight = (maxSize / aspectRatio).round();
+      } else {
+        finalHeight = maxSize;
+        finalWidth = (maxSize * aspectRatio).round();
+      }
+
+      resized = img.copyResize(resized, width: finalWidth, height: finalHeight);
     }
 
-    final compressedBytes = img.encodeJpg(resized, quality: 85);
+    final compressedBytes = img.encodeJpg(resized, quality: 80);
 
-    final compressedFile = File('${file.path}_compressed.jpg');
-    await compressedFile.writeAsBytes(compressedBytes);
-
-    return compressedFile;
+    return Uint8List.fromList(compressedBytes);
   } catch (e) {
-    print('Image compression error: $e');
-    return file; // 압축 실패 시 원본 반환
+    print('이미지 압축 에러: $e');
+    return imageData;
   }
 }

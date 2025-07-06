@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/community/component/community_comment_list_view_family.dart';
+import 'package:frontend/community/provider/community_detail_id_provider.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../common/const/colors.dart';
@@ -14,6 +15,7 @@ import '../model/community_detail_model.dart';
 import '../model/community_tag_position_model.dart';
 import '../provider/community_comment_provider.dart';
 import '../provider/community_detail_provider.dart';
+import '../provider/community_provider.dart';
 import '../provider/community_scrap_provider.dart';
 import '../provider/community_scrap_status_provider.dart';
 
@@ -52,6 +54,9 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
     super.initState();
     _loadCommunityData();
     WidgetsBinding.instance.addObserver(this);
+    Future.microtask(() {
+      ref.read(communityDetailIdProvider.notifier).setId(widget.id);
+    });
   }
 
   @override
@@ -143,14 +148,13 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
   Widget build(BuildContext context) {
     final communityState = ref.watch(communityDetailProvider(widget.id));
     final data = communityState.value?.data;
+    final scrapStatus = ref.watch(communityScrapStatusProvider(widget.id));
 
     if (data == null) {
       return const DefaultLayout(
         child: Center(child: CircularProgressIndicator()),
       );
     }
-
-    final scrapStatus = ref.watch(communityScrapStatusProvider(widget.id));
 
     return DefaultLayout(
       appBar: _buildAppBar(context),
@@ -190,7 +194,10 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
       surfaceTintColor: Colors.white,
       elevation: 0,
       leading: IconButton(
-        onPressed: () => context.pop(),
+        onPressed: () {
+          context.pop();
+          ref.invalidate(communityProvider);
+        },
         icon: const Icon(Icons.close_outlined),
         tooltip: '닫기',
       ),
@@ -239,7 +246,9 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
               Icon(Icons.reply, size: 16, color: gray700),
               const SizedBox(width: 8),
               Text(
-                "community.reply_info".tr(namedArgs: {"replyTo": _replyToNickname}),
+                "community.reply_info".tr(
+                  namedArgs: {"replyTo": _replyToNickname},
+                ),
                 style: TextStyle(fontSize: 14, color: gray700),
               ),
             ],
@@ -259,7 +268,10 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
     return SizedBox(
       height: _commentInputHeight,
       child: CommunityCommentInputbox(
-        contentWord: _parentCommentId != null ? "community.reply_hint".tr() : "community.comment_hint".tr(),
+        contentWord:
+            _parentCommentId != null
+                ? "community.reply_hint".tr()
+                : "community.comment_hint".tr(),
         commentId: _parentCommentId,
         replyFocusNode: _replyFocusNode,
         id: widget.id,
@@ -312,9 +324,8 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
 
   Widget _buildUserInfo(CommunityDetailModel data) {
     // 날짜 번역
-    final locale   = context.locale.toString();
-    final formatted = DateFormat.yMMMMd(locale)
-        .format(data.createdAt);
+    final locale = context.locale.toString();
+    final formatted = DateFormat.yMMMMd(locale).format(data.createdAt);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -523,7 +534,9 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  scrapStatus.scrapped ? "community.success_scrap".tr() : "community.fail_scrap".tr(),
+                  scrapStatus.scrapped
+                      ? "community.fail_scrap".tr()
+                      : "community.success_scrap".tr(),
                   style: TextStyle(
                     fontSize: 16.0,
                     color: Colors.white,

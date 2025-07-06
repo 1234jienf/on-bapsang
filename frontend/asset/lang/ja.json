@@ -27,7 +27,47 @@
     "image_error2": "画像のサイズを確認できません。",
     "image_error3": "画像のサイズは {fileSize}MB です。15MB 以下に縮小してください。",
     "image_hint": "画像を選択してください。",
-    "again": "もう一度試す"
+    "again": "もう一度試す",
+    "nickname": "ニックネーム",
+    "age": "年齢",
+    "favoriteIngredient": "好きな材料",
+    "ingredients": {
+      "pork": "豚肉",
+      "chicken": "鶏肉",
+      "beef": "牛肉",
+      "tomato": "トマト",
+      "onion": "玉ねぎ",
+      "cucumber": "きゅうり",
+      "cabbage": "キャベツ",
+      "carrot": "にんじん",
+      "eggplant": "なす",
+      "chili_pepper": "唐辛子",
+      "lettuce": "レタス",
+      "potato": "じゃがいも",
+      "spinach": "ほうれん草"
+    },
+    "favoriteTaste": "好きな味",
+    "tastes": {
+      "spicy": "辛い",
+      "salty": "しょっぱい",
+      "sweet": "甘い",
+      "bitter": "苦い",
+      "sour": "酸っぱい",
+      "umami": "うま味"
+    },
+    "favoriteDishes": "好きな料理",
+    "dishes": {
+      "kimchi_stew": "キムチチゲ",
+      "soybean_paste_stew": "テンジャンチゲ",
+      "bibimbap": "ビビンバ",
+      "bulgogi": "プルコギ",
+      "galbi": "カルビ",
+      "samgyetang": "参鶏湯",
+      "japchae": "チャプチェ",
+      "gimbap": "キンパ",
+      "galbitang": "カルビタン",
+      "kalguksu": "カルグクス"
+    }
   },
   "home": {
     "main_popular_recipe": "今人気のレシピ",
@@ -141,7 +181,19 @@
     "setting_info": "会員情報の編集",
     "setting_language": "言語設定の変更",
     "withdraw": "退会する",
-    "confirm_withdrawal": "本当に退会しますか？\\nすべての情報が削除されます。"
+    "confirm_withdrawal": "本当に退会しますか？\\nすべての情報が削除されます。",
+    "nicknameRequired": "ニックネームを入力してください",
+    "nicknameLength": "2〜10文字で入力してください",
+    "enterNickname": "2〜10文字のニックネームを入力してください",
 
+    "ageRequired": "年齢を入力してください",
+    "ageNumberOnly": "数字のみ入力してください",
+    "ageInvalid": "正しい年齢を入力してください",
+    "enterAge": "年齢を数字で入力してください",
+
+    "selectAtLeastOne": "少なくとも1つ選択してください",
+    "patch_failed": "会員情報の変更に失敗しました。",
+
+    "save": "保存"
   }
 }

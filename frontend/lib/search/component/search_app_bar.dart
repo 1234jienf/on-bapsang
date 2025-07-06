@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../provider/search_keyword_provider.dart';
 import '../provider/search_keyword_remian_provider.dart';
 import '../provider/search_switch_component_provider.dart';
 import '../view/search_root_screen.dart';
@@ -53,7 +54,9 @@ class _SearchAppBarState extends ConsumerState<SearchAppBar> {
     return AppBar(
       leading: GestureDetector(onTap: () {
         context.pop();
+        ref.invalidate(searchKeywordProvider);
         ref.read(searchKeywordRemainProvider.notifier).clear();
+        ref.read(searchSwitchComponentProvider.notifier).clear();
       }, child : Icon(Icons.arrow_back_ios_new_outlined)),
       backgroundColor: Colors.white,
       elevation: 0,

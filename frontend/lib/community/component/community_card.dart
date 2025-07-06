@@ -55,6 +55,12 @@ class CommunityCard extends ConsumerWidget {
               fit: BoxFit.cover,
               width: 175,
               height: 175,
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: 175,
+                height: 175,
+                color: Colors.grey[200],
+                child: Icon(Icons.image_not_supported),
+              ),
             ),
           ),
           Column(
@@ -86,11 +92,16 @@ class CommunityCard extends ConsumerWidget {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              nickname,
-                              style: TextStyle(
-                                fontSize: 13.0,
-                                fontWeight: FontWeight.w500,
+                            SizedBox(
+                              width: 80,
+                              child: Text(
+                                nickname,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 13.0,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ],

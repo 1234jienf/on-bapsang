@@ -66,6 +66,7 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       state = null;
       return;
     }
+
     final resp = await userRepository.getMe();
     state = resp;
 

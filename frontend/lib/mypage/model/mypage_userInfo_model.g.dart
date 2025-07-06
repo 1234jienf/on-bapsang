@@ -15,15 +15,15 @@ MypageUserInfoModel _$MypageUserInfoModelFromJson(Map<String, dynamic> json) =>
       age: (json['age'] as num).toInt(),
       favoriteDishes:
           (json['favoriteDishes'] as List<dynamic>)
-              .map((e) => e as String)
+              .map((e) => (e as num).toInt())
               .toList(),
       favoriteTastes:
           (json['favoriteTastes'] as List<dynamic>)
-              .map((e) => e as String)
+              .map((e) => (e as num).toInt())
               .toList(),
       favoriteIngredients:
           (json['favoriteIngredients'] as List<dynamic>)
-              .map((e) => e as String)
+              .map((e) => (e as num).toInt())
               .toList(),
     );
 

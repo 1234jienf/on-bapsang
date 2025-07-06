@@ -1,17 +1,24 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/community/model/community_comment_model.dart';
-import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../common/const/colors.dart';
+import '../provider/community_comment_delete_provider.dart';
+import '../provider/community_detail_id_provider.dart';
+import '../provider/community_detail_provider.dart';
 
-class CommunityComment extends StatelessWidget {
+class CommunityComment extends ConsumerWidget {
   final int id;
   final String content;
   final String nickname;
   final String? profileImage;
   final DateTime createdAt;
   final List<dynamic> children;
+  final bool author;
 
   const CommunityComment({
     super.key,
@@ -21,6 +28,7 @@ class CommunityComment extends StatelessWidget {
     required this.createdAt,
     required this.profileImage,
     required this.id,
+    required this.author,
   });
 
   factory CommunityComment.fromModel({required CommunityCommentModel model}) {
@@ -31,30 +39,29 @@ class CommunityComment extends StatelessWidget {
       createdAt: model.createdAt,
       profileImage: model.profileImage,
       id: model.id,
+      author: model.author,
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 14.0),
       child: Column(
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               profileImage == null
                   ? Icon(Icons.account_circle_outlined, size: 32)
                   : ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      profileImage!,
-                      width: 32,
-                      height: 32,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  profileImage!,
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.cover,
+                ),
+              ),
 
               const SizedBox(width: 12),
 
@@ -82,11 +89,54 @@ class CommunityComment extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(width: 6),
+              author
+                  ? GestureDetector(
+                onTap: () {
+                  final resp = ref
+                      .read(communityCommentDeleteProvider)
+                      .deleteComment(id);
+                  resp.then((res) {
+                    if (res.statusCode == 200) {
+                      if (context.mounted) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            Timer(Duration(milliseconds: 800), () {
+                              if (context.mounted) {
+                                context.pop();
+                              }
+                            });
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '댓글이 삭제되었습니다',
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      }
+                      final id = ref.watch(communityDetailIdProvider);
+                      ref.read(communityDetailProvider(id).notifier).fetchData();
+                    }
+                  });
+                },
+                child: Icon(Icons.close_outlined),
+              )
+                  : SizedBox(),
             ],
           ),
           if (children.isNotEmpty) ...[
             const SizedBox(height: 10),
-            ...children.map((reply) => _childrenComments(context, reply)),
+            ...children.map((reply) => _childrenComments(context, reply, ref)),
           ],
         ],
       ),
@@ -94,11 +144,11 @@ class CommunityComment extends StatelessWidget {
   }
 
   // 대댓글
-  Widget _childrenComments(BuildContext context, CommunityCommentModel reply) {
+  Widget _childrenComments(BuildContext context, CommunityCommentModel reply,
+      WidgetRef ref) {
     // 날짜 번역
-    final locale   = context.locale.toString();
-    final formatted = DateFormat.yMMMMd(locale)
-        .format(createdAt);
+    final locale = context.locale.toString();
+    final formatted = DateFormat.yMMMMd(locale).format(createdAt);
 
     return Padding(
       padding: const EdgeInsets.only(top: 16),
@@ -107,28 +157,26 @@ class CommunityComment extends StatelessWidget {
         children: [
           Icon(Icons.subdirectory_arrow_right_outlined),
           const SizedBox(width: 10.0),
-
           reply.profileImage == null
               ? Icon(
-                Icons.account_circle_outlined,
-                size: 32,
-                color: Colors.grey[400],
-              )
+            Icons.account_circle_outlined,
+            size: 32,
+            color: Colors.grey[400],
+          )
               : ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  reply.profileImage!,
-                  width: 32,
-                  height: 32,
-                  fit: BoxFit.cover,
-                ),
-              ),
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              reply.profileImage!,
+              width: 32,
+              height: 32,
+              fit: BoxFit.cover,
+            ),
+          ),
 
           const SizedBox(width: 12),
 
           Expanded(
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,6 +206,49 @@ class CommunityComment extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                const SizedBox(width: 6),
+                reply.author
+                    ? GestureDetector(
+                  onTap: () {
+                    final resp = ref
+                        .read(communityCommentDeleteProvider)
+                        .deleteComment(id);
+                    resp.then((res) {
+                      if (res.statusCode == 200) {
+                        if (context.mounted) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              Timer(Duration(milliseconds: 800), () {
+                                if (context.mounted) {
+                                  context.pop();
+                                }
+                              });
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '댓글이 삭제되었습니다',
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }
+                        final id = ref.watch(communityDetailIdProvider);
+                        ref.read(communityDetailProvider(id).notifier).fetchData();
+                      }
+                    });
+                    },
+                  child: Icon(Icons.close_outlined),
+                )
+                    : SizedBox(),
               ],
             ),
           ),

@@ -9,9 +9,9 @@ class MypageUserInfoModel {
   final String nickname;
   final String country;
   final int age;
-  final List<String> favoriteDishes;
-  final List<String> favoriteTastes;
-  final List<String> favoriteIngredients;
+  final List<int> favoriteDishes;
+  final List<int> favoriteTastes;
+  final List<int> favoriteIngredients;
 
   MypageUserInfoModel({
     required this.userId,

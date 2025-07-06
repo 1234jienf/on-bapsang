@@ -24,6 +24,7 @@ CommunityDetailModel _$CommunityDetailModelFromJson(
   content: json['content'] as String,
   profileImage: json['profileImage'] as String,
   scrapped: json['scrapped'] as bool,
+  author: json['author'] as bool,
 );
 
 Map<String, dynamic> _$CommunityDetailModelToJson(
@@ -44,4 +45,5 @@ Map<String, dynamic> _$CommunityDetailModelToJson(
   'recipeTag': instance.recipeTag,
   'createdAt': instance.createdAt.toIso8601String(),
   'recipeId': instance.recipeId,
+  'author': instance.author,
 };

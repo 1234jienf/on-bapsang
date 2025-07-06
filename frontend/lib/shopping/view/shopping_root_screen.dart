@@ -46,11 +46,7 @@ class _ConsumerShoppingRootScreenState extends ConsumerState<ShoppingRootScreen>
         controller: controller,
         slivers: [
           SliverToBoxAdapter(
-            child: Container(
-              width: screenWidth,
-              height: 160,
-              color: Colors.grey,
-            ),
+            child : Image.asset('asset/img/home_AI_recipe_banner.png', width: screenWidth, height: 160,),
           ),
           SliverPadding(
             padding: const EdgeInsets.symmetric(

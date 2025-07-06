@@ -1,11 +1,11 @@
-import 'package:photo_manager/photo_manager.dart';
+import 'dart:typed_data';
 
 class CommunityUploadRecipeFinalListModel {
   final String recipeTag;
   final String recipeId;
   final double x;
   final double y;
-  final AssetEntity imageFile;
+  final Uint8List imageFile;
   final String tagImage;
 
   CommunityUploadRecipeFinalListModel({
