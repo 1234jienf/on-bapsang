@@ -8,7 +8,6 @@ import 'package:frontend/mypage/view/mypage_community_screen.dart';
 import 'package:frontend/mypage/view/mypage_fix_info_screen.dart';
 import 'package:frontend/mypage/view/mypage_scrap_community_screen.dart';
 import 'package:frontend/mypage/view/mypage_scrap_recipe_screen.dart';
-import 'package:frontend/recipe/provider/recipe_provider.dart';
 import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -103,6 +102,7 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
                       context: context,
                       barrierDismissible: false,
                       builder: (ctx) => AlertDialog(
+                        backgroundColor: Colors.white,
                         title: Text('mypage.withdraw'.tr()),
                         content: Text('mypage.confirm_withdrawal'.tr()),
                         actions: [

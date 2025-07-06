@@ -84,6 +84,7 @@ class _ConsumerShoppingCartScreenState
             }
           });
           return AlertDialog(
+            backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
             ),
@@ -489,6 +490,7 @@ class _ConsumerShoppingCartScreenState
                                                 },
                                               );
                                               return AlertDialog(
+                                                backgroundColor: Colors.white,
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(16),
