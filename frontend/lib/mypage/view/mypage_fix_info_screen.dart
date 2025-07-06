@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/mypage/view/mypage_root_screen.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:frontend/common/const/colors.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/mypage/model/mypage_userInfo_model.dart';
@@ -141,7 +144,9 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
 
       ref.invalidate(mypageInfoProvider);
 
-      if (mounted) Navigator.pop(context);
+      if (mounted) {
+        context.goNamed(MypageRootScreen.routeName);
+      }
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

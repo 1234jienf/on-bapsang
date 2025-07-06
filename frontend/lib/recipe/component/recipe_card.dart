@@ -22,7 +22,27 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
   @override
   void initState() {
     super.initState();
-    recipeList = [...widget.recipes]; // 복사본 만들어 토글에 사용
+    recipeList = List.from(widget.recipes);
+  }
+
+  @override
+  void didUpdateWidget(covariant RecipeCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.recipes.length != widget.recipes.length ||
+        !_isSameList(oldWidget.recipes, widget.recipes)) {
+      setState(() {
+        recipeList = List.from(widget.recipes);
+      });
+    }
+  }
+
+  bool _isSameList(List<RecipeModel> a, List<RecipeModel> b) {
+    if (a.length != b.length) return false;
+    for (int i = 0; i < a.length; i++) {
+      if (a[i].id != b[i].id) return false;
+    }
+    return true;
   }
 
   Future<void> toggleScrap(int index) async {
@@ -37,7 +57,9 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
       setState(() {
         recipeList[index] = recipe.copyWith(scrapped: !recipe.scrapped);
       });
-    } catch (_) {/* TODO: 오류 처리 */}
+    } catch (_) {
+      SnackBar(content: Text('레시피를 스크랩하는 과정에서 문제가 생겼습니다.'));
+    }
   }
 
   @override
