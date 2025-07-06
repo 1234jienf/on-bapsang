@@ -55,9 +55,17 @@ class _ConsumerCommunityCreateScreenState
     super.dispose();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadPhotos();
+    }
+  }
+
   Future<void> _loadPhotos() async {
+    albums.clear();
     final result = await PhotoManager.requestPermissionExtend();
-    if (result.isAuth) {
+    if (result.isAuth || result == PermissionState.limited) {
       albums = await PhotoManager.getAssetPathList(
         type: RequestType.image,
         filterOption: FilterOptionGroup(
@@ -70,18 +78,6 @@ class _ConsumerCommunityCreateScreenState
         ),
       );
       _pagingPhotos();
-    } else if (result == PermissionState.limited) {
-      albums = await PhotoManager.getAssetPathList(
-        type: RequestType.image,
-        filterOption: FilterOptionGroup(
-          imageOption: const FilterOption(
-            sizeConstraint: SizeConstraint(minHeight: 100, minWidth: 100),
-          ),
-          orders: [
-            const OrderOption(type: OrderOptionType.createDate, asc: false),
-          ],
-        ),
-      );
     } else if (result == PermissionState.denied) {
       if (context.mounted) {
         _showPermissionDialog(context);
@@ -284,7 +280,9 @@ class _SelectedImageWidgetState extends State<SelectedImageWidget> {
         ThumbnailSize(widget.size, widget.size),
       ),
       builder: (_, AsyncSnapshot snapshot) {
-        if (snapshot.hasData && snapshot.data != null) {
+        if(snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child : CircularProgressIndicator());
+        } else if (snapshot.hasData && snapshot.data != null) {
           return Image.memory(snapshot.data!, fit: BoxFit.cover);
         } else {
           return Container(color: Colors.grey[300]);
