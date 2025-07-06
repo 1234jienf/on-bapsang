@@ -13,6 +13,7 @@ import '../component/community_show_dialog.dart';
 import '../model/community_tag_position_model.dart';
 import '../model/community_upload_data_model.dart';
 import '../provider/community_upload_provider.dart';
+import '../provider/community_upload_recipe_list_provider.dart';
 
 class CommunityCreateUploadScreen extends ConsumerStatefulWidget {
   final CommunityUploadRecipeFinalListModel data;
@@ -76,7 +77,7 @@ class _ConsumerCommunityCreateUploadScreenState
               setState(() {
                 isLoading = true;
               });
-              final Uint8List? imageFile = await widget.data.imageFile;
+              final Uint8List? imageFile = widget.data.imageFile;
               final model = CommunityUploadDataModel(
                 content: contentController.text,
                 title: titleController.text,
@@ -93,6 +94,7 @@ class _ConsumerCommunityCreateUploadScreenState
               if (response.statusCode == 200) {
                 if (context.mounted) {
                   communityShowDialog(context, ref, true, "community.post_success".tr());
+                  ref.read(tagSearchKeywordProvider.notifier).state = '';
                 }
               } else {
                 if (context.mounted) {
@@ -105,6 +107,7 @@ class _ConsumerCommunityCreateUploadScreenState
                       "common.error_message2".tr(),
                     );
                   });
+                  ref.read(tagSearchKeywordProvider.notifier).state = '';
                 }
               }
             },

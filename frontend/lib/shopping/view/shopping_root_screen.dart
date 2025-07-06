@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/appbar/home_appbar.dart';
@@ -12,6 +13,19 @@ import '../../common/const/colors.dart';
 import '../../home/component/recipe_icon.dart';
 import '../../mypage/provider/mypage_provider.dart';
 import '../component/shopping_recipe_component.dart';
+
+String bannerAsset(BuildContext ctx) {
+  switch (ctx.locale.languageCode) {
+    case 'ko':
+      return 'asset/img/home_AI_recipe_banner_ko.png';
+    case 'ja':
+      return 'asset/img/home_AI_recipe_banner_ja.png';
+    case 'zh':
+      return 'asset/img/home_AI_recipe_banner_zh.png';
+    default:
+      return 'asset/img/home_AI_recipe_banner_en.png';
+  }
+}
 
 class ShoppingRootScreen extends ConsumerStatefulWidget {
   const ShoppingRootScreen({super.key});
@@ -37,7 +51,6 @@ class _ConsumerShoppingRootScreenState extends ConsumerState<ShoppingRootScreen>
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(mypageInfoProvider);
-    final screenWidth = MediaQuery.of(context).size.width;
 
     return DefaultLayout(
       appBar: const HomeAppbar(isImply: false),
@@ -46,7 +59,13 @@ class _ConsumerShoppingRootScreenState extends ConsumerState<ShoppingRootScreen>
         controller: controller,
         slivers: [
           SliverToBoxAdapter(
-            child : Image.asset('asset/img/home_AI_recipe_banner.png', width: screenWidth, height: 160,),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: Image.asset(
+                  bannerAsset(context),
+                  fit: BoxFit.cover,
+                ),
+              )
           ),
           SliverPadding(
             padding: const EdgeInsets.symmetric(

@@ -8,7 +8,7 @@ import 'package:frontend/community/model/community_upload_recipe_list_model.dart
 final tagSearchKeywordProvider = StateProvider<String>((ref) => '');
 
 final communityUploadRecipeListProvider =
-    FutureProvider.family<List<CommunityUploadRecipeListModel>, String>((
+    FutureProvider.autoDispose.family<List<CommunityUploadRecipeListModel>, String>((
       ref,
       keyword,
     ) async {

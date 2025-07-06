@@ -20,7 +20,7 @@ class CommunityCreateRecipeTagScreen extends ConsumerStatefulWidget {
   static String get routeName => 'CommunityCreateRecipeTagScreen';
   final CommunityNextUploadModel nextModel;
 
-  const CommunityCreateRecipeTagScreen({super.key, required, required this.nextModel});
+  const CommunityCreateRecipeTagScreen({super.key, required this.nextModel});
 
   @override
   ConsumerState<CommunityCreateRecipeTagScreen> createState() =>
@@ -41,13 +41,15 @@ class _ConsumerCommunityCreateRecipeTagScreenState
   void initState() {
     super.initState();
     final initialKeyword = widget.nextModel.recipe_name;
-    if (initialKeyword != "" && initialKeyword.isNotEmpty) {
-      _searchController.text = initialKeyword;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(tagSearchKeywordProvider.notifier).state = initialKeyword;
-        ref.watch(communityUploadRecipeListProvider(initialKeyword));
-      });
-    }
+    _searchController.text = initialKeyword;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(tagSearchKeywordProvider.notifier).state = initialKeyword;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -210,6 +212,7 @@ class _ConsumerCommunityCreateRecipeTagScreenState
         return Consumer(
           builder: (context, ref, child) {
             final keyword = ref.watch(tagSearchKeywordProvider);
+            print(keyword);
             final result = ref.watch(
               communityUploadRecipeListProvider(keyword),
             );
@@ -235,7 +238,7 @@ class _ConsumerCommunityCreateRecipeTagScreenState
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
-                    const SizedBox(height: 20,),
+                    const SizedBox(height: 20),
                     TextField(
                       onChanged: (value) {
                         _debounceTimer?.cancel();
@@ -243,10 +246,9 @@ class _ConsumerCommunityCreateRecipeTagScreenState
                           if (value.isNotEmpty) {
                             ref.read(tagSearchKeywordProvider.notifier).state =
                                 value;
-                            ref.watch(communityUploadRecipeListProvider(value));
                           } else {
                             ref.read(tagSearchKeywordProvider.notifier).state =
-                            '';
+                                '';
                           }
                         });
                       },
@@ -270,50 +272,63 @@ class _ConsumerCommunityCreateRecipeTagScreenState
                     ),
 
                     Expanded(
-                      child: keyword.isNotEmpty
-                          ? result.when(
-                        data: (recipes) {
-                          if (recipes.isEmpty) {
-                            return Center(child: Text("map.no_result".tr()));
-                          }
-
-                          return ListView.builder(
-                            itemCount: recipes.length,
-                            itemBuilder: (context, index) {
-                              final recipe = recipes[index];
-
-                              return GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    tags.add(
-                                      CommunityTagPositionModel(
-                                        x: position.dx,
-                                        y: position.dy,
-                                        name: recipe.name,
-                                        imageUrl: recipe.imageUrl,
-                                        recipeId: recipe.recipeId,
-                                      ),
+                      child:
+                          keyword.isNotEmpty
+                              ? result.when(
+                                data: (recipes) {
+                                  if (recipes.isEmpty) {
+                                    return Center(
+                                      child: Text("map.no_result".tr()),
                                     );
-                                    isTag = true;
-                                  });
-                                  context.pop();
+                                  }
+
+                                  return ListView.builder(
+                                    itemCount: recipes.length,
+                                    itemBuilder: (context, index) {
+                                      final recipe = recipes[index];
+
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            tags.add(
+                                              CommunityTagPositionModel(
+                                                x: position.dx,
+                                                y: position.dy,
+                                                name: recipe.name,
+                                                imageUrl: recipe.imageUrl,
+                                                recipeId: recipe.recipeId,
+                                              ),
+                                            );
+                                            isTag = true;
+                                          });
+                                          context.pop();
+                                        },
+                                        child:
+                                            CommunityUploadRecipeComponent.fromModel(
+                                              model: recipe,
+                                            ),
+                                      );
+                                    },
+                                  );
                                 },
-                                child: CommunityUploadRecipeComponent.fromModel(
-                                  model: recipe,
+                                error:
+                                    (e, _) => Center(
+                                      child: Text("common.error_message2".tr()),
+                                    ),
+                                loading:
+                                    () => Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                              )
+                              : Center(
+                                child: Text(
+                                  "community.recipe_search_hint".tr(),
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
-                              );
-                            },
-                          );
-                        },
-                        error: (e, _) => Center(child: Text("common.error_message2".tr())),
-                        loading: () => Center(child: CircularProgressIndicator()),
-                      )
-                          : Center(
-                        child: Text(
-                          "community.recipe_search_hint".tr(),
-                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
-                        ),
-                      ),
+                              ),
                     ),
                   ],
                 ),
@@ -343,17 +358,13 @@ class _ConsumerCommunityCreateRecipeTagScreenState
           height: 30,
           child: Center(
             child: Text(
-              textAlign : TextAlign.center,
+              textAlign: TextAlign.center,
               "community.recipe_tag_one".tr(),
-              style: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w700,
-              ),
+              style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w700),
             ),
           ),
         ),
       ),
     );
   }
-
 }
