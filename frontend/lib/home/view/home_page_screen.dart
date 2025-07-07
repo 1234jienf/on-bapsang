@@ -167,7 +167,11 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                   SizedBox(height: 50.0,),
         
                   // 커뮤니티
-                  titleWidget(titleKey: 'home.main_community', fontSize: 16, sidePadding: sideGap),
+                  titleWidget(
+                    titleKey: 'home.main_community',
+                    fontSize: 20,
+                    sidePadding: sideGap
+                  ),
                   SizedBox(height: titleTextGap),
                 ]),
               ),

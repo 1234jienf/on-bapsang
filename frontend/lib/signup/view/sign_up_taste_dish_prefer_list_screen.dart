@@ -38,6 +38,13 @@ class _SignUpTasteDishPreferListScreenState
   List<int> selectedDishes = [];
   List<int> selectedTastes = [];
 
+  @override
+  void initState() {
+    super.initState();
+    selectedDishes = List<int>.from(widget.initialData?.favoriteDishIds ?? []);
+    selectedTastes = List<int>.from(widget.initialData?.favoriteIngredientIds ?? []);
+  }
+
   void onSkipPressed() {
     widget.onComplete(
       favoriteDishIds: [],
