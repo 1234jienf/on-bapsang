@@ -24,78 +24,101 @@ class _RecipeIngredientMarketChartState extends State<RecipeIngredientMarketChar
 
     final minMarketPrice = widget.marketDataList.map((data) => data.averagePrice).reduce((a, b) => a < b ? a : b);
     final maxMarketPrice = widget.marketDataList.map((data) => data.averagePrice).reduce((a, b) => a > b ? a : b);
-
-    final padding = 500;
-    final minY = minMarketPrice - padding;
-    final maxY = maxMarketPrice + padding;
-    final range = maxY - minY;
-    final interval = (range / 6).ceilToDouble();
+    final double yInterval = ((maxMarketPrice - minMarketPrice) / 4).ceilToDouble();
 
     return SizedBox(
-      height: 300,
-      child: BarChart(
-        BarChartData(
-          gridData: FlGridData(show: false),
-          backgroundColor: Colors.white,
-          titlesData: FlTitlesData(
-            bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: 50,
-                  getTitlesWidget: (value, meta) {
-                    int index = value.toInt();
-                    if (index >= 0 && index < widget.marketDataList.length) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          widget.marketDataList[index].market,
-                          style: TextStyle(fontSize: 12),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    }
-                    return Text('');
-                  },
-                )
+      height: 280,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
+        child: BarChart(
+          BarChartData(
+            barTouchData: BarTouchData(
+              touchTooltipData: BarTouchTooltipData(
+                fitInsideHorizontally: true,
+                fitInsideVertically: true,
+                getTooltipColor: (touchedSpot) => Colors.white,
+              )
             ),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                interval: interval,
-                reservedSize: 50,
-                getTitlesWidget: (value, meta) {
-                  return Text(
-                    value.toInt().toString(),
-                    style: TextStyle(fontSize: 10),
-                    textAlign: TextAlign.center,
-                  );
-                },
+            gridData: FlGridData(
+              show: true,
+              drawVerticalLine: false,
+              getDrawingHorizontalLine: (value) => const FlLine(
+                  color: gray200,
+                  strokeWidth: 1
               ),
             ),
-            topTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            rightTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-          ),
-          borderData: FlBorderData(show: true),
-          minY: minMarketPrice - 200,
-          maxY: maxMarketPrice + 200,
-          barGroups: widget.marketDataList.asMap().entries.map((entry) {
-            return BarChartGroupData(
-              x: entry.key,
-              barRods: [
-                BarChartRodData(
-                  toY: entry.value.averagePrice,
-                  color: primaryColor,
-                  width: 20,
-                  borderRadius: BorderRadius.zero
+            backgroundColor: Colors.white,
+            titlesData: FlTitlesData(
+              bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 50,
+                    getTitlesWidget: (value, meta) {
+                      int index = value.toInt();
+                      if (index >= 0 && index < widget.marketDataList.length) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            widget.marketDataList[index].market,
+                            style: TextStyle(fontSize: 12),
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      }
+                      return Text('');
+                    },
+                  )
+              ),
+              rightTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  interval: yInterval,
+                  reservedSize: 50,
+                  getTitlesWidget: (value, meta) {
+                    return Text(
+                      value.toInt().toString(),
+                      style: TextStyle(fontSize: 10),
+                      textAlign: TextAlign.center,
+                    );
+                  },
                 ),
-              ],
-            );
-          }).toList(),
-        )
+              ),
+              topTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+            ),
+            borderData: FlBorderData(
+              show: true,
+              border: const Border(
+                right: BorderSide.none,
+                bottom: BorderSide(
+                    color: gray600,
+                    width: 3
+                ),
+                left: BorderSide.none,
+                top: BorderSide.none
+              )
+            ),
+            minY: minMarketPrice - yInterval,
+            maxY: maxMarketPrice + yInterval,
+            barGroups: widget.marketDataList.asMap().entries.map((entry) {
+              return BarChartGroupData(
+                x: entry.key,
+                barRods: [
+                  BarChartRodData(
+                    toY: entry.value.averagePrice,
+                    color: primaryColor,
+                    width: 20,
+                    borderRadius: BorderRadius.zero
+                  ),
+                ],
+              );
+            }).toList(),
+          )
+        ),
       )
     );
   }
