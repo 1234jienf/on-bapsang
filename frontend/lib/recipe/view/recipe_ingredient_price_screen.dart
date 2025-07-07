@@ -43,7 +43,6 @@ class _RecipeIngredientPriceScreenState extends ConsumerState<RecipeIngredientPr
                   "recipe.ingredient_price_title".tr(namedArgs: {"ingredient": widget.ingredientName}),
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
                 ),
-                // Text('디자인 추후 수정예정'),
                 SizedBox(height: 20),
 
                 // 재료 시세 차트
@@ -54,14 +53,14 @@ class _RecipeIngredientPriceScreenState extends ConsumerState<RecipeIngredientPr
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                   ),
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 10),
                 ingredientTimeData.when(
                     data: (data) => RecipeIngredientPriceChart(ingredientPriceDataList: data.monthlyPrices),
                     error: (err, stack) => Center(child: Text('${"common.error_message".tr()} $err')),
                     loading: () => Center(child: CircularProgressIndicator()),
                 ),
 
-                SizedBox(height: 20),
+                SizedBox(height:5),
 
                 // 지역별 재료 가격
                 Align(
@@ -71,7 +70,7 @@ class _RecipeIngredientPriceScreenState extends ConsumerState<RecipeIngredientPr
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                   ),
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 10),
                 ingredientRegionData.when(
                   data: (data) => RecipeIngredientMarketChart(marketDataList: data.markets),
                   error: (err, stack) => Center(child: Text('${"common.error_message".tr()} $err')),
