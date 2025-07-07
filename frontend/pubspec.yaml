@@ -49,6 +49,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   permission_handler: ^12.0.0+1
   easy_localization: ^3.0.3
+  kpostal: ^1.1.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

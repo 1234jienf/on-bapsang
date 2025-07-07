@@ -156,7 +156,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                 delegate: SliverChildListDelegate([
                   SizedBox(height: 50.0,),
         
-                  // 추천 레시피
+                  // AI 추천 레시피
                   titleWidget(
                     titleKey: 'home.main_recommend_recipe',
                     fontSize: 20,
