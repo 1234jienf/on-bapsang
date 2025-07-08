@@ -24,23 +24,6 @@ class _ConsumerSignUpTermsOfServiceScreenState
   bool isAllSelected = false;
   List<bool> isSelected = [false, false, false, false] ;
 
-  // final List<Map<String, dynamic>> terms = [
-  //   {
-  //     'title': '(필수) 이용 약관',
-  //     'routeExtra': 1,
-  //   },
-  //   {
-  //     'title': '(필수) 개인정보 수집 및 이용 동의',
-  //     'routeExtra': 2,
-  //   },
-  //   {
-  //     'title': '(필수) 위치기반 서비스 이용 약관',
-  //     'routeExtra': 3,
-  //   },
-  //   {'title' : '(필수) 14세 이상입니다',
-  //   'routeExtra' : 0}
-  // ];
-
   void toggleAll() {
     setState(() {
       isAllSelected = !isAllSelected;
