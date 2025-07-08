@@ -44,6 +44,8 @@ final mainProvider = ChangeNotifierProvider<MainProvider>((ref) {
 
 class MainProvider extends ChangeNotifier {
   final Ref ref;
+  bool _initalized = false;
+  bool get isInitaialized => _initalized;
 
   MainProvider({required this.ref}) {
     ref.listen<UserModelBase?>(userProvider, (previous, next) {
@@ -51,6 +53,12 @@ class MainProvider extends ChangeNotifier {
         notifyListeners();
       }
     });
+  }
+
+  Future<void> initApp() async {
+    await Future.delayed(const Duration(seconds: 2));
+    _initalized = true;
+    notifyListeners();
   }
 
   List<RouteBase> get routes =>
@@ -283,6 +291,11 @@ class MainProvider extends ChangeNotifier {
 
     final login = state.matchedLocation == '/login';
     final isSignup = state.matchedLocation.startsWith('/login/signup');
+    final splash = state.matchedLocation == '/splash';
+
+    if (!isInitaialized) {
+      return splash ? null : '/splash';
+    }
 
     if (user == null) {
       return (login || isSignup) ? null : '/login';

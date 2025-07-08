@@ -90,7 +90,7 @@ flutter:
     - asset/dummy_data/
     - lib/recipe/data/ingredient_market_mapping.json
     - lib/recipe/data/dummy_ingredient_prices_with_type.json
-    - asset/terms/kr/
+    - asset/terms/ko/
     - asset/terms/en/
     - asset/terms/zh/
     - asset/terms/jp/
