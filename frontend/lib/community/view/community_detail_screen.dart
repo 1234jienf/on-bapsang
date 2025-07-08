@@ -301,7 +301,7 @@ class _CommunityDetailScreenState extends ConsumerState<CommunityDetailScreen>
               ],
             ),
             data.author
-                ? PopupMenuButton<String>(
+                ? PopupMenuButton(
               onSelected: (value) {
                 if (value == 'edit') {
                   // _handleEdit(data);

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:frontend/common/const/colors.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/user/model/user_model.dart';
 import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../common/component/component_alert_dialog.dart';
 import '../../signup/view/sign_up_root_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -26,18 +26,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return DefaultLayout(
       child: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           // decoration: BoxDecoration(color: primaryColor),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Image.asset(
-              //   'asset/img/app_title.png',
-              //   width: 150,
-              //   fit: BoxFit.contain
-              // ),
               SizedBox(height: 50.0,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -71,28 +66,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               .login(username: username, password: password);
 
                           if (result is UserModelError && context.mounted) {
-                            showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                backgroundColor: Colors.white,
-                                surfaceTintColor: Colors.transparent,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-
-                                insetPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                titlePadding: EdgeInsets.fromLTRB(16, 16, 16, 0),
-                                contentPadding: EdgeInsets.fromLTRB(16, 12, 16, 16),
-                                actionsPadding: EdgeInsets.only(right: 4, bottom: 4),
-
-                                title: const Text('로그인 실패'),
-                                content: Text(result.message),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.of(context).pop(),
-                                    child: Text('확인', style: TextStyle(color: Colors.black),),
-                                  ),
-                                ],
-                              ),
-                            );
+                            componentAlertDialog(context : context, title: "로그인에 실패했습니다\n\n 다시 시도해주세요");
                           }
                         }
                         : null,
@@ -121,7 +95,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             context.pushNamed(SignUpRootScreen.routeName);
                           },
                           child: Text(
-                            '회원가입',
+                            '회원 가입',
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.black,

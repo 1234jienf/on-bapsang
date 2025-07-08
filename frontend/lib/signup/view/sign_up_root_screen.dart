@@ -10,10 +10,11 @@ import 'package:frontend/signup/view/sign_up_info_screen.dart';
 import 'package:frontend/signup/model/sign_up_request_model.dart';
 import 'package:frontend/signup/view/sign_up_profile_image_screen.dart';
 import 'package:frontend/signup/view/sign_up_taste_dish_prefer_list_screen.dart';
+import 'package:frontend/signup/view/sign_up_terms_of_service_screen.dart';
 import 'package:frontend/user/provider/user_provider.dart';
+import 'package:go_router/go_router.dart';
 
-
-class SignUpRootScreen extends ConsumerStatefulWidget { // StatefulWidget → ConsumerStatefulWidget
+class SignUpRootScreen extends ConsumerStatefulWidget {
   static String get routeName => 'SignUpRootScreen';
 
   const SignUpRootScreen({super.key});
@@ -22,12 +23,9 @@ class SignUpRootScreen extends ConsumerStatefulWidget { // StatefulWidget → Co
   ConsumerState<SignUpRootScreen> createState() => _SignUpRootScreenState(); // State → ConsumerState
 }
 
-class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State → ConsumerState
-  int currentStep = 1;
-  SignupRequest signupData = SignupRequest(
-      username: '',
-      password: ''
-  );
+class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> {
+  int currentStep = 0;
+  SignupRequest signupData = SignupRequest(username: '', password: '');
   bool isLoading = false;
 
   void nextStep() {
@@ -40,10 +38,10 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
 
   void previousStep() {
     setState(() {
-      if (currentStep > 1) {
-        currentStep--;        // 이전 단계로만 이동
+      if (currentStep > 0) {
+        currentStep--; // 이전 단계로만 이동
       } else {
-        Navigator.of(context).pop(); // 1단계라면 실제 뒤로가기
+        context.pop(); // 0단계라면 실제 뒤로가기
       }
     });
   }
@@ -105,16 +103,17 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: const Text('회원가입 실패'),
-          content: const Text('회원가입에 실패했습니다. 다시 시도해주세요.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('확인'),
+        builder:
+            (context) => AlertDialog(
+              title: const Text('회원가입 실패'),
+              content: const Text('회원가입에 실패했습니다. 다시 시도해주세요.'),
+              actions: [
+                TextButton(
+                  onPressed: () => context.pop(),
+                  child: const Text('확인'),
+                ),
+              ],
             ),
-          ],
-        ),
       );
     } finally {
       if (mounted) {
@@ -125,13 +124,12 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: currentStep == 1,
+      canPop: currentStep == 0,
       onPopInvokedWithResult: (bool didPop, _) {
-        if (!didPop) previousStep();   // pop 못 했으니 단계만 뒤로
+        if (!didPop) previousStep(); // pop 못 했으니 단계만 뒤로
       },
 
       child: Stack(
@@ -141,25 +139,27 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> { // State 
             resizeToAvoidBottomInset: true,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: currentStep == 1
-                  ? SignUpInfoScreen(
-                onComplete: updateStep1Data,
-                initialData: signupData,
-              )
-                  : currentStep == 2
-                  ? SignUpFoodPreferListScreen(
-                onComplete: updateStep2Data,
-                initialData: signupData,
-              )
-                  : currentStep == 3
-                  ? SignUpTasteDishPreferListScreen(
-                onComplete: updateStep3Data,
-                initialData: signupData,
-              )
-                  : SignUpProfileImageScreen(
-                onComplete: updateStep4Data,
-                initialData: signupData,
-              ),
+              child:
+                  currentStep == 0 ? SignUpTermsOfServiceScreen(onComplete: nextStep,) :
+                  currentStep == 1
+                      ? SignUpInfoScreen(
+                        onComplete: updateStep1Data,
+                        initialData: signupData,
+                      )
+                      : currentStep == 2
+                      ? SignUpFoodPreferListScreen(
+                        onComplete: updateStep2Data,
+                        initialData: signupData,
+                      )
+                      : currentStep == 3
+                      ? SignUpTasteDishPreferListScreen(
+                        onComplete: updateStep3Data,
+                        initialData: signupData,
+                      )
+                      : SignUpProfileImageScreen(
+                        onComplete: updateStep4Data,
+                        initialData: signupData,
+                      ),
             ),
           ),
           if (isLoading)
