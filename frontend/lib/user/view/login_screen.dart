@@ -87,19 +87,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: Text('로그인'),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 14.0),
+                      padding: EdgeInsets.symmetric(vertical: 16.0),
                       child: Center(
                         child: GestureDetector(
                           onTap: () {
-                            // ref.read(mainProvider.notifier).logout();
                             context.pushNamed(SignUpRootScreen.routeName);
                           },
                           child: Text(
                             '회원가입',
                             style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w600,
+                              fontSize: 15,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/common/view/splash_screen.dart';
+import 'package:frontend/user/view/splash_screen.dart';
 import 'package:frontend/community/model/community_upload_recipe_final_list_model.dart';
 import 'package:frontend/community/view/community_create_recipe_tag_screen.dart';
 import 'package:frontend/community/view/community_create_screen.dart';
@@ -273,6 +273,10 @@ class MainProvider extends ChangeNotifier {
 
     if (user is UserModel) {
       return login || state.matchedLocation == '/splash' ? '/' : null;
+    }
+
+    if (user is UserModelError) {
+      return !login ? '/login' : null;
     }
     return null;
   }
