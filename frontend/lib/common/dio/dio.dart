@@ -53,7 +53,7 @@ class CustomInterceptor extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     // ignore: avoid_print
     print(
-      '[RES], [${response.requestOptions.method}], ${response.requestOptions.uri}, ${response.data}',
+      '[RES], [${response.requestOptions.method}], ${response.requestOptions.uri} ${response.data}',
     );
 
 
@@ -67,7 +67,7 @@ class CustomInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     // ignore: avoid_print
-    print('[ERR], [${err.requestOptions}], ${err.requestOptions.uri}');
+    print('[ERR], [${err.requestOptions}], ${err.requestOptions.uri}, ${err.response?.statusCode}');
 
     final refreshToken = await storage.read(key: REFRESH_TOKEN);
 
