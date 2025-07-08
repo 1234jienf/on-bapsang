@@ -1,0 +1,40 @@
+import 'package:frontend/signup/provider/sign_up_language_provider.dart';
+
+final Map<SignUpLanguage, Map<String, String>> signUpLanguage = {
+  SignUpLanguage.ko: {
+    'title': '회원 가입',
+    'agree_all': '약관 모두 동의',
+    'next': '다음',
+    'term1': '(필수) 이용 약관',
+    'term2': '(필수) 개인정보 수집 및 이용 동의',
+    'term3': '(필수) 위치기반 서비스 이용 약관',
+    'term4': '(필수) 14세 이상입니다',
+  },
+  SignUpLanguage.en: {
+    'title': 'Sign Up',
+    'agree_all': 'Agree to all terms',
+    'next': 'Next',
+    'term1': '(Required) Terms of Use',
+    'term2': '(Required) Privacy Policy',
+    'term3': '(Required) Location-Based Terms',
+    'term4': '(Required) Over 14 years old',
+  },
+  SignUpLanguage.zh: {
+    'title': '注册',
+    'agree_all': '同意所有条款',
+    'next': '下一步',
+    'term1': '（必填）使用条款',
+    'term2': '（必填）隐私政策',
+    'term3': '（必填）基于位置的服务条款',
+    'term4': '（必填）年满14岁',
+  },
+  SignUpLanguage.jp: {
+    'title': '会員登録',
+    'agree_all': 'すべての利用規約に同意',
+    'next': '次へ',
+    'term1': '（必須）利用規約',
+    'term2': '（必須）個人情報の取り扱い',
+    'term3': '（必須）位置情報利用規約',
+    'term4': '（必須）14歳以上です',
+  },
+};
