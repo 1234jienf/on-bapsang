@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:frontend/common/const/colors.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/user/model/user_model.dart';
 import 'package:frontend/user/provider/user_provider.dart';
@@ -25,12 +26,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return DefaultLayout(
       child: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        child: SizedBox(
+        child: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
+          // decoration: BoxDecoration(color: primaryColor),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Image.asset(
+              //   'asset/img/app_title.png',
+              //   width: 150,
+              //   fit: BoxFit.contain
+              // ),
+              SizedBox(height: 50.0,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
@@ -63,8 +71,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               .login(username: username, password: password);
 
                           if (result is UserModelError && context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(result.message)),
+                            showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                backgroundColor: Colors.white,
+                                surfaceTintColor: Colors.transparent,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+
+                                insetPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                titlePadding: EdgeInsets.fromLTRB(16, 16, 16, 0),
+                                contentPadding: EdgeInsets.fromLTRB(16, 12, 16, 16),
+                                actionsPadding: EdgeInsets.only(right: 4, bottom: 4),
+
+                                title: const Text('로그인 실패'),
+                                content: Text(result.message),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: Text('확인', style: TextStyle(color: Colors.black),),
+                                  ),
+                                ],
+                              ),
                             );
                           }
                         }

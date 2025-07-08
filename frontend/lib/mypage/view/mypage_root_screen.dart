@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +22,8 @@ class MypageRootScreen extends ConsumerStatefulWidget {
 }
 
 class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
+  bool _isNavigating = false;
+
   // 언어 옵션
   static const _languageOptions = [
     {'code': 'KO', 'label': '한국어'},
@@ -53,7 +57,6 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
     );
   }
 
-  // ──────────────────────────────────────────
   @override
   Widget build(BuildContext context) {
     final mypageAsync = ref.watch(mypageInfoProvider);
@@ -81,8 +84,9 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
                     context.pushNamed(MypageScrapCommunityScreen.routeName);
                   }),
                   _item('mypage.setting_info', () {
-                    context.pushNamed(MypageFixInfoScreen.routeName,
-                        extra: info.data.toJson());
+                    context.pushNamed(
+                      MypageFixInfoScreen.routeName,
+                      extra: info.data.toJson());
                   }),
                   _item('mypage.setting_language', () async {
                     final code = await _showLanguageDialog(context);
@@ -132,19 +136,26 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
     );
   }
 
-  /// 공통 리스트 아이템
-  Widget _item(String label, VoidCallback onTap,
-      {Color textColor = Colors.black}) {
+  Widget _item(String label, FutureOr<void> Function() onTap, {Color textColor = Colors.black}) {
     return Column(
       children: [
         GestureDetector(
-          onTap: onTap,
+          onTap: () async {
+            if (_isNavigating) return;
+            _isNavigating = true;
+            try {
+              await Future.sync(onTap);
+            } finally {
+              _isNavigating = false;
+            }
+          },
           child: Container(
             alignment: Alignment.centerLeft,
             width: double.infinity,
             height: 40,
             decoration: const BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey, width: 0.5)),
+              border:
+              Border(bottom: BorderSide(color: Colors.grey, width: 0.5)),
             ),
             child: Text(label.tr(),
                 style: TextStyle(fontSize: 17, color: textColor)),
