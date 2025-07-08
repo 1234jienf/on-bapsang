@@ -212,7 +212,6 @@ class _ConsumerCommunityCreateRecipeTagScreenState
         return Consumer(
           builder: (context, ref, child) {
             final keyword = ref.watch(tagSearchKeywordProvider);
-            print(keyword);
             final result = ref.watch(
               communityUploadRecipeListProvider(keyword),
             );

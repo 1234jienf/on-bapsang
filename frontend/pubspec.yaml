@@ -33,22 +33,23 @@ dependencies:
   dio: ^5.8.0+1
   flutter_secure_storage: ^9.2.4
   json_annotation: ^4.9.0
-  retrofit: ^4.5.0
-  logger: ^2.6.0
+  retrofit: ^4.4.0
+  logger: ^2.4.0  # for logging purpose
   flutter_riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
-  go_router: ^16.0.0
+  go_router: ^15.1.2
   intl: ^0.20.2
   photo_manager: ^3.7.1
   debounce_throttle: ^2.0.0
-  image: ^4.5.4
-  path_provider: ^2.1.5
-  google_maps_flutter: ^2.12.3
-  geolocator: ^14.0.2
+  image: ^4.0.17
+  path_provider: ^2.0.11
+  google_maps_flutter: ^2.12.2
+  geolocator: ^14.0.1
   http: ^1.4.0
   flutter_dotenv: ^5.2.1
-  permission_handler: ^12.0.1
+  permission_handler: ^12.0.0+1
   easy_localization: ^3.0.3
+  flutter_markdown: ^0.7.7+1
   webview_flutter: ^4.13.0
 
   # The following adds the Cupertino Icons font to your application.
@@ -60,9 +61,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  json_serializable: ^6.9.5
+  json_serializable: ^6.8.0
   retrofit_generator: '>=8.0.0 <10.0.0' # for Dart 3.3 use ^9.0.0
-
 
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -91,6 +91,10 @@ flutter:
     - asset/dummy_data/
     - lib/recipe/data/ingredient_market_mapping.json
     - lib/recipe/data/dummy_ingredient_prices_with_type.json
+    - asset/terms/kr/
+    - asset/terms/en/
+    - asset/terms/zh/
+    - asset/terms/jp/
 
 
   # To add assets to your application, add an assets section, like this:

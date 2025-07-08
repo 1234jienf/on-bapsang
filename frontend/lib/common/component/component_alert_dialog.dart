@@ -24,6 +24,7 @@ Future<void> componentAlertDialog({
         ),
         title: Center(
           child: Text(
+            textAlign: TextAlign.center,
             title,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0),
           ),

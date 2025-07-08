@@ -230,9 +230,10 @@ class _SignUpInfoScreenState extends ConsumerState<SignUpInfoScreen> {
                       const SizedBox(height: 2),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(child: _emailTextField()),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: 26),
                           _dupCheckButton(),
                         ],
                       ),
