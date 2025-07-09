@@ -146,6 +146,7 @@ class _MapsRootScreenState extends State<MapsRootScreen>
       builder:
           (context) =>
           AlertDialog(
+            backgroundColor: Colors.white,
             title: Text('위치 권한 필요'),
             content: Text(
               isPermanent
