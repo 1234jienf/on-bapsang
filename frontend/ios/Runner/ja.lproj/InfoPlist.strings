@@ -1,0 +1,3 @@
+NSLocationWhenInUseUsageDescription = "近くのレストランやカフェを見つけるために現在地を使用します";
+NSLocationAlwaysUsageDescription = "近くのレストランやカフェを見つけるために現在地を使用します";
+NSPhotoLibraryUsageDescription = "プロフィール写真の設定とレビューへの写真添付のためにフォトライブラリにアクセスします";
