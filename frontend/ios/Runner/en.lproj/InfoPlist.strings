@@ -1,0 +1,3 @@
+NSLocationWhenInUseUsageDescription = "We use your location to find nearby restaurants and cafes";
+NSLocationAlwaysUsageDescription = "We use your location to find nearby restaurants and cafes";
+NSPhotoLibraryUsageDescription = "We access your photo library to set profile pictures and attach photos to reviews";
