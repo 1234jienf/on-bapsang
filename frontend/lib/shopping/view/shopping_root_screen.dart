@@ -11,7 +11,6 @@ import 'package:frontend/shopping/view/shopping_detail/view/shopping_detail_scre
 import 'package:go_router/go_router.dart';
 
 import '../../common/const/colors.dart';
-import '../../home/component/recipe_icon.dart';
 import '../../mypage/provider/mypage_provider.dart';
 import '../component/shopping_recipe_component.dart';
 
