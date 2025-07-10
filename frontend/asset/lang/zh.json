@@ -112,6 +112,9 @@
     "recommend_title": "{user}推荐商品",
     "recipe_title": "与食谱完美匹配的食材",
     "category_title": "各分类人气食材",
+
+    "no_category": "该类别中没有可用的食材。",
+
     "cart": {
       "title": "购物车",
       "select_all": "全选",
