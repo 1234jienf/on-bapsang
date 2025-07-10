@@ -182,7 +182,7 @@
     "setting_info": "编辑个人信息",
     "setting_language": "更改语言设置",
     "withdraw": "注销账户",
-    "confirm_withdrawal": "您确定要注销账户吗？\\n所有信息将被删除。",
+    "confirm_withdrawal": "您确定要注销账户吗？\n所有信息将被删除。",
     "nicknameRequired": "请输入昵称",
     "nicknameLength": "请输入2~10个字符",
     "enterNickname": "请输入2~10字符的昵称",
@@ -196,5 +196,62 @@
     "patch_failed": "修改个人信息失败。",
 
     "save": "保存"
+  },
+  "signup": {
+    "step0_title": "同意条款",
+    "step1_title": "填写基本信息",
+    "step2_title": "选择偏好食材",
+    "step3_title": "选择口味偏好",
+    "step4_title": "选择头像图片",
+
+
+    "email": "电子邮件",
+    "email_validate": "检查重复",
+    "email_hint": "请输入您的电子邮件。",
+    "email_length": "请输入100个字符以内。",
+    "email_form": "电子邮件格式无效。",
+    "email_not_validate": "请完成邮箱重复检查。",
+    "email_invalidate": "该邮箱已被使用。",
+    "email_ok": "该邮箱可以使用。",
+
+    "password": "密码",
+    "password_hint": "8–30字，含两种字符类型",
+    "password_check": "确认密码",
+    "password_check_hint": "请再次输入密码。",
+    "password_no": "请输入密码。",
+    "password_length": "请输入8–30个字符。",
+    "password_form": "需包含大写/小写字母、数字或特殊字符中的任意两种。",
+    "password_check_no": "请确认密码。",
+    "password_mismatch": "两次输入的密码不一致。",
+
+    "nickname": "昵称",
+    "nickname_hint": "请输入2–15个字符的昵称。",
+    "nickname_no": "请输入昵称。",
+    "nickname_length": "请输入2–15个字符。",
+
+    "age": "年龄",
+    "age_hint": "请输入数字形式的年龄。",
+    "age_no": "请输入年龄。",
+    "age_form": "仅限输入数字。",
+    "age_range": "请输入有效的年龄。",
+
+    "language": "语言选择",
+    "language_hint": "请选择一种语言。",
+
+    "pass": "跳过",
+    "profile_hint": "请选择个人资料图片。",
+    "select_image": "请选择一张图片",
+    "image_auth": "需要访问照片权限",
+    "image_auth_message": "需要访问照片权限。\n请在设置中授权。",
+    "go_setting": "前往设置",
+    "no_image": "无法加载图片文件。",
+    "image_size": "图片大小为{size}MB，请压缩至15MB以下。",
+    "no": "取消",
+
+    "signup": "注册",
+    "signup_fail": "注册失败",
+    "signup_fail_message": "注册失败。请重试。",
+    "ok": "确认"
+
   }
 }

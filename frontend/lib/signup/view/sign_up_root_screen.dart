@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/layout/default_layout.dart';
@@ -65,20 +66,20 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> {
     nextStep();
   }
 
-  void updateStep2Data(List<int> favoriteTasteIds) {
+  void updateStep2Data(List<int> favoriteIngredientIds) {
     setState(() {
-      signupData.favoriteIngredientIds = favoriteTasteIds;
+      signupData.favoriteIngredientIds = favoriteIngredientIds;
     });
     nextStep();
   }
 
   void updateStep3Data({
     required List<int> favoriteDishIds,
-    required List<int> favoriteIngredientIds,
+    required List<int> favoriteTasteIds,
   }) async {
     setState(() {
       signupData.favoriteDishIds = favoriteDishIds;
-      signupData.favoriteTasteIds = favoriteIngredientIds;
+      signupData.favoriteTasteIds = favoriteTasteIds;
     });
     nextStep();
   }
@@ -91,29 +92,22 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> {
 
     // 회원가입
     try {
-      // print("[요청 아이디]${signupData.username}");
-      // print("[요청 비번]${signupData.password}");
-      // print("[요청 재료]${signupData.favoriteIngredientIds}");
-      // print("[요청 음식]${signupData.favoriteDishIds}");
-      // print("[요청 맛]${signupData.favoriteTasteIds}");
-      // print("[요청 닉네임]${signupData.nickname}");
-      // print("[요청 데이터 사진]${signupData.profileImage}");
       await ref.read(userProvider.notifier).signup(userInfo: signupData);
     } catch (e) {
       showDialog(
         context: context,
         barrierDismissible: false,
         builder:
-            (context) => AlertDialog(
-              title: const Text('회원가입 실패'),
-              content: const Text('회원가입에 실패했습니다. 다시 시도해주세요.'),
-              actions: [
-                TextButton(
-                  onPressed: () => context.pop(),
-                  child: const Text('확인'),
-                ),
-              ],
-            ),
+          (context) => AlertDialog(
+            title: Text(context.tr("signup.signup_fail")),
+            content: Text(context.tr("signup.signup_fail_message")),
+            actions: [
+              TextButton(
+                onPressed: () => context.pop(),
+                child: Text(context.tr("signup.ok")),
+              ),
+            ],
+          ),
       );
     } finally {
       if (mounted) {
@@ -135,36 +129,36 @@ class _SignUpRootScreenState extends ConsumerState<SignUpRootScreen> {
       child: Stack(
         children: [
           DefaultLayout(
-            appBar: SignUpAppBar(onBack: previousStep),
+            appBar: SignUpAppBar(onBack: previousStep, step: currentStep),
             resizeToAvoidBottomInset: true,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 20.0),
               child:
-                  currentStep == 0 ? SignUpTermsOfServiceScreen(onComplete: nextStep,) :
-                  currentStep == 1
-                      ? SignUpInfoScreen(
-                        onComplete: updateStep1Data,
-                        initialData: signupData,
-                      )
-                      : currentStep == 2
-                      ? SignUpFoodPreferListScreen(
-                        onComplete: updateStep2Data,
-                        initialData: signupData,
-                      )
-                      : currentStep == 3
-                      ? SignUpTasteDishPreferListScreen(
-                        onComplete: updateStep3Data,
-                        initialData: signupData,
-                      )
-                      : SignUpProfileImageScreen(
-                        onComplete: updateStep4Data,
-                        initialData: signupData,
-                      ),
+                currentStep == 0 ? SignUpTermsOfServiceScreen(onComplete: nextStep,) :
+                currentStep == 1
+                  ? SignUpInfoScreen(
+                    onComplete: updateStep1Data,
+                    initialData: signupData,
+                  )
+                  : currentStep == 2
+                  ? SignUpFoodPreferListScreen(
+                    onComplete: updateStep2Data,
+                    initialData: signupData,
+                  )
+                  : currentStep == 3
+                  ? SignUpTasteDishPreferListScreen(
+                    onComplete: updateStep3Data,
+                    initialData: signupData,
+                  )
+                  : SignUpProfileImageScreen(
+                    onComplete: updateStep4Data,
+                    initialData: signupData,
+                  ),
             ),
           ),
           if (isLoading)
             Container(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.black.withValues(alpha: 0.1),
               child: const Center(
                 child: CircularProgressIndicator(color: Colors.white),
               ),

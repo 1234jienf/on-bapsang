@@ -61,8 +61,6 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
     final double titleTextGap = 10.0;
     // 컴포넌트 사이 갭
     final double componentGap = 20.0;
-    // 화면 전체 양 사이드 갭
-    final double sideGap = 5.0;
 
     ref.listen<UserModelBase?>(userProvider, (prev, next) {
       if (prev != next) {
@@ -117,32 +115,28 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                   titleWidget(
                     titleKey: 'home.main_popular_recipe',
                     fontSize: 20,
-                    sidePadding: sideGap,
                   ),
                   SizedBox(height: titleTextGap),
                   RecipePopularList(),
                   SizedBox(height: 50.0,),
         
                   // 제철재료 레시피
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: sideGap),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'home.main_season_recipe'.tr(),
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            context.pushNamed(
-                                RecipeSeasonListScreen.routeName
-                            );
-                          },
-                          child: Text('${"common.more".tr()} >')
-                        )
-                      ],
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'home.main_season_recipe'.tr(),
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          context.pushNamed(
+                              RecipeSeasonListScreen.routeName
+                          );
+                        },
+                        child: Text('${"common.more".tr()} >')
+                      )
+                    ],
                   ),
                   RecipeSeasonIngredientMainComponent(),
                   SizedBox(height: titleTextGap),
@@ -159,8 +153,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                   // AI 추천 레시피
                   titleWidget(
                     titleKey: 'home.main_recommend_recipe',
-                    fontSize: 20,
-                    sidePadding: sideGap,
+                    fontSize: 20
                   ),
                   SizedBox(height: titleTextGap),
                   RecipeRecommendList(),
@@ -169,8 +162,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                   // 커뮤니티
                   titleWidget(
                     titleKey: 'home.main_community',
-                    fontSize: 20,
-                    sidePadding: sideGap
+                    fontSize: 20
                   ),
                   SizedBox(height: titleTextGap),
                 ]),
@@ -203,20 +195,16 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
 Widget titleWidget({
   required String titleKey,
   required double fontSize,
-  required double sidePadding,
 }) {
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: sidePadding),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          titleKey.tr(),
-          style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w800),
-        ),
-        // Text('더보기 >')
-      ],
-    ),
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        titleKey.tr(),
+        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w800),
+      ),
+      // Text('더보기 >')
+    ],
   );
 }
 

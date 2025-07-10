@@ -181,7 +181,7 @@
     "setting_info": "会員情報の編集",
     "setting_language": "言語設定の変更",
     "withdraw": "退会する",
-    "confirm_withdrawal": "本当に退会しますか？\\nすべての情報が削除されます。",
+    "confirm_withdrawal": "本当に退会しますか？\nすべての情報が削除されます。",
     "nicknameRequired": "ニックネームを入力してください",
     "nicknameLength": "2〜10文字で入力してください",
     "enterNickname": "2〜10文字のニックネームを入力してください",
@@ -195,5 +195,63 @@
     "patch_failed": "会員情報の変更に失敗しました。",
 
     "save": "保存"
+  },
+  "signup": {
+    "step0_title": "利用規約に同意",
+    "step1_title": "基本情報の入力",
+    "step2_title": "好みの食材を選択",
+    "step3_title": "好みを選択",
+    "step4_title": "プロフィール画像を選択",
+
+
+    "email": "メールアドレス",
+    "email_validate": "重複確認",
+    "email_hint": "メールアドレスを入力してください。",
+    "email_length": "100文字以内で入力してください。",
+    "email_form": "無効なメール形式です。",
+    "email_not_validate": "メールの重複確認を行ってください。",
+    "email_invalidate": "このメールアドレスは既に使用されています。",
+    "email_ok": "のメールアドレスは使用できます。",
+
+    "password": "パスワード",
+    "password_hint": "8〜30文字、英数字・記号のうち2種類以上を含む",
+    "password_check": "パスワード確認",
+    "password_check_hint": "もう一度パスワードを入力してください。",
+    "password_no": "パスワードを入力してください。",
+    "password_length": "8〜30文字で入力してください。",
+    "password_form": "大文字・小文字・数字・記号のうち2種類以上を含めてください。",
+    "password_check_no": "パスワード確認を入力してください。",
+    "password_mismatch": "パスワードが一致しません。",
+
+    "nickname": "ニックネーム",
+    "nickname_hint": "2〜15文字のニックネームを入力してください。",
+    "nickname_no": "ニックネームを入力してください。",
+    "nickname_length": "2〜15文字で入力してください。",
+
+    "age": "年齢",
+    "age_hint": "年齢を数字で入力してください。",
+    "age_no": "年齢を入力してください。",
+    "age_form": "数字のみ入力してください。",
+    "age_range": "正しい年齢を入力してください。",
+
+    "language": "言語選択",
+    "language_hint": "言語を選択してください。",
+
+    "pass": "スキップ",
+    "profile_hint": "プロフィール画像を選択してください。",
+    "select_image": "画像を選択してください",
+    "image_auth": "写真アクセスが必要です",
+    "image_auth_message": "写真へのアクセス許可が必要です。\n設定から許可してください。",
+    "go_setting": "設定に移動",
+    "no_image": "画像ファイルを読み込めません。",
+    "image_size": "画像サイズは{size}MBです。15MB以下にしてください。",
+    "no": "キャンセル",
+
+    "signup": "登録",
+    "signup_fail": "登録に失敗しました",
+    "signup_fail_message": "登録に失敗しました。再試行してください。",
+    "ok": "確認"
+
   }
+
 }
