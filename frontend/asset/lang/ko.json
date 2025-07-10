@@ -107,6 +107,9 @@
     "recommend_title": "{user}님께 추천하는 상품",
     "recipe_title": "레시피에 딱 맞는 재료",
     "category_title": "카테고리별 인기 재료",
+
+    "no_category": "해당 카테고리에 재료가 없습니다.",
+
     "cart": {
       "title": "장바구니",
       "select_all": "전체 선택",

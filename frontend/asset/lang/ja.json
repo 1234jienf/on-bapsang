@@ -107,6 +107,9 @@
     "recommend_title": "{user}さんへのおすすめ商品",
     "recipe_title": "レシピにぴったりの材料",
     "category_title": "カテゴリ別人気食材",
+
+    "no_category": "このカテゴリには材料がありません。",
+
     "cart": {
       "title": "カート",
       "select_all": "すべて選択",

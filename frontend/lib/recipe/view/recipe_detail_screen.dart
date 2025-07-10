@@ -383,47 +383,47 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
         error: (err, stack) => [],
         data: (recipe) => [
           Container(
-              width: double.infinity,
-              padding: EdgeInsetsGeometry.symmetric(horizontal: 10.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  final discounted = await loadDiscountedIngredients(); // JSON 불러오기
-                  final discountedIds = discounted.map((e) => e.ingredientId).toSet();
+            width: double.infinity,
+            padding: EdgeInsetsGeometry.symmetric(horizontal: 10.0),
+            child: ElevatedButton(
+              onPressed: () async {
+                final discounted = await loadDiscountedIngredients(); // JSON 불러오기
+                final discountedIds = discounted.map((e) => e.ingredientId).toSet();
 
-                  final idToName = {
-                    for (final ing in recipe.ingredients)
-                      ing.ingredientId: ing.name,
-                  };
+                final idToName = {
+                  for (final ing in recipe.ingredients)
+                    ing.ingredientId: ing.name,
+                };
 
-                  final matched = discounted
-                      .where((d) => idToName.containsKey(d.ingredientId))
-                      .map((d) =>
-                      d.copyWith(ingredientName: idToName[d.ingredientId]!))
-                      .toList();
+                final matched = discounted
+                    .where((d) => idToName.containsKey(d.ingredientId))
+                    .map((d) =>
+                    d.copyWith(ingredientName: idToName[d.ingredientId]!))
+                    .toList();
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => RecipeIngredientShoppingScreen(discountedItems: matched)
-                      )
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RecipeIngredientShoppingScreen(discountedItems: matched)
+                    )
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
-                  "recipe.buy_ingredients".tr(),
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+              ),
+              child: Text(
+                "recipe.buy_ingredients".tr(),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-              )
+              ),
+            )
           )
         ],
       )

@@ -107,6 +107,9 @@
     "recommend_title": "Recommended for You, {user}",
     "recipe_title": "Ingredients for Your Recipes",
     "category_title": "Popular Ingredients by Category",
+
+    "no_category": "No ingredients found in this category.",
+
     "cart": {
       "title": "Shopping Cart",
       "select_all": "Select All",

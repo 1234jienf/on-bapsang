@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/recipe/view/recipe_category_list_screen.dart';
+import 'package:frontend/shopping/view/shopping_category_list_screen.dart';
 import 'package:frontend/shopping/view/shopping_root_screen.dart';
 import 'package:go_router/go_router.dart';
 
@@ -70,13 +71,10 @@ Widget CategoryIcon({
             pathParameters: {'category': originalName},
           );
         }
-        // 쇼핑은 우선 root로 다 보내기
         if (type == 'shopping') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const ShoppingRootScreen(),
-            ),
+          context.pushNamed(
+            ShoppingCategoryListScreen.routeName,
+            pathParameters: {'category': originalName},
           );
         }
       },
