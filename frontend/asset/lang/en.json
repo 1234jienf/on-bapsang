@@ -181,7 +181,7 @@
     "setting_info": "Edit Profile",
     "setting_language": "Change Language",
     "withdraw": "Delete Account",
-    "confirm_withdrawal": "Are you sure you want to withdraw?\\nAll information will be deleted.",
+    "confirm_withdrawal": "Are you sure you want to withdraw?\nAll information will be deleted.",
     "nicknameRequired": "Please enter a nickname",
     "nicknameLength": "Please enter 2–10 characters",
     "enterNickname": "Enter a 2–10 character nickname",
@@ -192,5 +192,61 @@
     "selectAtLeastOne": "Please select at least one",
     "patch_failed": "Failed to update your information.",
     "save": "Save"
+  },
+  "signup": {
+    "step0_title": "Agree to Terms",
+    "step1_title": "Enter Basic Info",
+    "step2_title": "Select Preferred Ingredients",
+    "step3_title": "Choose Preferences",
+    "step4_title": "Choose Profile Image",
+
+    "email": "Email",
+    "email_validate": "Check Duplicate",
+    "email_hint": "Please enter your email.",
+    "email_length": "Please enter no more than 100 characters.",
+    "email_form": "Invalid email format.",
+    "email_not_validate": "Please complete the email duplication check.",
+    "email_invalidate": "This email is already in use.",
+    "email_ok": "This email is available.",
+
+    "password": "Password",
+    "password_hint": "8–30 characters, at least 2 types: letters, numbers, symbols",
+    "password_check": "Confirm Password",
+    "password_check_hint": "Please re-enter your password.",
+    "password_no": "Please enter a password.",
+    "password_length": "Please enter 8–30 characters.",
+    "password_form": "8–30 chars with 2 types.",
+    "password_check_no": "Please confirm your password.",
+    "password_mismatch": "Passwords do not match.",
+
+    "nickname": "Nickname",
+    "nickname_hint": "Enter a nickname between 2–15 characters.",
+    "nickname_no": "Please enter a nickname.",
+    "nickname_length": "Enter between 2–15 characters.",
+
+    "age": "Age",
+    "age_hint": "Enter your age using numbers only.",
+    "age_no": "Please enter your age.",
+    "age_form": "Numbers only.",
+    "age_range": "Please enter a valid age.",
+
+    "language": "Language Selection",
+    "language_hint": "Please select a language.",
+
+    "pass": "Skip",
+    "profile_hint": "Please select a profile image.",
+    "select_image": "Please select an image",
+    "image_auth": "Photo access required",
+    "image_auth_message": "Photo access is required.\nPlease allow it in Settings.",
+    "go_setting": "Go to Settings",
+    "no_image": "Failed to load image file.",
+    "image_size": "The image size is {size}MB. Please reduce it to under 15MB.",
+    "no": "Cancel",
+
+    "signup": "Sign Up",
+    "signup_fail": "Sign-Up Failed",
+    "signup_fail_message": "Failed to sign up. Please try again.",
+    "ok": "OK"
+
   }
 }

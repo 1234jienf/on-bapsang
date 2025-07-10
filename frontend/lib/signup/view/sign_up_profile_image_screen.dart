@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:io';
@@ -6,6 +7,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:photo_view/photo_view.dart';
 
 import 'package:frontend/signup/model/sign_up_request_model.dart';
 import 'package:frontend/common/const/colors.dart';
@@ -113,16 +115,16 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
           (context) => AlertDialog(
         backgroundColor: Colors.white,
         title: Text(
-          '사진 접근 권한 필요',
+          context.tr("signup.image_auth"),
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         ),
-        content: Text('사진 접근 권한이 필요합니다.\n설정에서 권한을 허용해주세요.'),
+        content: Text(context.tr("signup.image_auth_message")),
         actions: [
           TextButton(
             onPressed: () {
               context.pop();
             },
-            child: Text('취소'),
+            child: Text(context.tr("signup.no")),
           ),
           TextButton(
             onPressed: () async {
@@ -132,7 +134,7 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
               // 설정에서 돌아온 후 다시 권한 확인
               // _recheckPermission();
             },
-            child: Text('설정으로 이동'),
+            child: Text(context.tr("signup.go_setting")),
           ),
         ],
       ),
@@ -153,13 +155,14 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
     isLoading = false;
     hasMore = true;
 
-    final firstPage =
-    await albums.first.getAssetListPaged(page: currentPage, size: pageSize);
+    final firstPage = await albums.first.getAssetListPaged(page: currentPage, size: pageSize);
 
     imageList = firstPage;
     selectedImage = imageList.isNotEmpty ? imageList.first : null;
 
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _loadMorePhotos() async {
@@ -178,10 +181,14 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
     }
 
     isLoading = false;
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _selectImage(AssetEntity image) {
+    if (!mounted) return;
+
     setState(() {
       selectedImage = image;
       selectedSamplePath = null;
@@ -201,10 +208,10 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
           child: Column(
             children: [
               const SizedBox(height: 16),
-              const Align(
+              Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  '프로필 이미지를 선택해주세요.',
+                  context.tr("signup.profile_hint"),
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                 ),
               ),
@@ -280,7 +287,6 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
                     final file = File(p.join(dir.path, p.basename(selectedSamplePath!)));
                     await file.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
 
-                    print(file);
                     widget.onComplete(file);
                     return;
                   }
@@ -290,7 +296,7 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
 
                     if (file == null || !(await file.exists())) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('이미지 파일을 불러올 수 없습니다.')),
+                        SnackBar(content: Text(context.tr('signup.no_image'))),
                       );
                       return;
                     }
@@ -302,13 +308,18 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                              '이미지 용량이 ${fileSizeInMB.toStringAsFixed(2)}MB입니다. 15MB 이하로 줄여주세요.'),
-                        ),
+                            context.tr(
+                              'signup.image_size',
+                              namedArgs: {
+                                'size': fileSizeInMB.toStringAsFixed(2),
+                              },
+                            )
+                          )
+                        )
                       );
                       return;
                     }
 
-                    print(file);
                     widget.onComplete(file);
                   }
                 },
@@ -319,9 +330,9 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.black,
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Text(
-                      '회원가입',
+                      context.tr("signup.signup"),
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
@@ -343,25 +354,84 @@ class _SignUpProfileImageScreenState extends State<SignUpProfileImageScreen> wit
     final size = width * 0.5;
 
     if (selectedSamplePath != null) {
-      return Image.asset(
-        selectedSamplePath!,
+      return SizedBox(
         width: size,
         height: size,
-        fit: BoxFit.cover,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(size / 2),
+          child: PhotoView(
+            key: ValueKey(selectedImage?.id ?? selectedSamplePath),
+            imageProvider: AssetImage(selectedSamplePath!),
+            initialScale: PhotoViewComputedScale.covered,
+            basePosition: Alignment.center,
+            minScale: PhotoViewComputedScale.covered,
+            maxScale: PhotoViewComputedScale.covered * 2.0,
+            backgroundDecoration: const BoxDecoration(color: Colors.white),
+          ),
+        ),
       );
     }
 
     if (selectedImage != null) {
-      return SelectedImageWidget(asset: selectedImage!, size: size.round());
+      return SizedBox(
+        width: size,
+        height: size,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(size / 2),
+          child: FutureBuilder<Uint8List?>(
+            future: selectedImage!.thumbnailDataWithSize(ThumbnailSize(1024, 1024)),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container(
+                  color: Colors.grey[200],
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+
+              if (!snapshot.hasData || snapshot.data == null) {
+                return Container(
+                  color: Colors.grey[200],
+                  child:  Center(
+                    child: Text(context.tr("signup.no_image")),
+                  ),
+                );
+              }
+
+              return PhotoView(
+                key: ValueKey(selectedImage?.id ?? selectedSamplePath),
+                imageProvider: MemoryImage(snapshot.data!),
+                initialScale: PhotoViewComputedScale.covered,
+                basePosition: Alignment.center,
+                minScale: PhotoViewComputedScale.covered,
+                maxScale: PhotoViewComputedScale.covered * 2.0,
+                backgroundDecoration: const BoxDecoration(color: Colors.white),
+              );
+            },
+          ),
+        ),
+      );
     }
 
-    return Container(
+
+    return SizedBox(
       width: size,
       height: size,
-      color: Colors.grey,
-      child: const Center(child: Text('이미지를 선택하세요')),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(size / 2),
+        child: Container(
+          color: gray200,
+          child: Center(
+            child: Text(
+              context.tr("signup.select_image")
+            ),
+          ),
+        ),
+      ),
     );
   }
+
 }
 
 class SelectedImageWidget extends StatelessWidget {
