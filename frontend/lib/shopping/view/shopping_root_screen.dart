@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/appbar/home_appbar.dart';
 import 'package:frontend/common/layout/default_layout.dart';
+import 'package:frontend/home/component/category_icons.dart';
 import 'package:frontend/shopping/component/shopping_recipe_category.dart';
 import 'package:frontend/shopping/view/shopping_detail/view/shopping_detail_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -74,7 +75,7 @@ class _ConsumerShoppingRootScreenState extends ConsumerState<ShoppingRootScreen>
             ),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                RecipeIcon(),
+                CategoryIcons(type: 'shopping'),
                 const SizedBox(height: 16.0),
               ]),
             ),

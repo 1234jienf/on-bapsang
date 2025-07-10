@@ -57,8 +57,6 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
     final double titleTextGap = 10.0;
     // 컴포넌트 사이 갭
     final double componentGap = 20.0;
-    // 화면 전체 양 사이드 갭
-    final double sideGap = 5.0;
 
     return DefaultLayout(
         appBar: RecipeAppbar(isImply: false, searchMessage: "recipe.search_hint",),
@@ -75,23 +73,17 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 15.0),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
-                    SizedBox(height: componentGap),
+                    SizedBox(height: 10.0),
                     GestureDetector(
                       onTap: () {
                         context.pushNamed(
                           RecipeSeasonListScreen.routeName
                         );
                       },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: sideGap),
-                        child: Container(
-                          decoration: BoxDecoration(color: Colors.grey),
-                          child: Image.asset(
-                            bannerAsset(context),
-                            width: double.infinity,
-                            fit: BoxFit.fitWidth,
-                          ),
-                        ),
+                      child: Image.asset(
+                        bannerAsset(context),
+                        width: double.infinity,
+                        fit: BoxFit.fitWidth,
                       ),
                     ),
                     SizedBox(height: componentGap),
@@ -103,7 +95,6 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
                     titleWidget(
                       title: "home.main_popular_recipe".tr(),
                       fontSize: 20,
-                      sidePadding: sideGap,
                     ),
                     SizedBox(height: titleTextGap),
                     RecipePopularList(),
@@ -113,7 +104,6 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
                     titleWidget(
                       title: "home.main_recommend_recipe".tr(),
                       fontSize: 20,
-                      sidePadding: sideGap,
                     ),
                     SizedBox(height: titleTextGap),
                     RecipeRecommendList(),
@@ -133,19 +123,14 @@ class _RecipeRootScreenState extends ConsumerState<RecipeRootScreen> {
 Widget titleWidget({
   required String title,
   required double fontSize,
-  required double sidePadding,
 }) {
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: sidePadding),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w700),
-        ),
-        // Text('더보기 >'),  // 더보기가 있나?
-      ],
-    ),
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        title,
+        style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w700),
+      ),
+    ],
   );
 }
