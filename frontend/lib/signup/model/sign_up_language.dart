@@ -9,6 +9,8 @@ final Map<SignUpLanguage, Map<String, String>> signUpLanguage = {
     'term2': '(필수) 개인정보 수집 및 이용 동의',
     'term3': '(필수) 위치기반 서비스 이용 약관',
     'term4': '(필수) 14세 이상입니다',
+    'welcome': '환영합니다!',
+    'description': '전 세계 레시피를 한국 재료로, 온밥상입니다.',
   },
   SignUpLanguage.en: {
     'title': 'Sign Up',
@@ -18,6 +20,8 @@ final Map<SignUpLanguage, Map<String, String>> signUpLanguage = {
     'term2': '(Required) Privacy Policy',
     'term3': '(Required) Location-Based Terms',
     'term4': '(Required) Over 14 years old',
+    'welcome': 'Welcome!',
+    'description': 'Global recipes with Korean ingredients, Onbapsang.',
   },
   SignUpLanguage.zh: {
     'title': '注册',
@@ -27,6 +31,8 @@ final Map<SignUpLanguage, Map<String, String>> signUpLanguage = {
     'term2': '（必填）隐私政策',
     'term3': '（必填）基于位置的服务条款',
     'term4': '（必填）年满14岁',
+    'welcome': '欢迎！',
+    'description': '用韩国食材制作全球食谱，온밥상。',
   },
   SignUpLanguage.jp: {
     'title': '会員登録',
@@ -36,5 +42,7 @@ final Map<SignUpLanguage, Map<String, String>> signUpLanguage = {
     'term2': '（必須）個人情報の取り扱い',
     'term3': '（必須）位置情報利用規約',
     'term4': '（必須）14歳以上です',
+    'welcome': 'いらっしゃいませ！',
+    'description': 'グローバルレシピを韓国の食材で、オンバプサンです。',
   },
 };
