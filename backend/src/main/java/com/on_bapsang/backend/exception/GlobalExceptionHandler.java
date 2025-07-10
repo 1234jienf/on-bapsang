@@ -31,10 +31,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
+        ex.printStackTrace(); // 로그에 스택트레이스 출력
         Map<String, Object> error = new HashMap<>();
         error.put("timestamp", LocalDateTime.now());
         error.put("status", 500);
-        error.put("message", "서버 내부 오류가 발생했습니다.");
+        error.put("message", "서버 내부 오류가 발생했습니다: " + ex.getMessage());
+        error.put("error", ex.getClass().getSimpleName());
         return ResponseEntity.internalServerError().body(error);
     }
 }

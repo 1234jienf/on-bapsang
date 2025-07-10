@@ -9,6 +9,7 @@ import com.on_bapsang.backend.repository.*;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DailyRecommendationService {
 
     private final RecipeRepository recipeRepository;
@@ -39,7 +41,6 @@ public class DailyRecommendationService {
             List<String> recipeIds = first.getRecipeIds();
             return recipeRepository.findAllById(recipeIds);
         }
-
 
         // 2. 시작 ID 범위
         DailyIndex index = dailyIndexRepository.findById(1L).orElseGet(DailyIndex::new);
@@ -87,7 +88,8 @@ public class DailyRecommendationService {
         Set<String> selectedIds = topRecipes.stream().map(Recipe::getRecipeId).collect(Collectors.toSet());
         Collections.shuffle(candidates);
         for (Recipe r : candidates) {
-            if (topRecipes.size() >= 6) break;
+            if (topRecipes.size() >= 6)
+                break;
             if (!selectedIds.contains(r.getRecipeId())) {
                 topRecipes.add(r);
                 selectedIds.add(r.getRecipeId());
@@ -96,10 +98,11 @@ public class DailyRecommendationService {
 
         // 7. 그래도 부족하면 전체 DB에서 채움
         if (topRecipes.size() < 6) {
-            List<Recipe> all = recipeRepository.findAll();  // 성능 주의
+            List<Recipe> all = recipeRepository.findAll(); // 성능 주의
             Collections.shuffle(all);
             for (Recipe r : all) {
-                if (topRecipes.size() >= 6) break;
+                if (topRecipes.size() >= 6)
+                    break;
                 if (!selectedIds.contains(r.getRecipeId())) {
                     topRecipes.add(r);
                     selectedIds.add(r.getRecipeId());
@@ -121,19 +124,38 @@ public class DailyRecommendationService {
         return topRecipes;
     }
 
-
     // 하루마다 시작 레시피 ID 갱신
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void updateDailyIndex() {
-        DailyIndex index = dailyIndexRepository.findById(1L).orElseGet(DailyIndex::new);
+        log.info("Daily recommendation update started at midnight");
+
+        // 기존 모든 사용자의 일일 추천 데이터 삭제 (새로운 추천을 위해)
+        userDailyRecipeRepository.deleteAll();
+        log.info("Cleared all previous daily recommendations");
+
+        DailyIndex index = dailyIndexRepository.findById(1L).orElseGet(() -> {
+            DailyIndex newIndex = new DailyIndex();
+            newIndex.setId(1L);
+            newIndex.setStartRecipeId(7016813L);
+            return newIndex;
+        });
 
         long maxId = 7038813L; // 예시
-        long next = index.getStartRecipeId() + 100;
-        if (next > maxId) next = 7016813L;
+        Long currentStartId = index.getStartRecipeId();
+        if (currentStartId == null) {
+            currentStartId = 7016813L;
+        }
+
+        long next = currentStartId + 100;
+        if (next > maxId) {
+            next = 7016813L;
+        }
 
         index.setStartRecipeId(next);
         dailyIndexRepository.save(index);
+
+        log.info("Daily index updated: {} -> {}", currentStartId, next);
     }
 
     @AllArgsConstructor
@@ -147,12 +169,11 @@ public class DailyRecommendationService {
         Set<String> scrappedIds = (user == null)
                 ? Collections.emptySet()
                 : new HashSet<>(recipeScrapRepository
-                .findRecipeIdsByUserId(user.getUserId()));   // ★ ID 기반
+                        .findRecipeIdsByUserId(user.getUserId())); // ★ ID 기반
 
         return recipes.stream().map(r -> {
 
-            List<String> ingrNames =
-                    recipeIngredientRepository.findIngredientNamesByRecipeId(r.getRecipeId());
+            List<String> ingrNames = recipeIngredientRepository.findIngredientNamesByRecipeId(r.getRecipeId());
 
             return new RecipeSummaryDto(
                     r.getRecipeId(),
@@ -166,7 +187,7 @@ public class DailyRecommendationService {
                     r.getMethod(),
                     r.getMaterialType(),
                     r.getImageUrl(),
-                    scrappedIds.contains(r.getRecipeId())   // ★ O(1) 체크
+                    scrappedIds.contains(r.getRecipeId()) // ★ O(1) 체크
             );
         }).collect(Collectors.toList());
     }
