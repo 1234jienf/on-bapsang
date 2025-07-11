@@ -25,7 +25,6 @@ class MypageFixInfoScreen extends ConsumerStatefulWidget {
 
 class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
   final nicknameController = TextEditingController();
-  final ageController = TextEditingController();
 
   List<int> selectedIngredientIds = [];
   List<int> selectedTasteIds = [];
@@ -68,7 +67,6 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
   ];
 
   String? nicknameError;
-  String? ageError;
   String? ingredientError;
 
   bool _isLoading = false;
@@ -77,7 +75,6 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
   void initState() {
     super.initState();
     nicknameController.text = widget.info?.nickname ?? '';
-    ageController.text = widget.info?.age.toString() ?? '';
 
     // print(widget.info?.favoriteIngredients);
     // print(widget.info?.favoriteDishes);
@@ -91,7 +88,6 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
   @override
   void dispose() {
     nicknameController.dispose();
-    ageController.dispose();
     super.dispose();
   }
 
@@ -101,25 +97,15 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
     return null;
   }
 
-  String? _validateAge(String v) {
-    if (v.isEmpty) return "mypage.ageRequired".tr();
-    final n = int.tryParse(v);
-    if (n == null) return "mypage.ageNumberOnly".tr();
-    if (n < 1 || n > 100) return "mypage.ageInvalid".tr();
-    return null;
-  }
-
   String? _validateIds(List<int> ids) =>
       ids.isEmpty ? "mypage.selectAtLeastOne".tr() : null;
 
   bool _validateAll() {
     setState(() {
       nicknameError = _validateNickname(nicknameController.text);
-      ageError = _validateAge(ageController.text);
       ingredientError = _validateIds(selectedIngredientIds);
     });
     return nicknameError == null &&
-        ageError == null &&
         ingredientError == null;
   }
 
@@ -131,7 +117,7 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
 
     final patchData = UserPatchModel(
       nickname: nicknameController.text,
-      age: int.parse(ageController.text),
+      age: 30,
       favoriteTasteIds: selectedTasteIds,
       favoriteDishIds: selectedDishIds,
       favoriteIngredientIds: selectedIngredientIds,
@@ -207,19 +193,6 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
                           }
                         },
                       ),
-                      _buildTextField(
-                        title: "common.age",
-                        hintText: "mypage.enterAge".tr(),
-                        controller: ageController,
-                        errorText: ageError,
-                        keyboardType: TextInputType.number,
-                        onChanged: (_) {
-                          if (ageError != null) {
-                            setState(() =>
-                            ageError = _validateAge(ageController.text));
-                          }
-                        },
-                      ),
                       _buildSelectField(
                         title: "common.favoriteIngredient",
                         options: ingredientOptions,
@@ -248,7 +221,7 @@ class _MypageFixInfoScreenState extends ConsumerState<MypageFixInfoScreen> {
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  bottom: bottomInset > 0 ? bottomInset : 32,
+                  bottom: bottomInset > 0 ? bottomInset : 10,
                   top: 8,
                 ),
                 child: GestureDetector(
