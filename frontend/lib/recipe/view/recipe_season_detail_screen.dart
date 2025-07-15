@@ -56,7 +56,7 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
     List<Widget> recipeSection = [];
 
     if (state is CursorSimplePaginationLoading) {
-      recipeSection.add(Center(child: CircularProgressIndicator()));
+      recipeSection.add(SizedBox(height:80, child: Center(child: CircularProgressIndicator())));
     } else if (state is CursorSimplePaginationError) {
       recipeSection.add(Text('에러: ${state.message}'));
     } else if (state is CursorSimplePagination<RecipeModel>) {
@@ -83,6 +83,8 @@ class _RecipeSeasonDetailScreenState extends ConsumerState<RecipeSeasonDetailScr
     return DefaultLayout(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        elevation: 0,
+        surfaceTintColor: Colors.white,
         centerTitle: true,
         title: Text(
           "recipe.season_card_title".tr(namedArgs: {'ingredient': widget.seasonIngredientInfo.prdlstNmTranslated}),

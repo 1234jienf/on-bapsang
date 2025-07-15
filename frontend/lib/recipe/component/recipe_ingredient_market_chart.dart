@@ -19,7 +19,10 @@ class _RecipeIngredientMarketChartState extends State<RecipeIngredientMarketChar
   @override
   Widget build(BuildContext context) {
     if (widget.marketDataList.isEmpty) {
-      return Center(child: Text('해당 재료는 시장별 데이터를 제공하지 않습니다.'));
+      return SizedBox(
+        height: 280,
+        child: Center(child: Text('해당 재료는 시장별 데이터를 제공하지 않습니다.'))
+      );
     }
 
     final minMarketPrice = widget.marketDataList.map((data) => data.averagePrice).reduce((a, b) => a < b ? a : b);
@@ -32,6 +35,7 @@ class _RecipeIngredientMarketChartState extends State<RecipeIngredientMarketChar
         padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
         child: BarChart(
           BarChartData(
+            // 툴팁
             barTouchData: BarTouchData(
               touchTooltipData: BarTouchTooltipData(
                 fitInsideHorizontally: true,
@@ -43,31 +47,34 @@ class _RecipeIngredientMarketChartState extends State<RecipeIngredientMarketChar
               show: true,
               drawVerticalLine: false,
               getDrawingHorizontalLine: (value) => const FlLine(
-                  color: gray200,
-                  strokeWidth: 1
+                color: gray200,
+                strokeWidth: 1
               ),
             ),
             backgroundColor: Colors.white,
             titlesData: FlTitlesData(
               bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 50,
-                    getTitlesWidget: (value, meta) {
-                      int index = value.toInt();
-                      if (index >= 0 && index < widget.marketDataList.length) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 50,
+                  getTitlesWidget: (value, meta) {
+                    int index = value.toInt();
+                    if (index >= 0 && index < widget.marketDataList.length) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Transform.rotate(
+                          angle: -0.4,
                           child: Text(
                             widget.marketDataList[index].market,
-                            style: TextStyle(fontSize: 12),
+                            style: const TextStyle(fontSize: 12),
                             textAlign: TextAlign.center,
                           ),
-                        );
-                      }
-                      return Text('');
-                    },
-                  )
+                        )
+                      );
+                    }
+                    return Text('');
+                  },
+                )
               ),
               rightTitles: AxisTitles(
                 sideTitles: SideTitles(

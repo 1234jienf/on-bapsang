@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/const/colors.dart';
 import 'package:frontend/community/view/community_create_screen.dart';
 import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/recipe/repository/recipe_repository.dart';
@@ -54,6 +55,8 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
+          surfaceTintColor: primaryColor,
+          // scrolledUnderElevation: 0,
           actions: [
             recipeAsync.when(
               loading: () => IconButton(icon: Icon(Icons.bookmark_border), onPressed: (){},),
@@ -515,7 +518,7 @@ Widget gradientWidget({
             children: [
               Text(
                 name,
-                style: TextStyle(fontSize: 16, color: Colors.blue), // 시세 있는 애들은 어떻게 표시?
+                style: TextStyle(fontSize: 16, color: primaryColor),
               ),
               Text(
                 quantity,

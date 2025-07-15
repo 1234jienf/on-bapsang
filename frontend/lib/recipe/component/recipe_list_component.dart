@@ -35,43 +35,51 @@ class _RecipeListComponentState extends ConsumerState<RecipeListComponent> {
         );
       },
       child: Padding(
-        padding: EdgeInsetsGeometry.symmetric(vertical: 10.0),
+        padding: EdgeInsetsGeometry.symmetric(vertical: 10.0, horizontal: 5.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
               flex: 2,
               child: Container(
-                height: 85,
-                decoration: BoxDecoration(color: Colors.grey, borderRadius: BorderRadius.all(Radius.circular(10))),
-                child: Image.network(
-                  widget.recipeInfo.imageUrl,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      color: Colors.grey[300],
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  },
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[300],
-                      child: Icon(Icons.error, size: 50),
-                    );
-                  },
-                )
-              )
+                height: 95,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  child: Image.network(
+                    widget.recipeInfo.imageUrl,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: Colors.grey[300],
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.grey[300],
+                        child: Icon(Icons.error, size: 50),
+                      );
+                    },
+                  ),
+                ),
+              ),
             ),
             SizedBox(width: 15),
 
             Expanded(
-              flex: 5,
+              flex: 4,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     widget.recipeInfo.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                   ),
                   SizedBox(height: 7.0,),
@@ -95,15 +103,16 @@ class _RecipeListComponentState extends ConsumerState<RecipeListComponent> {
                         height: 18,
                         fit: BoxFit.contain
                       ),
-                      SizedBox(width: 10),
-                      SizedBox(
-                        width: 80,
+                      SizedBox(width: 7),
+                      Flexible(
                         child: Text(
                           widget.recipeInfo.difficulty,
                           overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                           style: const TextStyle(fontSize: 14),
                         ),
-                      ),                    ],
+                      )
+                    ],
                   )
                 ],
               ),

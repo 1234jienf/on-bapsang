@@ -137,14 +137,55 @@ class _RecipeCardState extends ConsumerState<RecipeCard> {
                 style:
                 const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
               ),
-              Text(
-                '${recipe.difficulty}, '
-                    '${recipe.portion != 'nan' ? recipe.portion : '-'}, '
-                    '${recipe.method}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 10),
+              const SizedBox(height: 3),
+              Row(
+                children: [
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Icon(Icons.access_time, size: 14),
+                        SizedBox(width: 2),
+                        Expanded(
+                          child: Text(
+                            recipe.time != 'nan' ? recipe.time : '-',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'asset/img/chef_icon.png',
+                          width: 14,
+                          height: 14,
+                          fit: BoxFit.contain,
+                        ),
+                        SizedBox(width: 2),
+                        Expanded(
+                          child: Text(
+                            recipe.difficulty,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
+              // Text(
+              //   '${recipe.difficulty}, '
+              //       '${recipe.portion != 'nan' ? recipe.portion : '-'}, '
+              //       '${recipe.method}',
+              //   maxLines: 1,
+              //   overflow: TextOverflow.ellipsis,
+              //   style: const TextStyle(fontSize: 10),
+              // ),
             ],
           ),
         );
