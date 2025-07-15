@@ -39,6 +39,8 @@ class _RecipeSeasonListScreenState extends ConsumerState<RecipeSeasonListScreen>
     return DefaultLayout(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        elevation: 0,
+        surfaceTintColor: Colors.white,
         centerTitle: true,
         title: Text(
           "recipe.season_title".tr(namedArgs: {"month": DateTime.now().month.toString()}),

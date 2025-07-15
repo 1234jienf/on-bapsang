@@ -39,20 +39,25 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
     return showDialog<String>(
       context: context,
       builder: (ctx) => SimpleDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        title: Text('mypage.setting_language'.tr(),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        backgroundColor: Colors.white,
+        title: Padding(
+          padding: EdgeInsetsGeometry.only(bottom: 10.0),
+          child: Text(
+            'mypage.setting_language'.tr(),
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
-        children: _languageOptions
-            .map(
-              (e) => SimpleDialogOption(
-            onPressed: () => Navigator.pop(ctx, e['code']),
-            child: Center(
-                child: Text(e['label']!,
-                    style: const TextStyle(fontSize: 16))),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)
           ),
-        )
-            .toList(),
+        ),
+        children: _languageOptions
+          .map(
+            (e) => SimpleDialogOption(
+          onPressed: () => Navigator.pop(ctx, e['code']),
+          child: Center(
+            child: Text(e['label']!,
+              style: const TextStyle(fontSize: 16))),
+          ),
+        ).toList(),
       ),
     );
   }

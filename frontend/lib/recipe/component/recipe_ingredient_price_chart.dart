@@ -19,7 +19,10 @@ class _RecipeIngredientPriceChartState extends State<RecipeIngredientPriceChart>
   @override
   Widget build(BuildContext context) {
     if (widget.ingredientPriceDataList.isEmpty) {
-      return Center(child: Text('해당 재료는 시세 데이터를 제공하지 않습니다.'));
+      return SizedBox(
+        height: 280,
+        child: Center(child: Text('해당 재료는 시세 데이터를 제공하지 않습니다.'))
+      );
     }
 
     final minIngredientPrice = widget.ingredientPriceDataList.map((data) => data.price).reduce((a, b) => a < b ? a : b);

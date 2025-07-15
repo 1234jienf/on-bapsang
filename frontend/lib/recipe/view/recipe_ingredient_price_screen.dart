@@ -24,14 +24,14 @@ class RecipeIngredientPriceScreen extends ConsumerStatefulWidget {
 class _RecipeIngredientPriceScreenState extends ConsumerState<RecipeIngredientPriceScreen> {
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    // final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
     final ingredientTimeData = ref.watch(ingredientTimeSeriesProvider(widget.ingredientId));
     final ingredientRegionData = ref.watch(ingredientRegionProvider(widget.ingredientId));
 
     return SizedBox(
-      height: screenHeight * 0.9,
+      // height: screenHeight * 0.9,
       width: screenWidth,
       child: Padding(
           padding: EdgeInsets.all(20.0),
@@ -39,9 +39,29 @@ class _RecipeIngredientPriceScreenState extends ConsumerState<RecipeIngredientPr
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  "recipe.ingredient_price_title".tr(namedArgs: {"ingredient": widget.ingredientName}),
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                SizedBox(
+                  height: 40, // 충분한 높이 확보
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Center(
+                        child: Text(
+                          "recipe.ingredient_price_title".tr(namedArgs: {"ingredient": widget.ingredientName}),
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+
+                      Positioned(
+                        right: 0,
+                        top: -5,
+                        child: IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 20),
 
@@ -56,8 +76,8 @@ class _RecipeIngredientPriceScreenState extends ConsumerState<RecipeIngredientPr
                 SizedBox(height: 10),
                 ingredientTimeData.when(
                     data: (data) => RecipeIngredientPriceChart(ingredientPriceDataList: data.monthlyPrices),
-                    error: (err, stack) => Center(child: Text('${"common.error_message".tr()} $err')),
-                    loading: () => Center(child: CircularProgressIndicator()),
+                    error: (err, stack) => SizedBox(height:280, child: Center(child: Text('${"common.error_message".tr()} $err'))),
+                    loading: () => SizedBox(height:280, child: Center(child: CircularProgressIndicator())),
                 ),
 
                 SizedBox(height:5),
@@ -73,8 +93,8 @@ class _RecipeIngredientPriceScreenState extends ConsumerState<RecipeIngredientPr
                 SizedBox(height: 10),
                 ingredientRegionData.when(
                   data: (data) => RecipeIngredientMarketChart(marketDataList: data.markets),
-                  error: (err, stack) => Center(child: Text('${"common.error_message".tr()} $err')),
-                  loading: () => Center(child: CircularProgressIndicator()),
+                  error: (err, stack) => SizedBox(height:280, child: Center(child: Text('${"common.error_message".tr()} $err'))),
+                  loading: () => SizedBox(height: 280, child: Center(child: CircularProgressIndicator())),
                 )
               ],
             ),

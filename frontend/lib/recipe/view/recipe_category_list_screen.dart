@@ -53,6 +53,14 @@ class _RecipeCategoryListScreenState extends ConsumerState<RecipeCategoryListScr
     );
   }
 
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    ref.invalidate(categoryPaginationProvider(widget.categoryName)); // 언어 바뀌면 업데이트
+  }
+
+
   void _scrollListener() {
     if (_isFetchingMore) return;
 
@@ -89,6 +97,8 @@ class _RecipeCategoryListScreenState extends ConsumerState<RecipeCategoryListScr
       appBar: AppBar(
         title: Text(title),
         backgroundColor: Colors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 10.0),
