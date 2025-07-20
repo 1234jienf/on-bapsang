@@ -243,9 +243,9 @@ class MainProvider extends ChangeNotifier {
               (_, state) => RecipeDetailScreen(id: state.pathParameters['id']!),
         ),
         GoRoute(
-          path: '/shopping/detail',
+          path: '/shopping/detail/:id',
           name: 'ShoppingDetailScreen',
-          builder: (_, state) => const ShoppingDetailScreen(),
+          builder: (_, state) => ShoppingDetailScreen(id : state.pathParameters['id']!),
           routes: [
             GoRoute(
               path: 'payment',

@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/shopping/view/shopping_detail/view/shopping_detail_related_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../common/const/colors.dart';
 import '../../../../common/divider/component_divider.dart';
+import '../../../../recipe/component/recipe_ingredient_price_chart.dart';
 import '../../../component/shopping_recipe_add_component.dart';
+import '../../../provider/shopping_detail_provider.dart';
 
-class ShoppingDetailScreen extends StatefulWidget {
+class ShoppingDetailScreen extends ConsumerStatefulWidget {
   static String get routeName => 'ShoppingDetailScreen';
+  final String id;
 
-  const ShoppingDetailScreen({super.key});
+  const ShoppingDetailScreen({super.key, required this.id});
 
   @override
-  State<ShoppingDetailScreen> createState() => _ShoppingDetailScreenState();
+  ConsumerState<ShoppingDetailScreen> createState() => _ConsumerShoppingDetailScreenState();
 }
 
-class _ShoppingDetailScreenState extends State<ShoppingDetailScreen> {
+class _ConsumerShoppingDetailScreenState extends ConsumerState<ShoppingDetailScreen> {
   final ScrollController controller = ScrollController();
   int selectedIndex = 0;
 
@@ -32,104 +37,138 @@ class _ShoppingDetailScreenState extends State<ShoppingDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(shoppingDetailProvider(widget.id));
+    // final ingredientTimeData = ref.watch(ingredientTimeSeriesProvider(widget.ingredientId));
+    // final ingredientRegionData = ref.watch(ingredientRegionProvider(widget.ingredientId));
+
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: CustomScrollView(
-              controller: controller,
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Stack(
-                    children: [
-                      Image.asset(
-                        'asset/img/shopping_detail.png',
-                        fit: BoxFit.cover,
-                        height: 402,
-                        width: 402,
-                      ),
-                      Positioned(
-                        top: 402 * 1 / 6,
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    context.pop();
-                                  },
+      body : state.when(data: <ShoppingDetailModel>(model) => _content(model), error: (error, stackTrace) => Center(child : Column(mainAxisAlignment: MainAxisAlignment.center, children: [Text('오류 발생')],)), loading: () => Center(child: CircularProgressIndicator(),)),
+      bottomNavigationBar: ShoppingRecipeAddComponent(),
+    );
+  }
+
+  Widget _content(model) {
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: CustomScrollView(
+            controller: controller,
+            slivers: [
+              SliverToBoxAdapter(
+                child: Stack(
+                  children: [
+                    Image.network(
+                      model.shoppingIngredientInfo.image_url ?? 'asset/img/shopping_detail.png',
+                      fit: BoxFit.cover,
+                      height: 402,
+                      width: 402,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          height: 402,
+                          width: 402,
+                          color: Colors.grey[300],
+                          child: Icon(Icons.image_not_supported, size: 64),
+                        );
+                      },
+                    ),
+                    Positioned(
+                      top: 402 * 1 / 6,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  context.pop();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
                                   child: Icon(
                                     Icons.arrow_back_ios_new_outlined,
                                   ),
                                 ),
-                                Row(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {},
+                              ),
+                              Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
                                       child: Icon(
                                         Icons.bookmark_border_outlined,
                                       ),
                                     ),
-                                    const SizedBox(width: 10.0),
-                                    GestureDetector(
-                                      onTap: () {},
+                                  ),
+                                  const SizedBox(width: 10.0),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
                                       child: Icon(Icons.upload),
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
+                    ),
+                  ],
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16.0,
+                  horizontal: 20.0,
+                ),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [_titleComponent(model)],
                   ),
                 ),
-                SliverPadding(
+              ),
+              ComponentDivider(),
+              _detailComponent(),
+              _detailInformation(model),
+              ComponentDivider(),
+              SliverToBoxAdapter(
+                child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    vertical: 16.0,
+                    vertical: 20.0,
                     horizontal: 20.0,
                   ),
-                  sliver: SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [_titleComponent()],
+                  child: Text(
+                    '관련 레시피',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 18,
                     ),
                   ),
                 ),
-                ComponentDivider(),
-                _detailComponent(),
-                _detailInformation(),
-                ComponentDivider(),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20.0,
-                      horizontal: 20.0,
-                    ),
-                    child: Text(
-                      '관련 레시피',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ),
-                ShoppingDetailRelatedScreen(),
-                _comments(),
-              ],
-            ),
+              ),
+              ShoppingDetailRelatedScreen(),
+              _comments(),
+            ],
           ),
-        ],
-      ),
-      bottomNavigationBar: ShoppingRecipeAddComponent(),
+        ),
+      ],
     );
   }
 
@@ -202,27 +241,30 @@ class _ShoppingDetailScreenState extends State<ShoppingDetailScreen> {
     );
   }
 
-  Widget _titleComponent() {
+  Widget _titleComponent(model) {
+    final priceString = model.shoppingIngredientInfo.price.replaceAll(RegExp(r'[^0-9]'), '');
+    final formattedPrice = '${NumberFormat('#,###').format(int.parse(priceString))}원';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '콩나물 300g',
+          model.shoppingIngredientInfo.name,
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
         ),
         Text(
-          '1,490원',
+        formattedPrice,
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 16.0),
         Text('원산지 : 국내산'),
-        Text('판매 단위 : 1봉'),
+        Text('판매 단위 : 1${model.shoppingIngredientInfo.unit}'),
         Text('중량/용량 : 300g'),
       ],
     );
   }
 
-  Widget _detailInformation() {
+  Widget _detailInformation(model) {
     return SliverToBoxAdapter(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -231,7 +273,7 @@ class _ShoppingDetailScreenState extends State<ShoppingDetailScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22.0),
             child: Text(
-              '콩나물 최근 시세',
+              '${model.shoppingIngredientInfo.name} 최근 시세',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
           ),
@@ -240,10 +282,7 @@ class _ShoppingDetailScreenState extends State<ShoppingDetailScreen> {
               horizontal: 22.0,
               vertical: 22.0,
             ),
-            child: Container(
-              decoration: BoxDecoration(color: Colors.grey),
-              height: 250,
-            ),
+            child: RecipeIngredientPriceChart(ingredientPriceDataList: [],),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22.0),
