@@ -18,7 +18,7 @@ class _ShoppingCategoryListComponentState extends State<ShoppingCategoryListComp
     return GestureDetector (
       onTap: (){
         // 상세 페이지로 보내기
-        context.pushNamed(ShoppingDetailScreen.routeName);
+        context.pushNamed(ShoppingDetailScreen.routeName, pathParameters: {'id': widget.ingredientInfo.ingredientId.toString()});
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -26,63 +26,67 @@ class _ShoppingCategoryListComponentState extends State<ShoppingCategoryListComp
           vertical: 16.0,
         ),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // 이미지
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                widget.ingredientInfo.imageUrl,
-                width: 70,
-                height: 70,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 12),
-
-            // 텍스트 정보
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: SizedBox(
-                  height: 55,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.ingredientInfo.ingredient,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: [
-                          Text(
-                            widget.ingredientInfo.discountRate,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            '${widget.ingredientInfo.salePrice.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')}원',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 이미지
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    widget.ingredientInfo.imageUrl,
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
                   ),
                 ),
-              ),
+                const SizedBox(width: 12),
+
+                // 텍스트 정보
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: SizedBox(
+                    height: 55,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.ingredientInfo.ingredient,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Text(
+                              widget.ingredientInfo.discountRate,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              '${widget.ingredientInfo.salePrice.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+(?!\d))'), (m) => '${m[1]},')}원',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
+            Icon(Icons.arrow_forward_ios_outlined),
           ],
         ),
       )
