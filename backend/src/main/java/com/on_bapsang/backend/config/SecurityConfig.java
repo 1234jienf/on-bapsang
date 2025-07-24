@@ -4,6 +4,7 @@ import com.on_bapsang.backend.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,17 +23,32 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/**", // 로그인, 토큰 재발급
-                                "/api/users/signup", // 회원가입
-                                "/api/users/check-username",
-                                "/api/seasonal/**", // 제철농산물 조회는 비회원 허용
-                                "/api/market/**")
-                        .permitAll()
-                        .anyRequest().authenticated() // 그 외는 인증 필요
+                        // 로그인 관련은 모든 메서드 허용
+                        .requestMatchers("/api/auth/**").permitAll()
+
+                        // 회원가입은 POST만 허용
+                        .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll()
+
+                        // 제철/마켓/레시피 공개 API
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/seasonal/**",
+                                "/api/market/**",
+                                "/api/recipe/popular",
+                                "/api/recipe/ingredient",
+                                "/api/recipe/search",
+                                "/api/recipe",
+                                "/api/recipe/review/**",
+                                "/api/community/posts",
+                                "/api/community/posts/{id}",
+                                "/api/community/posts/autocomplete",
+                                "/api/community/comments/{postId}"
+                        ).permitAll()
+
+                        // 이외는 인증 필요
+                        .anyRequest().authenticated()
                 )
-                .formLogin(form -> form.disable()) // 로그인 UI 제거
-                .httpBasic(httpBasic -> httpBasic.disable()) // 브라우저 팝업 로그인 제거
+                .formLogin(form -> form.disable())
+                .httpBasic(httpBasic -> httpBasic.disable())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

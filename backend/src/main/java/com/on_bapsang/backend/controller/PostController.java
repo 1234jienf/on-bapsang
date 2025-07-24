@@ -60,10 +60,12 @@ public class PostController {
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 9, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        User user = userDetails.getUser();
+
+        User user = (userDetails != null) ? userDetails.getUser() : null;
         Page<PostSummaryWithScrap> posts = postService.getPosts(keyword, pageable, user);
         return ResponseEntity.ok(ApiResponse.success("게시글 목록 조회 성공", posts));
     }
+
 
     // 단일 글 조회
     @GetMapping("/{id}")
