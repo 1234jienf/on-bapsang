@@ -85,7 +85,9 @@ public class CommentService {
                 ? imageUploader.generatePresignedUrl(comment.getUser().getProfileImage(), 120)
                 : null;
 
-        boolean isAuthor = comment.getUser().getUserId().equals(currentUser.getUserId());
+        boolean isAuthor = currentUser != null &&
+                comment.getUser().getUserId().equals(currentUser.getUserId());
+
 
         List<CommentResponse> children = comment.getChildren().stream()
                 .map(child -> buildCommentResponseWithChildren(child, currentUser))

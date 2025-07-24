@@ -23,10 +23,14 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // 인증 없이 허용
+                        // 로그인 관련은 모든 메서드 허용
+                        .requestMatchers("/api/auth/**").permitAll()
+
+                        // 회원가입은 POST만 허용
+                        .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll()
+
+                        // 제철/마켓/레시피 공개 API
                         .requestMatchers(HttpMethod.GET,
-                                "/api/auth/**",
-                                "/api/users/check-username",
                                 "/api/seasonal/**",
                                 "/api/market/**",
                                 "/api/recipe/popular",
@@ -34,28 +38,13 @@ public class SecurityConfig {
                                 "/api/recipe/search",
                                 "/api/recipe",
                                 "/api/recipe/review/**",
-                                "/api/community/posts",               // 게시글 목록
-                                "/api/community/posts/{id}",         // 게시글 상세
-                                "/api/community/posts/autocomplete", // 자동완성
-                                "/api/community/comments/{postId}"   // 댓글 목록
+                                "/api/community/posts",
+                                "/api/community/posts/{id}",
+                                "/api/community/posts/autocomplete",
+                                "/api/community/comments/{postId}"
                         ).permitAll()
 
-                        // 인증 없이 허용되는 POST
-                        .requestMatchers(HttpMethod.POST,
-                                "/api/users/signup"
-                        ).permitAll()
-
-                        // 인증이 필요한 요청
-                        .requestMatchers(HttpMethod.POST, "/api/community/posts").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "/api/community/posts/{id}").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/community/posts/{id}").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/community/comments/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/community/comments/**").authenticated()
-                        .requestMatchers("/api/recipe/recommend").authenticated()
-                        .requestMatchers("/api/recipe/foreign/**").authenticated()
-                        .requestMatchers("/api/recipe/scrap/**").authenticated()
-
-                        // 그 외 모든 요청은 인증 필요
+                        // 이외는 인증 필요
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())
