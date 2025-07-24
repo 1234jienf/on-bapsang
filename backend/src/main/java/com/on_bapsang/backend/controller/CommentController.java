@@ -3,6 +3,7 @@ package com.on_bapsang.backend.controller;
 import com.on_bapsang.backend.dto.ApiResponse;
 import com.on_bapsang.backend.dto.CommentRequest;
 import com.on_bapsang.backend.entity.Comment;
+import com.on_bapsang.backend.entity.User;
 import com.on_bapsang.backend.security.UserDetailsImpl;
 import com.on_bapsang.backend.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -41,9 +42,11 @@ public class CommentController {
     @GetMapping("/{postId}")
     public ResponseEntity<?> getComments(@PathVariable Long postId,
                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        User user = (userDetails != null) ? userDetails.getUser() : null;
         return ResponseEntity.ok(
-                ApiResponse.success("댓글 목록 조회 성공", commentService.getComments(postId, userDetails.getUser()))
+                ApiResponse.success("댓글 목록 조회 성공", commentService.getComments(postId, user))
         );
     }
+
 
 }

@@ -48,7 +48,7 @@ public class PostService {
 
     public Page<PostSummaryWithScrap> getPosts(String keyword, Pageable pageable, User user) {
         // 검색어 저장 및 점수 증가
-        if (keyword != null && !keyword.isBlank()) {
+        if (keyword != null && !keyword.isBlank() && user != null) {
             searchKeywordService.saveRecentKeyword(user.getUserId(), keyword);
             searchKeywordService.increaseKeywordScore(keyword);
         }
