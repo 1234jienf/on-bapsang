@@ -49,6 +49,7 @@ class _ConsumerMapScreenState extends ConsumerState<MapScreen> {
 
   Future<void> _loadApiKey() async {
     final accessApiKey = await Config.getGoogleMapsApiKey();
+    if (!mounted) return;
     setState(() {
       apiKey = accessApiKey;
     });
@@ -61,6 +62,8 @@ class _ConsumerMapScreenState extends ConsumerState<MapScreen> {
 
   Future<void> getAddress() async {
     if (apiKey.isEmpty) return;
+
+    if (!mounted) return;
 
     setState(() {
       isLoadingAddress = true;

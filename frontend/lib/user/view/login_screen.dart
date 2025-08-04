@@ -43,7 +43,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(height: 50.0,),
+              Image.asset(
+                'asset/img/login_title.jpg',
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+              SizedBox(height: 80.0),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
@@ -69,17 +74,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     const SizedBox(height: 16.0),
                     ElevatedButton(
-                      onPressed: (username.isNotEmpty && password.isNotEmpty)
-                        ? () async {
-                          final result = await ref
-                              .read(userProvider.notifier)
-                              .login(username: username, password: password);
+                      onPressed:
+                          (username.isNotEmpty && password.isNotEmpty)
+                              ? () async {
+                                final result = await ref
+                                    .read(userProvider.notifier)
+                                    .login(
+                                      username: username,
+                                      password: password,
+                                    );
 
-                          if (result is UserModelError && context.mounted) {
-                            componentAlertDialog(context : context, title: "로그인에 실패했습니다\n\n 다시 시도해주세요");
-                          }
-                        }
-                        : null,
+                                if (result is UserModelError &&
+                                    context.mounted) {
+                                  componentAlertDialog(
+                                    context: context,
+                                    title: "로그인에 실패했습니다\n\n 다시 시도해주세요",
+                                  );
+                                }
+                              }
+                              : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
@@ -114,7 +127,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
