@@ -66,78 +66,81 @@ class _MypageRootScreenState extends ConsumerState<MypageRootScreen> {
   Widget build(BuildContext context) {
     final mypageAsync = ref.watch(mypageInfoProvider);
 
-    return Stack(
-      children: [
-        mypageAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (err, _) => Center(child: Text('$err')),
-          data: (info) => DefaultLayout(
-            appBar: MypageAppbar(isImply: true, name: info.data.nickname),
-            backgroundColor: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  _item('mypage.scrap_recipe', () {
-                    context.pushNamed(MypageScrapRecipeScreen.routeName);
-                  }),
-                  _item('mypage.community', () {
-                    context.pushNamed(MypageCommunityScreen.routeName);
-                  }),
-                  _item('mypage.scrap_community', () {
-                    context.pushNamed(MypageScrapCommunityScreen.routeName);
-                  }),
-                  _item('mypage.setting_info', () {
-                    context.pushNamed(
-                      MypageFixInfoScreen.routeName,
-                      extra: info.data.toJson());
-                  }),
-                  _item('mypage.setting_language', () async {
-                    final code = await _showLanguageDialog(context);
-                    if (code == null) return;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Stack(
+        children: [
+          mypageAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (err, _) => Center(child: Text('$err')),
+            data: (info) => DefaultLayout(
+              appBar: MypageAppbar(isImply: true, name: info.data.nickname),
+              backgroundColor: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    _item('mypage.scrap_recipe', () {
+                      context.pushNamed(MypageScrapRecipeScreen.routeName);
+                    }),
+                    _item('mypage.community', () {
+                      context.pushNamed(MypageCommunityScreen.routeName);
+                    }),
+                    _item('mypage.scrap_community', () {
+                      context.pushNamed(MypageScrapCommunityScreen.routeName);
+                    }),
+                    _item('mypage.setting_info', () {
+                      context.pushNamed(
+                        MypageFixInfoScreen.routeName,
+                        extra: info.data.toJson());
+                    }),
+                    _item('mypage.setting_language', () async {
+                      final code = await _showLanguageDialog(context);
+                      if (code == null) return;
 
-                    setState(() => _isLoading = true);
-                    try {
-                      await ref.read(userProvider.notifier).patchLanguage(code);
-                      await context.setLocale(Locale(code.toLowerCase()));
-                      ref.invalidate(mypageInfoProvider);
-                    } finally {
-                      if (mounted) setState(() => _isLoading = false);
-                    }
-                  }),
-                  _item('mypage.withdraw', () async {
-                    final ok = await showDialog<bool>(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (ctx) => AlertDialog(
-                        backgroundColor: Colors.white,
-                        title: Text('mypage.withdraw'.tr()),
-                        content: Text('mypage.confirm_withdrawal'.tr()),
-                        actions: [
-                          TextButton(
-                              onPressed: () => Navigator.pop(ctx, false),
-                              child: Text('search.no'.tr())),
-                          TextButton(
-                              onPressed: () => Navigator.pop(ctx, true),
-                              child: Text('search.yes'.tr())),
-                        ],
-                      ),
-                    );
-                    if (ok == true) {
-                      await ref.read(userProvider.notifier).withdraw();
-                    }
-                  }, textColor: Colors.grey),
-                ],
+                      setState(() => _isLoading = true);
+                      try {
+                        await ref.read(userProvider.notifier).patchLanguage(code);
+                        await context.setLocale(Locale(code.toLowerCase()));
+                        ref.invalidate(mypageInfoProvider);
+                      } finally {
+                        if (mounted) setState(() => _isLoading = false);
+                      }
+                    }),
+                    _item('mypage.withdraw', () async {
+                      final ok = await showDialog<bool>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (ctx) => AlertDialog(
+                          backgroundColor: Colors.white,
+                          title: Text('mypage.withdraw'.tr()),
+                          content: Text('mypage.confirm_withdrawal'.tr()),
+                          actions: [
+                            TextButton(
+                                onPressed: () => Navigator.pop(ctx, false),
+                                child: Text('search.no'.tr())),
+                            TextButton(
+                                onPressed: () => Navigator.pop(ctx, true),
+                                child: Text('search.yes'.tr())),
+                          ],
+                        ),
+                      );
+                      if (ok == true) {
+                        await ref.read(userProvider.notifier).withdraw();
+                      }
+                    }, textColor: Colors.red),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        if (_isLoading)
-          Container(
-              color: Colors.black45,
-              child: const Center(child: CircularProgressIndicator())),
-      ],
+          if (_isLoading)
+            Container(
+                color: Colors.black45,
+                child: const Center(child: CircularProgressIndicator())),
+        ],
+      ),
     );
   }
 

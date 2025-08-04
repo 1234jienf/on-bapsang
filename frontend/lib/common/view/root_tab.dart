@@ -9,14 +9,15 @@ class RootTab extends StatelessWidget {
 
   final Widget child;
 
-  static const _paths = ['/', '/recipe', '/shopping', '/community', '/maps'];
+  // static const _paths = ['/', '/recipe', '/shopping', '/community', '/maps'];
+  static const _paths = ['/', '/recipe', '/community', '/maps'];
 
   // location → index
   int _indexFromLocation(String loc) {
     if (loc.startsWith('/recipe')) return 1;
-    if (loc.startsWith('/shopping')) return 2;
-    if (loc.startsWith('/community')) return 3;
-    if (loc.startsWith('/maps')) return 4;
+    // if (loc.startsWith('/shopping')) return 2;
+    if (loc.startsWith('/community')) return 2;
+    if (loc.startsWith('/maps')) return 3;
     return 0;
   }
 
@@ -50,23 +51,23 @@ class RootTab extends StatelessWidget {
             "common.recipe",
             currentIndex == 1,
           ),
-          _navItem(
-            'asset/img/shopping.png',
-            'asset/img/shopping_color.png',
-            "common.shopping",
-            currentIndex == 2,
-          ),
+          // _navItem(
+          //   'asset/img/shopping.png',
+          //   'asset/img/shopping_color.png',
+          //   "common.shopping",
+          //   currentIndex == 2,
+          // ),
           _navItem(
             'asset/img/community.png',
             'asset/img/community_color.png',
             "common.community",
-            currentIndex == 3,
+            currentIndex == 2,
           ),
           _navItem(
             'asset/img/map.png',
             'asset/img/map_color.png',
             "common.map",
-            currentIndex == 4,
+            currentIndex == 3,
           ),
         ],
       ),
