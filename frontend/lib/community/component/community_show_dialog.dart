@@ -7,9 +7,10 @@ import 'package:go_router/go_router.dart';
 
 import '../provider/community_provider.dart';
 
-Future<void> communityShowDialog(BuildContext context, WidgetRef ref, bool isNavigate, String title) async {
+Future<void> communityShowDialog(BuildContext context, WidgetRef ref, bool isNavigate, String title,  {bool rootNavigator = false}) async {
   await showDialog(
     context: context,
+    useRootNavigator: rootNavigator,
     builder: (BuildContext context) {
       Timer(Duration(milliseconds: 1000), () {
         if (context.mounted) {
