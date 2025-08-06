@@ -62,33 +62,33 @@ class _CommunityDetailRepository implements CommunityDetailRepository {
     final _headers = <String, dynamic>{r'accessToken': 'true'};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<
-      SingleIntOnePageModel<List<CommunityCommentModel>>
-    >(
-      Options(method: 'GET', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/comments/${id}',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
+    final _options =
+        _setStreamType<SingleIntOnePageModel<List<CommunityCommentModel>>>(
+          Options(method: 'GET', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/comments/${id}',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late SingleIntOnePageModel<List<CommunityCommentModel>> _value;
     try {
       _value = SingleIntOnePageModel<List<CommunityCommentModel>>.fromJson(
         _result.data!,
-        (json) =>
-            json is List<dynamic>
-                ? json
-                    .map<CommunityCommentModel>(
-                      (i) => CommunityCommentModel.fromJson(
-                        i as Map<String, dynamic>,
-                      ),
-                    )
-                    .toList()
-                : List.empty(),
+        (json) => json is List<dynamic>
+            ? json
+                  .map<CommunityCommentModel>(
+                    (i) => CommunityCommentModel.fromJson(
+                      i as Map<String, dynamic>,
+                    ),
+                  )
+                  .toList()
+            : List.empty(),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
