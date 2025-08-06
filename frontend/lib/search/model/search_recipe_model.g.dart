@@ -10,10 +10,9 @@ SearchRecipeModel _$SearchRecipeModelFromJson(Map<String, dynamic> json) =>
     SearchRecipeModel(
       recipe_id: json['recipe_id'] as String,
       name: json['name'] as String,
-      ingredients:
-          (json['ingredients'] as List<dynamic>)
-              .map((e) => e as String)
-              .toList(),
+      ingredients: (json['ingredients'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
       descriptions: json['description'] as String,
       difficulty: json['difficulty'] as String,
       image_url: json['image_url'] as String,

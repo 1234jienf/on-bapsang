@@ -14,10 +14,9 @@ CommunityCommentModel _$CommunityCommentModelFromJson(
   profileImage: json['profileImage'] as String?,
   createdAt: DataUtils.dateTimeFromJson(json['createdAt'] as String),
   nickname: json['nickname'] as String,
-  children:
-      (json['children'] as List<dynamic>)
-          .map((e) => CommunityCommentModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  children: (json['children'] as List<dynamic>)
+      .map((e) => CommunityCommentModel.fromJson(e as Map<String, dynamic>))
+      .toList(),
   author: json['author'] as bool,
 );
 

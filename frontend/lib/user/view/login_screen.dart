@@ -7,6 +7,9 @@ import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../common/component/component_alert_dialog.dart';
+import '../../home/provider/home_screen_community_provider.dart';
+import '../../recipe/provider/recipe_provider.dart';
+import '../../recipe/provider/recipe_season_provider.dart';
 import '../../signup/view/sign_up_root_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -21,6 +24,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   String username = '';
   String password = '';
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -75,7 +79,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const SizedBox(height: 16.0),
                     ElevatedButton(
                       onPressed:
-                          (username.isNotEmpty && password.isNotEmpty)
+                          (username.isNotEmpty && password.isNotEmpty && !isLoading)
                               ? () async {
                                 final result = await ref
                                     .read(userProvider.notifier)
@@ -112,20 +116,43 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Center(
-                        child: GestureDetector(
-                          onTap: () {
-                            context.pushNamed(SignUpRootScreen.routeName);
-                          },
-                          child: Text(
-                            '회원 가입',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              context.pushNamed(SignUpRootScreen.routeName);
+                            },
+                            child: Text(
+                              '회원 가입',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 8.0,),
+                          Text("ㅣ", style: TextStyle(fontWeight: FontWeight.w900),),
+                          const SizedBox(width: 8.0,),
+                          GestureDetector(
+                            onTap: () {
+                              final communityNotifier = ref.refresh(homeScreenCommunityProvider.notifier);
+                              ref.invalidate(popularRecipesProvider);
+                              ref.invalidate(recommendRecipesProvider);
+                              ref.invalidate(seasonIngredientProvider);
+                              communityNotifier.fetchData();
+                            },
+                            child: Text(
+                              '게스트 모드',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

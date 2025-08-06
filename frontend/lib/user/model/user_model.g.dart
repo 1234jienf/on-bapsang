@@ -13,18 +13,15 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   country: json['country'] as String,
   age: (json['age'] as num).toInt(),
   location: json['location'] as String,
-  favoriteTastes:
-      (json['favoriteTastes'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toList(),
-  favoriteDishes:
-      (json['favoriteDishes'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toList(),
-  favoriteIngredients:
-      (json['favoriteIngredients'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toList(),
+  favoriteTastes: (json['favoriteTastes'] as List<dynamic>)
+      .map((e) => (e as num).toInt())
+      .toList(),
+  favoriteDishes: (json['favoriteDishes'] as List<dynamic>)
+      .map((e) => (e as num).toInt())
+      .toList(),
+  favoriteIngredients: (json['favoriteIngredients'] as List<dynamic>)
+      .map((e) => (e as num).toInt())
+      .toList(),
 );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
