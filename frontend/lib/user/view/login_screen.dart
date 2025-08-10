@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/common/go_router/provider/main_provider.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/user/model/user_model.dart';
 import 'package:frontend/user/provider/user_provider.dart';
@@ -79,24 +80,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const SizedBox(height: 16.0),
                     ElevatedButton(
                       onPressed:
-                          (username.isNotEmpty && password.isNotEmpty && !isLoading)
-                              ? () async {
-                                final result = await ref
-                                    .read(userProvider.notifier)
-                                    .login(
-                                      username: username,
-                                      password: password,
-                                    );
+                          (username.isNotEmpty &&
+                              password.isNotEmpty &&
+                              !isLoading)
+                          ? () async {
+                              setState(() {
+                                isLoading = true;
+                              });
 
-                                if (result is UserModelError &&
-                                    context.mounted) {
-                                  componentAlertDialog(
-                                    context: context,
-                                    title: "로그인에 실패했습니다\n\n 다시 시도해주세요",
+                              final result = await ref
+                                  .read(userProvider.notifier)
+                                  .login(
+                                    username: username,
+                                    password: password,
                                   );
-                                }
+
+                              if (result is UserModelError && context.mounted) {
+                                componentAlertDialog(
+                                  context: context,
+                                  title: "로그인에 실패했습니다\n\n 다시 시도해주세요",
+                                );
                               }
-                              : null,
+
+                              setState(() {
+                                isLoading = false;
+                              });
+                            }
+                          : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
@@ -112,7 +122,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           fontSize: 18.0,
                         ),
                       ),
-                      child: Text('로그인'),
+                      child: isLoading
+                          ? SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 1,
+                              ),
+                            )
+                          : Text('로그인'),
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.0),
@@ -132,16 +151,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 8.0,),
-                          Text("ㅣ", style: TextStyle(fontWeight: FontWeight.w900),),
-                          const SizedBox(width: 8.0,),
+                          const SizedBox(width: 8.0),
+                          Text(
+                            "ㅣ",
+                            style: TextStyle(fontWeight: FontWeight.w900),
+                          ),
+                          const SizedBox(width: 8.0),
                           GestureDetector(
-                            onTap: () {
-                              final communityNotifier = ref.refresh(homeScreenCommunityProvider.notifier);
+                            onTap: () async {
+                              final communityNotifier = ref.refresh(
+                                homeScreenCommunityProvider.notifier,
+                              );
                               ref.invalidate(popularRecipesProvider);
                               ref.invalidate(recommendRecipesProvider);
                               ref.invalidate(seasonIngredientProvider);
                               communityNotifier.fetchData();
+                              ref.read(mainProvider).startGuestMode();
+                              context.go('/');
                             },
                             child: Text(
                               '게스트 모드',

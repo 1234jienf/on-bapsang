@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/common/const/securetoken.dart';
 import 'package:frontend/common/dio/dio.dart';
+import 'package:frontend/common/go_router/provider/main_provider.dart';
 import 'package:frontend/common/secure_storage/secure_storage.dart';
 import 'package:frontend/home/provider/home_screen_community_provider.dart';
 import 'package:frontend/mypage/provider/mypage_provider.dart';
@@ -14,6 +15,7 @@ import 'package:frontend/user/repository/user_repository.dart';
 
 import '../model/user_model.dart';
 import 'package:frontend/signup/model/sign_up_request_model.dart';
+
 
 final languageProvider = StateProvider<String?>((_) => null);
 
@@ -104,6 +106,7 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
 
       final communityNotifier = _ref.refresh(homeScreenCommunityProvider.notifier);
       communityNotifier.fetchData();
+      _ref.read(mainProvider).startUserMode();
 
       return userResp;
     } on DioException catch (e) {
@@ -139,6 +142,7 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
     _ref.invalidate(seasonIngredientProvider);
     final communityNotifier = _ref.refresh(homeScreenCommunityProvider.notifier);
     communityNotifier.fetchData();
+
   }
 
   Future<void> signup({
@@ -164,7 +168,7 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       await getMe(); // 수정하고 사용자 정보 업데이트 해주자
 
       _ref.invalidate(recommendRecipesProvider);
-    } catch (e, st) {
+    } catch (e) {
       state = UserModelError(message: "회원 정보를 수정하면서 문제가 생겼습니다.");
       rethrow;
     }
@@ -187,7 +191,7 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       communityNotifier.fetchData();
 
       await getMe();
-    } catch (e, st) {
+    } catch (e) {
       if (!mounted) return;
       state = UserModelError(message: "회원 정보를 수정하면서 문제가 생겼습니다.");
       rethrow;
@@ -199,7 +203,7 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       await userRepository.withdraw();
 
       await logout();
-    } catch (e, st) {
+    } catch (e) {
       state = UserModelError(message: "회원 탈퇴에 실패했습니다.");
       rethrow;
     }

@@ -47,11 +47,13 @@ class MainProvider extends ChangeNotifier {
   final Ref ref;
   bool _initalized = false;
   bool get isInitaialized => _initalized;
+  bool _isGuestMode = false;
 
   MainProvider({required this.ref}) {
     ref.listen<UserModelBase?>(userProvider, (previous, next) {
       if (previous != next) {
         notifyListeners();
+        _isGuestMode = false;
       }
     });
   }
@@ -59,6 +61,16 @@ class MainProvider extends ChangeNotifier {
   Future<void> initApp() async {
     await Future.delayed(const Duration(seconds: 2));
     _initalized = true;
+    notifyListeners();
+  }
+
+  void startGuestMode() {
+    _isGuestMode = true;
+    notifyListeners();
+  }
+
+  void startUserMode() {
+    _isGuestMode = false;
     notifyListeners();
   }
 
@@ -296,21 +308,48 @@ class MainProvider extends ChangeNotifier {
 
   void logout() {
     ref.read(userProvider.notifier).logout();
+    _isGuestMode = false;
   }
 
   String? redirectLogic(BuildContext context, GoRouterState state) {
     final UserModelBase? user = ref.read(userProvider);
 
     final login = state.matchedLocation == '/login';
-    final isSignup = state.matchedLocation.startsWith('/login/signup');
     final splash = state.matchedLocation == '/splash';
+    final isSignup = state.matchedLocation.startsWith('/login/signup');
 
     if (!isInitaialized) {
       return splash ? null : '/splash';
     }
 
-    if (user == null) {
-      return (login || isSignup) ? null : '/login';
+    final authRequiredPaths = [
+      '/mypage',  // 마이페이지
+      '/community/create',  // 글쓰기
+      '/cart',  // 장바구니
+      '/shopping/detail/payment',  // 결제
+    ];
+
+    final isAuthRequired = authRequiredPaths.any(
+            (path) => state.matchedLocation.startsWith(path)
+    );
+
+    // 게스트 모드
+    if (user == null && _isGuestMode) {
+      if (isAuthRequired) {
+        return '/login';
+      }
+
+      if (splash) {
+        return '/login';
+      }
+
+      return null;
+    }
+
+    if (user == null && !_isGuestMode) {
+      if (user == null) {
+        return (login || isSignup) ? null : '/login';
+      }
     }
 
     if (user is UserModel) {

@@ -93,135 +93,138 @@ class _ConsumerSignUpTermsOfServiceScreenState
       {'title': texts['term4'], 'routeExtra': 0},
     ];
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          children: [
-            AnimatedBuilder(animation: _slideAnimation, builder: (context, child) {
-              return Transform.translate(
-                offset: Offset(0, _slideAnimation.value),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      texts['welcome']!,
-                      style: const TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }),
-            const SizedBox(height: 26),
-            FadeTransition(
-              opacity: _fadeAnimation,
-              child: Column(
-                children: [
-                  Row(
+    return SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            children: [
+              AnimatedBuilder(animation: _slideAnimation, builder: (context, child) {
+                return Transform.translate(
+                  offset: Offset(0, _slideAnimation.value),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          texts['description']!,
-                          maxLines: 2,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
+                      Text(
+                        texts['welcome']!,
+                        style: const TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 30.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          GestureDetector(
-                            onTap: toggleAll,
-                            child: isAllSelected
-                                ? Icon(Icons.check_circle, color: primaryColor)
-                                : Icon(Icons.check_circle_outline, color: gray500),
+                );
+              }),
+              const SizedBox(height: 26),
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            texts['description']!,
+                            maxLines: 2,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
                           ),
-                          const SizedBox(width: 10),
-                          Text(texts['agree_all']!,
-                              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700)),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 30.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: toggleAll,
+                              child: isAllSelected
+                                  ? Icon(Icons.check_circle, color: primaryColor)
+                                  : Icon(Icons.check_circle_outline, color: gray500),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(texts['agree_all']!,
+                                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w700)),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: heightGap),
+                    const Divider(color: gray500, height: 1),
+                    SizedBox(height: heightGap),
+                    ...List.generate(terms.length, (index) {
+                      final term = terms[index];
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: heightGap),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () => toggleItem(index),
+                                  child: isSelected[index]
+                                      ? Icon(Icons.check_circle, color: primaryColor)
+                                      : Icon(Icons.check_circle_outline, color: gray500,),
+                                ),
+                                SizedBox(width: iconGap),
+                                Text(term['title'] as String, style: const TextStyle(fontSize: 16.0)),
+                              ],
+                            ),
+                            term['routeExtra'] != 0 ?
+                            GestureDetector(
+                              onTap: () {
+                                context.pushNamed(SignUpTermsOfService.routeName,
+                                    extra: term['routeExtra']);
+                              },
+                              child: const Icon(Icons.arrow_forward_ios_outlined,
+                                  size: 16.0, color: gray700),
+                            ) : SizedBox(),
+                          ],
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+      
+            ],
+          ),
+      
+            Padding(
+              padding: const EdgeInsets.only(bottom: 32.0),
+              child: GestureDetector(
+                onTap: allAgreed ? widget.onComplete : null,
+                child: Container(
+                  height: 60,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: allAgreed ? Colors.black : gray400,
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
-                  SizedBox(height: heightGap),
-                  const Divider(color: gray500, height: 1),
-                  SizedBox(height: heightGap),
-                  ...List.generate(terms.length, (index) {
-                    final term = terms[index];
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: heightGap),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () => toggleItem(index),
-                                child: isSelected[index]
-                                    ? Icon(Icons.check_circle, color: primaryColor)
-                                    : Icon(Icons.check_circle_outline, color: gray500,),
-                              ),
-                              SizedBox(width: iconGap),
-                              Text(term['title'] as String, style: const TextStyle(fontSize: 16.0)),
-                            ],
-                          ),
-                          term['routeExtra'] != 0 ?
-                          GestureDetector(
-                            onTap: () {
-                              context.pushNamed(SignUpTermsOfService.routeName,
-                                  extra: term['routeExtra']);
-                            },
-                            child: const Icon(Icons.arrow_forward_ios_outlined,
-                                size: 16.0, color: gray700),
-                          ) : SizedBox(),
-                        ],
+                  child: Center(
+                    child: Text(
+                      context.tr('common.next'),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w700,
                       ),
-                    );
-                  }),
-                ],
-              ),
-            ),
-
-          ],
-        ),
-        SafeArea(
-          minimum: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
-          child: GestureDetector(
-            onTap: allAgreed ? widget.onComplete : null,
-            child: Container(
-              height: 60,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: allAgreed ? Colors.black : gray400,
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Center(
-                child: Text(
-                  context.tr("common.next"),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
