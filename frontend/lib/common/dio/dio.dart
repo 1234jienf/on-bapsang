@@ -36,6 +36,10 @@ class CustomInterceptor extends Interceptor {
       options.headers.remove('accessToken');
       final token = await storage.read(key: ACCESS_TOKEN);
 
+      if (token != null && token.isNotEmpty) {
+        options.headers['Authorization'] = 'Bearer $token';
+      }
+
       options.headers.addAll({'Authorization': 'Bearer $token'});
     }
 
@@ -77,10 +81,11 @@ class CustomInterceptor extends Interceptor {
 
     // 인증 오류
     final isStatus403 = err.response?.statusCode == 403;
+    final isStatus401 = err.response?.statusCode == 401;
     // 인증 Path
     final pathRefresh = err.requestOptions.path == '/auth/refresh';
 
-    if (isStatus403 && !pathRefresh) {
+    if ((isStatus403 || isStatus401) && !pathRefresh) {
       final dio = Dio();
 
       try {

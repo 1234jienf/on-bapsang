@@ -32,12 +32,11 @@ CursorIntPaginationData<T> _$CursorIntPaginationDataFromJson<T>(
   T Function(Object? json) fromJsonT,
 ) => CursorIntPaginationData<T>(
   content: (json['content'] as List<dynamic>).map(fromJsonT).toList(),
-  pageable:
-      json['pageable'] == null
-          ? null
-          : CursorIntPaginationPageable.fromJson(
-            json['pageable'] as Map<String, dynamic>,
-          ),
+  pageable: json['pageable'] == null
+      ? null
+      : CursorIntPaginationPageable.fromJson(
+          json['pageable'] as Map<String, dynamic>,
+        ),
   last: json['last'] as bool?,
 );
 

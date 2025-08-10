@@ -39,14 +39,12 @@ class _RecipeSeasonRepository implements RecipeSeasonRepository {
     final _result = await _dio.fetch<List<dynamic>>(_options);
     late List<RecipeSeasonIngredientModel> _value;
     try {
-      _value =
-          _result.data!
-              .map(
-                (dynamic i) => RecipeSeasonIngredientModel.fromJson(
-                  i as Map<String, dynamic>,
-                ),
-              )
-              .toList();
+      _value = _result.data!
+          .map(
+            (dynamic i) =>
+                RecipeSeasonIngredientModel.fromJson(i as Map<String, dynamic>),
+          )
+          .toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

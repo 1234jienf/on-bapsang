@@ -13,18 +13,15 @@ MypageUserInfoModel _$MypageUserInfoModelFromJson(Map<String, dynamic> json) =>
       nickname: json['nickname'] as String,
       country: json['country'] as String,
       age: (json['age'] as num).toInt(),
-      favoriteDishes:
-          (json['favoriteDishes'] as List<dynamic>)
-              .map((e) => (e as num).toInt())
-              .toList(),
-      favoriteTastes:
-          (json['favoriteTastes'] as List<dynamic>)
-              .map((e) => (e as num).toInt())
-              .toList(),
-      favoriteIngredients:
-          (json['favoriteIngredients'] as List<dynamic>)
-              .map((e) => (e as num).toInt())
-              .toList(),
+      favoriteDishes: (json['favoriteDishes'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
+      favoriteTastes: (json['favoriteTastes'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
+      favoriteIngredients: (json['favoriteIngredients'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
     );
 
 Map<String, dynamic> _$MypageUserInfoModelToJson(

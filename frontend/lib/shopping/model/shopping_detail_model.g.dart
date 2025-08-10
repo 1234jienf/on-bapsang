@@ -6,18 +6,16 @@ part of 'shopping_detail_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ShoppingDetailModel _$ShoppingDetailModelFromJson(
-  Map<String, dynamic> json,
-) => ShoppingDetailModel(
-  meta: Meta.fromJson(json['meta'] as Map<String, dynamic>),
-  shoppingIngredientInfo: ShoppingIngredientInfo.fromJson(
-    json['ingredient_info'] as Map<String, dynamic>,
-  ),
-  shoppingRelatedRecipe:
-      (json['related_recipes'] as List<dynamic>)
+ShoppingDetailModel _$ShoppingDetailModelFromJson(Map<String, dynamic> json) =>
+    ShoppingDetailModel(
+      meta: Meta.fromJson(json['meta'] as Map<String, dynamic>),
+      shoppingIngredientInfo: ShoppingIngredientInfo.fromJson(
+        json['ingredient_info'] as Map<String, dynamic>,
+      ),
+      shoppingRelatedRecipe: (json['related_recipes'] as List<dynamic>)
           .map((e) => ShoppingRelatedRecipe.fromJson(e as Map<String, dynamic>))
           .toList(),
-);
+    );
 
 Map<String, dynamic> _$ShoppingDetailModelToJson(
   ShoppingDetailModel instance,
@@ -64,8 +62,9 @@ ShoppingRelatedRecipe _$ShoppingRelatedRecipeFromJson(
 ) => ShoppingRelatedRecipe(
   recipe_id: json['recipe_id'] as String,
   name: json['name'] as String,
-  ingredients:
-      (json['ingredients'] as List<dynamic>).map((e) => e as String).toList(),
+  ingredients: (json['ingredients'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList(),
   description: json['description'] as String,
   review: json['review'] as String,
   time: json['time'] as String,

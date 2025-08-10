@@ -10,18 +10,15 @@ UserPatchModel _$UserPatchModelFromJson(Map<String, dynamic> json) =>
     UserPatchModel(
       nickname: json['nickname'] as String?,
       age: (json['age'] as num?)?.toInt(),
-      favoriteTasteIds:
-          (json['favoriteTasteIds'] as List<dynamic>?)
-              ?.map((e) => (e as num).toInt())
-              .toList(),
-      favoriteDishIds:
-          (json['favoriteDishIds'] as List<dynamic>?)
-              ?.map((e) => (e as num).toInt())
-              .toList(),
-      favoriteIngredientIds:
-          (json['favoriteIngredientIds'] as List<dynamic>?)
-              ?.map((e) => (e as num).toInt())
-              .toList(),
+      favoriteTasteIds: (json['favoriteTasteIds'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList(),
+      favoriteDishIds: (json['favoriteDishIds'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList(),
+      favoriteIngredientIds: (json['favoriteIngredientIds'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList(),
     );
 
 Map<String, dynamic> _$UserPatchModelToJson(UserPatchModel instance) =>
