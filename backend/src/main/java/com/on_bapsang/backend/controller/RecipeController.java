@@ -30,10 +30,16 @@ public class RecipeController {
     private final PopularRecipeService popularRecipeService;
 
     @GetMapping("/recommend")
-    public ResponseEntity<?> getRecommendedRecipes(@AuthenticationPrincipal UserDetailsImpl user) {
+    public ResponseEntity<?> getRecommendedRecipes(
+            @AuthenticationPrincipal UserDetailsImpl user) {
         try {
-            List<Recipe> recipes = dailyRecommendationService.getDailyRecommendedRecipes(user.getUser());
-            List<RecipeSummaryDto> dtos = dailyRecommendationService.convertToSummaryDtos(user.getUser(), recipes);
+            List<Recipe> recipes = (user == null)
+                    ? dailyRecommendationService.getDailyRecommendedRecipesForGuest()
+                    : dailyRecommendationService.getDailyRecommendedRecipes(user.getUser());
+
+            List<RecipeSummaryDto> dtos = dailyRecommendationService.convertToSummaryDtos(
+                    (user == null ? null : user.getUser()), recipes);
+
             return ResponseEntity.ok(dtos);
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,9 +50,9 @@ public class RecipeController {
 
     @GetMapping("/popular")
     public ResponseEntity<List<PopularRecipeDto>> getPopularRecipes(
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {   // ← 로그인 사용자 받기
+            @AuthenticationPrincipal UserDetailsImpl userDetails) { // ← required 제거
         return ResponseEntity.ok(
-                popularRecipeService.getPopularRecipes(userDetails.getUser())   // ← 그대로 전달
+                popularRecipeService.getPopularRecipes(userDetails == null ? null : userDetails.getUser())
         );
     }
 
