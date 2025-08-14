@@ -36,6 +36,7 @@ public class SecurityConfig {
                                 "/api/recipe/popular",
                                 "/api/recipe/ingredient",
                                 "/api/recipe/search",
+                                "/api/recipe/recommend",
                                 "/api/recipe",
                                 "/api/recipe/review/**",
                                 "/api/community/posts",

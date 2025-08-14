@@ -50,11 +50,19 @@ public class RecipeController {
 
     @GetMapping("/popular")
     public ResponseEntity<List<PopularRecipeDto>> getPopularRecipes(
-            @AuthenticationPrincipal UserDetailsImpl userDetails) { // ← required 제거
-        return ResponseEntity.ok(
-                popularRecipeService.getPopularRecipes(userDetails == null ? null : userDetails.getUser())
-        );
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        User currentUser = (userDetails == null) ? null : userDetails.getUser();
+
+        if (currentUser == null) {
+            // 게스트용 완전 고정 리스트 (예: 사전에 선정한 6개)
+            List<String> fixedIds = List.of("7017001","7017002","7017003","7017004","7017005","7017006");
+            return ResponseEntity.ok(popularRecipeService.getPopularRecipesByFixedIds(fixedIds, null));
+        } else {
+            return ResponseEntity.ok(popularRecipeService.getPopularRecipes(currentUser));
+        }
     }
+
 
     @GetMapping("/ingredient")
     public ResponseEntity<PagedResponse<RecipeSummaryDto>> getRecipesByIngredientPartialName(
