@@ -59,6 +59,19 @@ public class RecipeService {
                 .map(scrap -> scrap.getRecipe().getRecipeId())
                 .collect(Collectors.toSet());
     }
+
+    // RecipeService 내부
+    private String toDisplayUrl(String stored, int ttlSec) {
+        if (stored == null || stored.isBlank()) return null;
+
+        // 이미 완전한 URL이면 그대로 반환 (공개 URL 정책)
+        if (stored.startsWith("http://") || stored.startsWith("https://")) {
+            return stored;
+        }
+        // 키로 간주하고 presign
+        return imageUploader.generatePresignedUrl(stored, ttlSec);
+    }
+
     /**
      * 상세 조회
      */
@@ -94,16 +107,15 @@ public class RecipeService {
         List<PostSummary> allReviews = postRepository.findPostSummariesByRecipeId(recipeId);
         for (PostSummary review : allReviews) {
             if (review.getImageUrl() != null) {
-                review.setImageUrl(imageUploader.generatePresignedUrl(review.getImageUrl(), 120));
+                review.setImageUrl(toDisplayUrl(review.getImageUrl(), 600));
             }
         }
         int reviewCount = allReviews.size();
         List<PostSummary> reviews = allReviews.stream().limit(9).toList();
 
         // ✅ 레시피 이미지 presigned 생성 후 DTO에 **그 값**을 넣어주기
-        String imageUrl = recipe.getImageUrl() != null
-                ? imageUploader.generatePresignedUrl(recipe.getImageUrl(), 120)
-                : null;
+        String imageUrl = toDisplayUrl(recipe.getImageUrl(), 600); // 테스트는 600~1800초 추천
+
         // ③ DTO 조립
         return new RecipeDetailDto(
                 recipe.getRecipeId(),
@@ -169,9 +181,7 @@ public class RecipeService {
             List<String> ingrNames = recipeIngredientRepository.findIngredientNamesByRecipeId(r.getRecipeId());
             boolean isScrapped = scrappedIds.contains(r.getRecipeId());
 
-            String presigned = (r.getImageUrl() != null)
-                    ? imageUploader.generatePresignedUrl(r.getImageUrl(), 120)
-                    : null;
+            String presigned = toDisplayUrl(r.getImageUrl(), 600);
 
             return new RecipeSummaryDto(
                     r.getRecipeId(),
@@ -219,7 +229,7 @@ public class RecipeService {
         List<PostSummary> reviews = postRepository.findPostSummariesByRecipeId(recipeId);
         for (PostSummary review : reviews) {
             if (review.getImageUrl() != null) {
-                review.setImageUrl(imageUploader.generatePresignedUrl(review.getImageUrl(), 120));
+                review.setImageUrl(toDisplayUrl(review.getImageUrl(), 600));
             }
         }
         return reviews;
@@ -281,9 +291,8 @@ public class RecipeService {
                             .findIngredientNamesByRecipeId(r.getRecipeId());
                     boolean isScrapped = scrappedIds.contains(r.getRecipeId());
 
-                    String presigned = (r.getImageUrl() != null)
-                            ? imageUploader.generatePresignedUrl(r.getImageUrl(), 120)
-                            : null;
+                    String presigned = toDisplayUrl(r.getImageUrl(), 600);
+
 
                     return new RecipeSummaryDto(
                             r.getRecipeId(),
@@ -327,9 +336,8 @@ public class RecipeService {
                     List<String> ingrNames = recipeIngredientRepository.findIngredientNamesByRecipeId(r.getRecipeId());
                     boolean isScrapped = scrappedIds.contains(r.getRecipeId());
 
-                    String presigned = (r.getImageUrl() != null)
-                            ? imageUploader.generatePresignedUrl(r.getImageUrl(), 120)
-                            : null;
+                    String presigned = toDisplayUrl(r.getImageUrl(), 600);
+
 
                     return new RecipeSummaryDto(
                             r.getRecipeId(),
