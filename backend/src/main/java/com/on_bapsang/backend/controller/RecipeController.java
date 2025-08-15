@@ -71,8 +71,10 @@ public class RecipeController {
             @RequestParam(value = "size", defaultValue = "10") int size,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        PagedResponse<RecipeSummaryDto> result = recipeService
-                .getRecipesByPartialIngredientName(ingredientName, userDetails.getUser(), page, size);
+        User currentUser = (userDetails == null) ? null : userDetails.getUser();
+
+        PagedResponse<RecipeSummaryDto> result =
+                recipeService.getRecipesByPartialIngredientName(ingredientName, currentUser, page, size);
 
         return ResponseEntity.ok(result);
     }
@@ -118,30 +120,32 @@ public class RecipeController {
     public ResponseEntity<RecipeDetailDto> getRecipeDetail(
             @PathVariable String recipeId,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if (userDetails == null) {
-            System.out.println("❌ userDetails is null");
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-        RecipeDetailDto detail = recipeService.getRecipeDetail(recipeId, userDetails.getUser());
+
+        User currentUser = (userDetails == null) ? null : userDetails.getUser();
+        RecipeDetailDto detail = recipeService.getRecipeDetail(recipeId, currentUser);
         return ResponseEntity.ok(detail);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<RecipeService.PagedResponse<RecipeSummaryDto>> searchByName(
+    public ResponseEntity<PagedResponse<RecipeSummaryDto>> searchByName(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam("name") String name,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        return ResponseEntity.ok(recipeService.getRecipesByName(userDetails.getUser(), name, page, size));
+
+        User currentUser = (userDetails == null) ? null : userDetails.getUser();
+        return ResponseEntity.ok(recipeService.getRecipesByName(currentUser, name, page, size));
     }
 
     @GetMapping
-    public ResponseEntity<RecipeService.PagedResponse<RecipeSummaryDto>> searchByCategory(
+    public ResponseEntity<PagedResponse<RecipeSummaryDto>> searchByCategory(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam("category") String category,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        return ResponseEntity.ok(recipeService.getRecipesByCategory(userDetails.getUser(), category, page, size));
+
+        User currentUser = (userDetails == null) ? null : userDetails.getUser();
+        return ResponseEntity.ok(recipeService.getRecipesByCategory(currentUser, category, page, size));
     }
 
 }
