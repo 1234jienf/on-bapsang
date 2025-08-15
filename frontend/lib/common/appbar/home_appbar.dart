@@ -18,9 +18,9 @@ class HomeAppbar extends StatelessWidget implements PreferredSizeWidget {
       surfaceTintColor: Colors.transparent,
       elevation: 0,
       scrolledUnderElevation: 0,
-      title: Text('On-Bapsang'),
+      title: Text('Community'),
       actions: [
-        Icon(Icons.notifications_none_outlined, size: 26),
+        // Icon(Icons.notifications_none_outlined, size: 26),
         const SizedBox(width: 10),
         GestureDetector(
           onTap: () {

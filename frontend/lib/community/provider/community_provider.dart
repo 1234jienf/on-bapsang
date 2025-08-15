@@ -54,4 +54,14 @@ class CommunityParams {
   final String? sort;
 
   CommunityParams({required this.sort, required this.keyword});
+
+  CommunityParams copyWith({
+    String? keyword,
+    String? sort,
+  }) {
+    return CommunityParams(
+      keyword: keyword ?? this.keyword,
+      sort: sort ?? this.sort,
+    );
+  }
 }

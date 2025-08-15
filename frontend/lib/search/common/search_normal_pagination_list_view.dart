@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/model/string/cursor_pagination_normal_string_model.dart';
 import 'package:frontend/common/model/string/model_with_string_id.dart';
 import 'package:frontend/common/utils/pagination_string_utils.dart';
+import 'package:frontend/user/provider/guest_provider.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../common/component/warning_component.dart';
 import '../provider/search_keyword_provider.dart';
 import '../provider/search_keyword_remian_provider.dart';
 import '../provider/search_normal_pagination_list_view_provider.dart';
@@ -66,6 +68,7 @@ class _PaginationStringListViewState<T extends IModelWithStringId>
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(widget.provider);
+    final isGuest = ref.read(guestProvider);
 
     if (state is CursorStringNormalPaginationLoading) {
       return Center(child: CircularProgressIndicator());
@@ -107,9 +110,15 @@ class _PaginationStringListViewState<T extends IModelWithStringId>
               const SizedBox(width: 20),
               GestureDetector(
                 onTap: () {
-                  ref
-                      .read(searchSwitchComponentProvider.notifier)
-                      .switchComponent();
+                  if (isGuest) {
+                    warningComponent(context);
+                    return;
+                  } else {
+                    ref
+                        .read(searchSwitchComponentProvider.notifier)
+                        .switchComponent();
+                  }
+
                 },
                 child: Container(
                   width: 100,

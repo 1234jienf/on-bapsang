@@ -28,14 +28,14 @@ abstract class CommunityDetailRepository {
   _CommunityDetailRepository;
 
   @GET('/posts/{id}')
-  @Headers({'accessToken': 'true'})
+  // @Headers({'accessToken': 'true'})
   @Extra({'useLang': true})
   Future<SingleIntOnePageModel<CommunityDetailModel>> fetchData({
     @Path() required String id,
   });
 
   @GET('/comments/{id}')
-  @Headers({'accessToken': 'true'})
+  // @Headers({'accessToken': 'true'})
   @Extra({'useLang': true})
   Future<SingleIntOnePageModel<List<CommunityCommentModel>>> fetchComment({
     @Path() required String id,

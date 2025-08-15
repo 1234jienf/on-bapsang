@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../common/layout/default_layout.dart';
-import '../component/search_product_card.dart';
 
 class SearchProductScreen extends StatelessWidget {
   const SearchProductScreen({super.key});
@@ -9,29 +8,8 @@ class SearchProductScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      child: CustomScrollView(
-        slivers: [
-          SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              (_, index) => Padding(
-                padding: const EdgeInsets.only(bottom: 6.0),
-                child: SearchProductCard(),
-              ),
-              childCount: 10,
-            ), gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 175 / 255,),
-          ),
-        ],
-      ),
+      child: Center(child: Text("업데이트 예정입니다", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w600),)),
     );
   }
 
-  // SliverPersistentHeader _searchRecipeFilter() {
-  //   return SliverPersistentHeader(
-  //     pinned: true,
-  //     delegate: SearchRecipeFilterHeader(bottomFilter: SearchBottomFilter()),
-  //   );
-  // }
 }

@@ -23,8 +23,7 @@ class _CommunityDetailRepository implements CommunityDetailRepository {
   }) async {
     final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<SingleIntOnePageModel<CommunityDetailModel>>(
@@ -59,8 +58,7 @@ class _CommunityDetailRepository implements CommunityDetailRepository {
   }) async {
     final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<SingleIntOnePageModel<List<CommunityCommentModel>>>(

@@ -11,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/recipe/provider/recipe_provider.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../common/component/warning_component.dart';
+import '../../common/component/update_component.dart';
 
 class RecipeDetailScreen extends ConsumerStatefulWidget {
   final String id;
@@ -405,7 +405,7 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
                 //     d.copyWith(ingredientName: idToName[d.ingredientId]!))
                 //     .toList();
 
-                warningComponent(context);
+                updateComponent(context);
                 // 여기서부터 다시 해야함
                 // Navigator.push(
                 //     context,

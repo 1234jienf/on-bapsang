@@ -6,7 +6,7 @@ Future<void> warningComponent(BuildContext context) async {
     context: context,
     barrierDismissible: false,
     builder: (BuildContext dialogContext) {
-      Timer(const Duration(milliseconds: 800), () {
+      Timer(const Duration(milliseconds: 1000), () {
         if (dialogContext.mounted) {
           Navigator.of(dialogContext).pop(); // 다이얼로그 닫기
         }
@@ -24,13 +24,13 @@ Future<void> warningComponent(BuildContext context) async {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Icon(
-                Icons.update_outlined,
-                color: Colors.green,
+                Icons.warning_amber_outlined,
+                color: Colors.red,
                 size: 48,
               ),
               const SizedBox(height: 20),
               const Text(
-                '업데이트 예정입니다',
+                '로그인이 필요한 기능입니다',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16.0,
