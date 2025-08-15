@@ -29,7 +29,7 @@ abstract class HomeScreenCommunityRepository {
       _HomeScreenCommunityRepository;
 
   @GET('/posts')
-  @Headers({'accessToken': 'true'})
+  // @Headers({'accessToken': 'true'})
   @Extra({'useLang': true})
   Future<CursorIntPagination<CommunityModel>> fetchData({
     @Query('size') int size = 6,

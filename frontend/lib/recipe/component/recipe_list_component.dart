@@ -5,7 +5,6 @@ import 'package:frontend/recipe/view/recipe_detail_screen.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:frontend/recipe/provider/recipe_provider.dart';
 
 class RecipeListComponent extends ConsumerStatefulWidget {
   final RecipeModel recipeInfo;

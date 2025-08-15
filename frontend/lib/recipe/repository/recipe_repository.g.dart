@@ -21,8 +21,7 @@ class _RecipeRepository implements RecipeRepository {
   Future<List<RecipeModel>> getPopularRecipes() async {
     final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<RecipeModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -51,8 +50,7 @@ class _RecipeRepository implements RecipeRepository {
   Future<List<RecipeModel>> getRecommendRecipes() async {
     final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<List<RecipeModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -152,8 +150,7 @@ class _RecipeRepository implements RecipeRepository {
     final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(paginationIntParams.toJson());
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<CursorSimplePagination<RecipeModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
@@ -191,8 +188,7 @@ class _RecipeRepository implements RecipeRepository {
       r'page': page,
       r'size': size,
     };
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(
       Options(method: 'GET', headers: _headers, extra: _extra)

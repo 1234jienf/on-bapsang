@@ -27,8 +27,7 @@ class _SearchRepository implements SearchRepository {
       paginationStringParams?.toJson() ?? <String, dynamic>{},
     );
     queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<CursorPaginationNormalStringModel<SearchRecipeModel>>(
@@ -65,8 +64,7 @@ class _SearchRepository implements SearchRepository {
     final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(paginationStringParams.toJson());
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(paginationStringParams.toJson());
     final _options = _setStreamType<CursorStringPagination<SearchRecipeModel>>(

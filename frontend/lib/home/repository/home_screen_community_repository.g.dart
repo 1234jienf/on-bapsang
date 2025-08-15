@@ -21,8 +21,7 @@ class _HomeScreenCommunityRepository implements HomeScreenCommunityRepository {
   Future<CursorIntPagination<CommunityModel>> fetchData({int size = 6}) async {
     final _extra = <String, dynamic>{'useLang': true};
     final queryParameters = <String, dynamic>{r'size': size};
-    final _headers = <String, dynamic>{r'accessToken': 'true'};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<CursorIntPagination<CommunityModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
