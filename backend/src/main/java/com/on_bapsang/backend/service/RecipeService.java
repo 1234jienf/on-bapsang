@@ -52,6 +52,13 @@ public class RecipeService {
         private List<T> data; // 실제 데이터 리스트
     }
 
+    private Set<String> getScrappedIdsOrEmpty(User user) {
+        if (user == null) return Collections.emptySet();
+        return recipeScrapRepository.findAllByUser(user)
+                .stream()
+                .map(scrap -> scrap.getRecipe().getRecipeId())
+                .collect(Collectors.toSet());
+    }
     /**
      * 상세 조회
      */
@@ -82,18 +89,18 @@ public class RecipeService {
                     .map(s -> s.replaceFirst("^\\d+\\.\\s*", "")) // "1. " 제거
                     .collect(Collectors.toList());
         }
-        boolean isScrapped = recipeScrapRepository.existsByUserAndRecipe(user, recipe);
+        boolean isScrapped = (user == null) ? false : recipeScrapRepository.existsByUserAndRecipe(user, recipe);
+        // 리뷰 presigned
         List<PostSummary> allReviews = postRepository.findPostSummariesByRecipeId(recipeId);
         for (PostSummary review : allReviews) {
             if (review.getImageUrl() != null) {
                 review.setImageUrl(imageUploader.generatePresignedUrl(review.getImageUrl(), 120));
             }
         }
-
         int reviewCount = allReviews.size();
         List<PostSummary> reviews = allReviews.stream().limit(9).toList();
 
-        // ④ 레시피 이미지도 presigned 처리
+        // ✅ 레시피 이미지 presigned 생성 후 DTO에 **그 값**을 넣어주기
         String imageUrl = recipe.getImageUrl() != null
                 ? imageUploader.generatePresignedUrl(recipe.getImageUrl(), 120)
                 : null;
@@ -101,7 +108,7 @@ public class RecipeService {
         return new RecipeDetailDto(
                 recipe.getRecipeId(),
                 recipe.getName(),
-                recipe.getImageUrl(),
+                imageUrl,               // ← 기존에는 recipe.getImageUrl()를 그대로 넣고 있었음 (버그)
                 recipe.getTime(),
                 recipe.getDifficulty(),
                 recipe.getPortion(),
@@ -156,15 +163,15 @@ public class RecipeService {
 
 
     private List<RecipeSummaryDto> convertToSummaryDtos(User user, List<Recipe> recipes) {
-        Set<String> scrappedIds = recipeScrapRepository
-                .findAllByUser(user)
-                .stream()
-                .map(scrap -> scrap.getRecipe().getRecipeId())
-                .collect(Collectors.toSet());
+        Set<String> scrappedIds = getScrappedIdsOrEmpty(user); // ✅ null-safe
 
         return recipes.stream().map(r -> {
             List<String> ingrNames = recipeIngredientRepository.findIngredientNamesByRecipeId(r.getRecipeId());
             boolean isScrapped = scrappedIds.contains(r.getRecipeId());
+
+            String presigned = (r.getImageUrl() != null)
+                    ? imageUploader.generatePresignedUrl(r.getImageUrl(), 120)
+                    : null;
 
             return new RecipeSummaryDto(
                     r.getRecipeId(),
@@ -177,11 +184,12 @@ public class RecipeService {
                     r.getPortion(),
                     r.getMethod(),
                     r.getMaterialType(),
-                    r.getImageUrl(),
+                    presigned,         // ✅ 목록용도 presigned 써주면 UX 좋아짐
                     isScrapped
             );
         }).collect(Collectors.toList());
     }
+
 
     public List<Recipe> getRecipesByIngredientName(String prdlstNm) {
         IngredientMaster ingredient = ingredientMasterRepository
@@ -251,8 +259,11 @@ public class RecipeService {
             throw new CustomException("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
 
-        // redis저장
-        searchKeywordService.saveRecentKeyword(user.getUserId(), name);
+        // ✅ 게스트면 recent keyword 저장 생략
+        if (user != null) {
+            searchKeywordService.saveRecentKeyword(user.getUserId(), name);
+        }
+        // 인기 검색어 점수는 게스트도 올릴지 정책에 따라 결정 (유지)
         searchKeywordService.increaseKeywordScore(name);
 
         Pageable pg = PageRequest.of(page, size);
@@ -261,17 +272,18 @@ public class RecipeService {
         if (recipePage.isEmpty()) {
             throw new CustomException("일치하는 레시피가 존재하지 않습니다.", HttpStatus.NOT_FOUND);
         }
-        Set<String> scrappedIds = recipeScrapRepository
-                .findAllByUser(user)
-                .stream()
-                .map(scrap -> scrap.getRecipe().getRecipeId())
-                .collect(Collectors.toSet());
+
+        Set<String> scrappedIds = getScrappedIdsOrEmpty(user); // ✅ null-safe
 
         List<RecipeSummaryDto> summaries = recipePage.getContent().stream()
                 .map(r -> {
                     List<String> ingrNames = recipeIngredientRepository
                             .findIngredientNamesByRecipeId(r.getRecipeId());
                     boolean isScrapped = scrappedIds.contains(r.getRecipeId());
+
+                    String presigned = (r.getImageUrl() != null)
+                            ? imageUploader.generatePresignedUrl(r.getImageUrl(), 120)
+                            : null;
 
                     return new RecipeSummaryDto(
                             r.getRecipeId(),
@@ -284,7 +296,7 @@ public class RecipeService {
                             r.getPortion(),
                             r.getMethod(),
                             r.getMaterialType(),
-                            r.getImageUrl(),
+                            presigned,   // ✅
                             isScrapped
                     );
                 })
@@ -293,29 +305,31 @@ public class RecipeService {
         Meta meta = new Meta(recipePage.getNumber(), recipePage.hasNext());
         return new PagedResponse<>(meta, summaries);
     }
+
 
     // ② 카테고리 검색 + 페이징
     public PagedResponse<RecipeSummaryDto> getRecipesByCategory(User user, String category, int page, int size) {
         if (category == null || category.isBlank() || page < 0 || size <= 0) {
             throw new CustomException("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
+
         Pageable pg = PageRequest.of(page, size);
         Page<Recipe> recipePage = recipeRepository.findByMaterialTypeContaining(category.trim(), pg);
 
         if (recipePage.isEmpty()) {
             throw new CustomException("일치하는 레시피가 존재하지 않습니다.", HttpStatus.NOT_FOUND);
         }
-        Set<String> scrappedIds = recipeScrapRepository
-                .findAllByUser(user)
-                .stream()
-                .map(scrap -> scrap.getRecipe().getRecipeId())
-                .collect(Collectors.toSet());
+
+        Set<String> scrappedIds = getScrappedIdsOrEmpty(user); // ✅ null-safe
 
         List<RecipeSummaryDto> summaries = recipePage.getContent().stream()
                 .map(r -> {
-                    List<String> ingrNames = recipeIngredientRepository
-                            .findIngredientNamesByRecipeId(r.getRecipeId());
+                    List<String> ingrNames = recipeIngredientRepository.findIngredientNamesByRecipeId(r.getRecipeId());
                     boolean isScrapped = scrappedIds.contains(r.getRecipeId());
+
+                    String presigned = (r.getImageUrl() != null)
+                            ? imageUploader.generatePresignedUrl(r.getImageUrl(), 120)
+                            : null;
 
                     return new RecipeSummaryDto(
                             r.getRecipeId(),
@@ -328,7 +342,7 @@ public class RecipeService {
                             r.getPortion(),
                             r.getMethod(),
                             r.getMaterialType(),
-                            r.getImageUrl(),
+                            presigned,  // ✅
                             isScrapped
                     );
                 })
@@ -337,4 +351,5 @@ public class RecipeService {
         Meta meta = new Meta(recipePage.getNumber(), recipePage.hasNext());
         return new PagedResponse<>(meta, summaries);
     }
+
 }

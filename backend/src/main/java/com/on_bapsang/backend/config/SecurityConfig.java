@@ -39,6 +39,7 @@ public class SecurityConfig {
                                 "/api/recipe/recommend",
                                 "/api/recipe",
                                 "/api/recipe/review/**",
+                                "/api/recipe/foreign/**",
                                 "/api/community/posts",
                                 "/api/community/posts/{id}",
                                 "/api/community/posts/autocomplete",
