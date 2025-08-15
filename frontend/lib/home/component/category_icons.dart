@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/recipe/view/recipe_category_list_screen.dart';
 import 'package:frontend/shopping/view/shopping_category_list_screen.dart';
-import 'package:frontend/shopping/view/shopping_root_screen.dart';
 import 'package:go_router/go_router.dart';
 
 class CategoryIcons extends StatelessWidget {

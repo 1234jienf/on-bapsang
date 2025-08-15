@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/common/go_router/provider/main_provider.dart';
 import 'package:frontend/common/layout/default_layout.dart';
 import 'package:frontend/user/model/user_model.dart';
+import 'package:frontend/user/provider/guest_provider.dart';
 import 'package:frontend/user/provider/user_provider.dart';
 import 'package:go_router/go_router.dart';
 
@@ -167,6 +168,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               ref.invalidate(seasonIngredientProvider);
                               communityNotifier.fetchData();
                               ref.read(mainProvider).startGuestMode();
+                              ref.read(guestProvider.notifier).state = true;
                               context.go('/');
                             },
                             child: Text(

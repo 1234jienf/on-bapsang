@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:frontend/common/component/warning_component.dart';
+import 'package:frontend/user/provider/guest_provider.dart';
 
 import '../provider/community_comment_upload_provider.dart';
 import '../provider/community_detail_provider.dart';
@@ -101,13 +103,19 @@ class _ConsumerCommunityCommentInputboxState
         const SizedBox(width: 10),
         GestureDetector(
           onTap: () {
-            if (controller.text.trim().isNotEmpty && !isSubmit) {
-              __comment(
-                commentProvider,
-                widget.id,
-                controller.text,
-                widget.commentId,
-              );
+            final isGuest = ref.read(guestProvider);
+            if (isGuest) {
+              warningComponent(context);
+              return;
+            } else {
+              if (controller.text.trim().isNotEmpty && !isSubmit) {
+                __comment(
+                  commentProvider,
+                  widget.id,
+                  controller.text,
+                  widget.commentId,
+                );
+              }
             }
           },
           child: isSubmit

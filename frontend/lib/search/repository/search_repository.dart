@@ -27,7 +27,7 @@ abstract class SearchRepository
   factory SearchRepository(Dio dio, {String baseUrl}) = _SearchRepository;
 
   @GET('/search')
-  @Headers({'accessToken': 'true'})
+  // @Headers({'accessToken': 'true'})
   @Extra({'useLang': true})
   Future<CursorPaginationNormalStringModel<SearchRecipeModel>> paginateGET({
     @Queries()
@@ -36,7 +36,7 @@ abstract class SearchRepository
 
   @override
   @POST('/foreign')
-  @Headers({'accessToken': 'true'})
+  // @Headers({'accessToken': 'true'})
   @Extra({'useLang': true})
   Future<CursorStringPagination<SearchRecipeModel>> paginate({
     @Body()

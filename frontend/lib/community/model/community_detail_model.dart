@@ -33,8 +33,8 @@ class CommunityDetailModel extends CommunityModel implements IModelWithIntId {
     required super.nickname,
     required super.content,
     required super.profileImage,
-    required super.scrapped,
-    required this.author,
+    super.scrapped = false,
+    this.author = false,
   });
 
   factory CommunityDetailModel.fromJson(Map<String, dynamic> json) =>

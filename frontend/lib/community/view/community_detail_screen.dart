@@ -9,7 +9,6 @@ import 'package:frontend/community/component/community_comment_list_view_family.
 import 'package:frontend/community/provider/community_detail_id_provider.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../common/component/component_alert_dialog.dart';
 import '../../common/const/colors.dart';
 import '../../recipe/view/recipe_detail_screen.dart';
 import '../component/community_build_tag.dart';

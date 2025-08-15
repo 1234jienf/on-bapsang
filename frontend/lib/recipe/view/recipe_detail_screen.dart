@@ -6,11 +6,12 @@ import 'package:frontend/community/view/community_detail_screen.dart';
 import 'package:frontend/recipe/repository/recipe_repository.dart';
 import 'package:frontend/recipe/view/recipe_ingredient_price_screen.dart';
 import 'package:frontend/recipe/data/data_loader.dart';
-import 'package:frontend/recipe/view/recipe_ingredient_shopping_screen.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:frontend/recipe/provider/recipe_provider.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../common/component/update_component.dart';
 
 class RecipeDetailScreen extends ConsumerStatefulWidget {
   final String id;
@@ -390,26 +391,28 @@ class _RecipeDetailScreenState extends ConsumerState<RecipeDetailScreen> {
             padding: EdgeInsetsGeometry.symmetric(horizontal: 10.0),
             child: ElevatedButton(
               onPressed: () async {
-                final discounted = await loadDiscountedIngredients(); // JSON 불러오기
-                final discountedIds = discounted.map((e) => e.ingredientId).toSet();
+                // final discounted = await loadDiscountedIngredients(); // JSON 불러오기
+                // final discountedIds = discounted.map((e) => e.ingredientId).toSet();
 
-                final idToName = {
-                  for (final ing in recipe.ingredients)
-                    ing.ingredientId: ing.name,
-                };
+                // final idToName = {
+                //   for (final ing in recipe.ingredients)
+                //     ing.ingredientId: ing.name,
+                // };
 
-                final matched = discounted
-                    .where((d) => idToName.containsKey(d.ingredientId))
-                    .map((d) =>
-                    d.copyWith(ingredientName: idToName[d.ingredientId]!))
-                    .toList();
+                // final matched = discounted
+                //     .where((d) => idToName.containsKey(d.ingredientId))
+                //     .map((d) =>
+                //     d.copyWith(ingredientName: idToName[d.ingredientId]!))
+                //     .toList();
 
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RecipeIngredientShoppingScreen(discountedItems: matched)
-                    )
-                );
+                updateComponent(context);
+                // 여기서부터 다시 해야함
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => RecipeIngredientShoppingScreen(discountedItems: matched)
+                //     )
+                // );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,

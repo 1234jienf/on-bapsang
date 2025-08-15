@@ -23,8 +23,8 @@ CommunityDetailModel _$CommunityDetailModelFromJson(
   nickname: json['nickname'] as String,
   content: json['content'] as String,
   profileImage: json['profileImage'] as String,
-  scrapped: json['scrapped'] as bool,
-  author: json['author'] as bool,
+  scrapped: json['scrapped'] as bool? ?? false,
+  author: json['author'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$CommunityDetailModelToJson(

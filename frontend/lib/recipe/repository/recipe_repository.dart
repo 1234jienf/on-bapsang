@@ -24,12 +24,12 @@ abstract class RecipeRepository {
   factory RecipeRepository(Dio dio, {String baseUrl}) = _RecipeRepository;
 
   @GET('/popular')
-  @Headers({'accessToken': 'true'})
+  // @Headers({'accessToken': 'true'})
   @Extra({'useLang': true})
   Future<List<RecipeModel>> getPopularRecipes();
 
   @GET('/recommend')
-  @Headers({'accessToken': 'true'})
+  // @Headers({'accessToken': 'true'})
   @Extra({'useLang': true})
   Future<List<RecipeModel>> getRecommendRecipes();
 
@@ -47,7 +47,7 @@ abstract class RecipeRepository {
   Future<void> cancelRecipeScrap(@Path('id') int id);
 
   @GET('/ingredient')
-  @Headers({'accessToken': 'true'})
+  // @Headers({'accessToken': 'true'})
   @Extra({'useLang': true})
   Future<CursorSimplePagination<RecipeModel>> paginate({
     @Queries() PaginationIntParams paginationIntParams = const PaginationWithNameParams(),
@@ -56,7 +56,7 @@ abstract class RecipeRepository {
 
   // 메인화면에서 페이지네이션 빼고 앞에꺼만 가져오기
   @GET('/ingredient')
-  @Headers({'accessToken': 'true'})
+  // @Headers({'accessToken': 'true'})
   @Extra({'useLang': true})
   Future<HttpResponse<dynamic>> getSeasonRecipeMainRaw(
       @Query('name') String ingredientName,

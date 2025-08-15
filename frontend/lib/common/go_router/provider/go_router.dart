@@ -3,7 +3,7 @@ import 'package:frontend/common/go_router/provider/main_provider.dart';
 import 'package:go_router/go_router.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final provider = ref.read(mainProvider);
+  final provider = ref.watch(mainProvider);
   return GoRouter(
     initialLocation: '/splash',
     routes: provider.routes,

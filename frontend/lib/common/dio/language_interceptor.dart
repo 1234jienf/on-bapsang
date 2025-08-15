@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:frontend/common/const/securetoken.dart';
@@ -24,11 +23,11 @@ class LanguageInterceptor extends Interceptor {
         o.headers['X-Language'] = lang;
       }
     }
-    if (kDebugMode) {
-      debugPrint('[LanguageInterceptor] ${o.method} ${o.uri}');
-      debugPrint('→ X-Language: ${o.headers['X-Language']}');
-      debugPrint('→ All headers: ${o.headers}');
-    }
+    // if (kDebugMode) {
+    //   debugPrint('[LanguageInterceptor] ${o.method} ${o.uri}');
+    //   debugPrint('→ X-Language: ${o.headers['X-Language']}');
+    //   debugPrint('→ All headers: ${o.headers}');
+    // }
     h.next(o);
   }
 }

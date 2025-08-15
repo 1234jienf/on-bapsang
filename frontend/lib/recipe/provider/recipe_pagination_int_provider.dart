@@ -116,7 +116,7 @@ class RecipePaginationProvider<T extends IModelWithIntId>
       } else {
         state = resp;
       }
-    } catch (e, stack) {
+    } catch (e) {
       state = CursorIntPaginationError(message: '레시피 로딩 실패');
     }
   }

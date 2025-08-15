@@ -10,6 +10,7 @@ import 'package:frontend/mypage/provider/mypage_provider.dart';
 import 'package:frontend/recipe/provider/recipe_provider.dart';
 import 'package:frontend/recipe/provider/recipe_season_provider.dart';
 import 'package:frontend/user/model/user_patch_model.dart';
+import 'package:frontend/user/provider/guest_provider.dart';
 import 'package:frontend/user/repository/auth_repository.dart';
 import 'package:frontend/user/repository/user_repository.dart';
 
@@ -107,6 +108,7 @@ class UserStateNotifier extends StateNotifier<UserModelBase?> {
       final communityNotifier = _ref.refresh(homeScreenCommunityProvider.notifier);
       communityNotifier.fetchData();
       _ref.read(mainProvider).startUserMode();
+      _ref.read(guestProvider.notifier).state = false;
 
       return userResp;
     } on DioException catch (e) {

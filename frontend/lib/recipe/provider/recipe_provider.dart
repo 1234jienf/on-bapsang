@@ -6,15 +6,14 @@ import 'package:frontend/recipe/model/recipe_detail_model.dart';
 import 'package:frontend/recipe/model/recipe_model.dart';
 import 'package:frontend/recipe/pagination/recipe_simple_pagination_notifier.dart';
 import 'package:frontend/recipe/repository/recipe_repository.dart';
-import 'package:frontend/user/provider/user_provider.dart';
 
 import '../notifier/category_pagination_notifier.dart';
 
 
 /// 인기 레시피 가져오기
 final popularRecipesProvider = FutureProvider<List<RecipeModel>>((ref) async {
-  final user = ref.watch(userProvider);
-  if (user == null) return [];
+  // final user = ref.watch(userProvider);
+  // if (user == null) return [];
 
   final repository = ref.watch(recipeRepositoryProvider);
   return await repository.getPopularRecipes();
@@ -22,8 +21,8 @@ final popularRecipesProvider = FutureProvider<List<RecipeModel>>((ref) async {
 
 /// 추천 레시피 가져오기
 final recommendRecipesProvider = FutureProvider<List<RecipeModel>>((ref) async {
-  final user = ref.watch(userProvider);
-  if (user == null) return [];
+  // final user = ref.watch(userProvider);
+  // if (user == null) return [];
 
   final repository = ref.watch(recipeRepositoryProvider);
   return await repository.getRecommendRecipes();
