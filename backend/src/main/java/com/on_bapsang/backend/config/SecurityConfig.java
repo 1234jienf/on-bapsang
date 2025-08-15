@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         // 로그인 관련은 모든 메서드 허용
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**","api/users/check-username").permitAll()
 
                         // 회원가입은 POST만 허용
                         .requestMatchers(HttpMethod.POST, "/api/users/signup").permitAll()
@@ -33,6 +33,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/api/seasonal/**",
                                 "/api/market/**",
+                                "/api/recipe/keywords/popular",
+                                "/api/recipe/keywords/recent",
                                 "/api/recipe/popular",
                                 "/api/recipe/ingredient",
                                 "/api/recipe/search",
