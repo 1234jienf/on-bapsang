@@ -199,4 +199,51 @@ Lawsuits regarding disputes between the Company and members shall be under the e
 
 &nbsp;
 
+## Article 19 (Zero Tolerance Policy for Objectionable Content and Abusive Users)
+① The Company applies a zero tolerance policy for objectionable content and abusive users to create a healthy service environment.
+
+② By agreeing to these terms upon service registration, members acknowledge and pledge to comply with the following:
+
+Accounts may be immediately suspended or permanently banned for posting objectionable content
+Absolutely no harassment, hate speech, threats, or similar actions against other users
+Legal action may be taken for activities that disrupt service operations
+
+③ The Company shows no tolerance for objectionable content or abusive users and will take immediate and strong disciplinary action upon discovery of such behavior.
+
+&nbsp;
+
+## Article 20 (User Blocking Function)
+① Members who experience harassment or inappropriate behavior from other members may use the blocking function against such users.
+
+② The user blocking function operates as follows:
+
+Blocked users cannot interact with the blocking member through messages, comments, follows, or any other means
+The blocking member will not see posts, comments, or other content from the blocked user
+Blocks can be lifted by the member at any time
+
+③ The Company provides technical support to ensure the user blocking function operates smoothly.
+
+&nbsp;
+
+## Article 21 (Report Processing and 24-Hour Response System)
+① The Company operates a system to process reports of objectionable content or abusive users within 24 hours.
+
+② The report processing procedure is as follows:
+
+Immediate review of reported content and users upon receipt of report
+Investigation completion and decision on action within 24 hours
+Immediate content removal and user sanctions if deemed inappropriate
+
+③ When reported content is confirmed as objectionable:
+
+The content is immediately deleted
+The user who posted the content is immediately sanctioned (account suspension or permanent ban) from the service
+The reporter is notified of the processing results
+
+④ The Company establishes and publishes clear guidelines to ensure transparency and consistency in report processing.
+
+⑤ Disciplinary action may also be taken against users who repeatedly make malicious or false reports.
+
+&nbsp;
+
 **Effective Date**: These terms take effect from July 8, 2025.
